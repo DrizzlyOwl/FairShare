@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>His&Hers - Fair Bill Splitting Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="lazy-loader">
+    <div class="spinner"></div>
+</div>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<main id="main-content">
+    <div class="app-container">
+        <header class="header-brand" id="header-brand">
+            <img src="header.jpg" alt="His and Hers - Salary Proportion Calculator">
+            <button onclick="clearCacheAndReload()" aria-label="Start over and clear all data">
+                Start Over
+            </button>
+        </header>
+
+        <div class="progress-container" id="progress-container">
+            <div class="progress-track" id="progress-track">
+                <span class="progress-text-alt" id="progress-text-alt" aria-live="polite">Step 1 of 7: Welcome</span>
+                <div class="app-progress" id="app-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome"></div>
+            </div>
+        </div>
+
+        <section class="screen" id="screen-landing" aria-labelledby="heading-landing" tabindex="-1">
+            <h2 id="heading-landing">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
+                Welcome to His&Hers
+            </h2>
+            
+            <div class="landing-intro" id="landing-intro">
+                <p>
+                    <strong>Fairness is the foundation of a happy home.</strong><br>
+                    Splitting household bills exactly 50/50 can be a burden when one partner earns significantly more than the other.
+                </p>
+                <p>
+                    <strong>His&Hers</strong> helps you move in together with confidence by calculating 
+                    <strong>proportionate contributions</strong> based on your relative incomes.
+                </p>
+                <p class="screen-summary">
+                    By following this 7-step guide, you'll establish a sustainable financial plan that respects both partners' earning power. Completing every section allows us to generate a comprehensive "Fair Share" report, leaving no hidden costs to cause friction later.
+                </p>
+            </div>
+
+            <div class="how-it-works" id="how-it-works">
+                <h3>How it works:</h3>
+                <ol>
+                    <li>Establish your contribution ratio based on your pre-tax salaries.</li>
+                    <li>Estimate your new home's market value and running costs using local data.</li>
+                    <li>See a complete breakdown of exactly what each person should pay.</li>
+                </ol>
+            </div>
+
+            <button onclick="switchScreen('screen-1')" class="btn-primary btn-block">
+                Get Started
+            </button>
+        </section>
+
+        <section class="screen" id="screen-1" aria-labelledby="heading-income" tabindex="-1" hidden>
+            <h2 id="heading-income">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg>
+                Your Income
+            </h2>
+            
+            <p>Enter the annual pre-tax salary for both partners to determine your fair share ratio.</p>
+            <p class="screen-summary">
+                Your salaries are the most critical data points. We use your combined income to establish a percentage-based ratio (e.g., 60/40). This ratio ensures that both partners retain a similar proportion of their "disposable" income after the shared bills are paid, preventing financial resentment.
+            </p>
+
+            <div class="form-group">
+                <label class="form-label" for="salaryHis">Person A's Annual Salary (Pre-tax)</label>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="salaryHis" class="input-control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryHis-help salaryHis-error">
+                </div>
+                <div id="salaryHis-error" class="error-text" hidden>Please enter a valid annual salary for Person A.</div>
+                <div id="salaryHis-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="salaryHer">Person B's Annual Salary (Pre-tax)</label>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="salaryHer" class="input-control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryHer-help salaryHer-error">
+                </div>
+                <div id="salaryHer-error" class="error-text" hidden>Please enter a valid annual salary for Person B.</div>
+                <div id="salaryHer-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
+            </div>
+
+            <div class="nav-group">
+                <button onclick="switchScreen('screen-landing')" class="btn-secondary">
+                    Back
+                </button>
+                <button onclick="validateAndNext1()" class="btn-primary">
+                    Next
+                </button>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-2" aria-labelledby="heading-property" tabindex="-1" hidden>
+            <h2 id="heading-property">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" /></svg>
+                Property Details
+            </h2>
+
+            <p>Tell us about the property you're moving into so we can estimate local costs.</p>
+            <p class="screen-summary">
+                Postcode and property size allow us to pull real-world data from the UK Land Registry and regional utility providers. Accuracy here is vital; a 3-bed house in Manchester has very different running costs than a 1-bed flat in London. Filling this in avoids "bill shock" once you move.
+            </p>
+
+            <div class="form-group">
+                <label class="form-label" for="postcode">Property Postcode</label>
+                <input type="text" id="postcode" class="input-control" aria-describedby="postcode-help postcode-error" onblur="checkRegion()" placeholder="e.g. SW1A 0AA">
+                <div id="postcode-error" class="error-text" hidden>Please enter a valid UK postcode.</div>
+                <div id="postcode-help" class="help-text">Used to estimate local market prices and regional utility variations.</div>
+                <div id="region-announcement" aria-live="polite" class="info-text"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="propertyPrice">Current Market Value (£)</label>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="propertyPrice" class="input-control" placeholder="e.g. 250000" aria-describedby="propertyPrice-error">
+                    <button type="button" id="estimatePriceBtn" class="btn-addon">Estimate</button>
+                </div>
+                <div id="propertyPrice-error" class="error-text" hidden>Please enter a property value or use a postcode to estimate.</div>
+                <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden>
+                    Using estimated market price: <span id="estimatedPriceValue" class="fw-bold"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <p class="help-text">Council Tax is determined by the property's assigned valuation band.</p>
+                <a href="https://www.gov.uk/council-tax-bands" target="_blank" class="link-external">
+                    Find your Council Tax Band
+                </a>
+            </div>
+
+            <fieldset class="form-group">
+                <legend class="form-label">Select Valuation Band</legend>
+                <div class="segmented-control band-grid">
+                    <input type="radio" name="taxBand" id="bA" value="A" onchange="updatePricePreview('A')"><label for="bA">A</label>
+                    <input type="radio" name="taxBand" id="bB" value="B" onchange="updatePricePreview('B')"><label for="bB">B</label>
+                    <input type="radio" name="taxBand" id="bC" value="C" onchange="updatePricePreview('C')"><label for="bC">C</label>
+                    <input type="radio" name="taxBand" id="bD" value="D" onchange="updatePricePreview('D')"><label for="bD">D</label>
+                    <input type="radio" name="taxBand" id="bE" value="E" onchange="updatePricePreview('E')"><label for="bE">E</label>
+                    <input type="radio" name="taxBand" id="bF" value="F" onchange="updatePricePreview('F')"><label for="bF">F</label>
+                    <input type="radio" name="taxBand" id="bG" value="G" onchange="updatePricePreview('G')"><label for="bG">G</label>
+                    <input type="radio" name="taxBand" id="bH" value="H" onchange="updatePricePreview('H')"><label for="bH">H</label>
+                </div>
+                <div id="taxBand-error" class="error-text" aria-live="assertive" hidden>Please select a valuation band to continue.</div>
+            </fieldset>
+
+            <div class="alert-info" id="band-price-display" aria-live="polite">Select a band to see estimated cost</div>
+
+            <div class="form-row">
+                <div class="form-group col">
+                    <label class="form-label" for="bedrooms">Bedrooms</label>
+                    <input type="number" id="bedrooms" class="input-control" value="2" min="1" required aria-describedby="bedrooms-error">
+                    <div id="bedrooms-error" class="error-text" hidden>Required.</div>
+                </div>
+                <div class="form-group col">
+                    <label class="form-label" for="bathrooms">Bathrooms</label>
+                    <input type="number" id="bathrooms" class="input-control" value="1" min="1" required aria-describedby="bathrooms-error">
+                    <div id="bathrooms-error" class="error-text" hidden>Required.</div>
+                </div>
+            </div>
+
+            <div class="alert-warning" id="warning-screen-2" role="alert" aria-live="polite" hidden></div>
+
+            <div class="nav-group">
+                <button onclick="switchScreen('screen-1')" class="btn-secondary">
+                    Back
+                </button>
+                <button onclick="validateAndNext2()" class="btn-primary">
+                    Next
+                </button>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-4" aria-labelledby="heading-mortgage" tabindex="-1" hidden>
+            <h2 id="heading-mortgage">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>
+                Mortgage & Equity
+            </h2>
+
+            <p>Finalize your home ownership and financing details.</p>
+            <p class="screen-summary">
+                Establishing the mortgage payment and initial deposit share is often the biggest financial commitment a couple makes. We split the monthly mortgage payment by your income ratio automatically to keep it fair, but you can choose how to handle the initial cash deposit. Populating this ensures your equity and debt are managed transparently from day one.
+            </p>
+
+            <div class="form-group">
+                <label class="form-label" for="displayPropertyPrice">Current Market Value</label>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="text" id="displayPropertyPrice" class="input-control" readonly tabindex="-1" aria-describedby="displayPropertyPrice-help">
+                </div>
+                <div id="displayPropertyPrice-help" class="help-text">As specified in the property details section.</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="depositPercentage">Total Deposit Percentage (%)</label>
+                <div class="input-group">
+                    <input type="number" id="depositPercentage" class="input-control" value="10" min="0" max="100" required aria-describedby="depositPercentage-help depositPercentage-error">
+                    <span class="input-addon">%</span>
+                </div>
+                <div id="depositPercentage-error" class="error-text" hidden>Please enter a deposit percentage (0-100).</div>
+                <div id="depositPercentage-help" class="help-text">The total cash deposit you are both putting down combined.</div>
+            </div>
+
+            <fieldset class="form-group">
+                <legend class="form-label">Split Deposit Proportionally?</legend>
+                <div class="segmented-control">
+                    <input type="radio" name="depositSplitType" id="splitPropYes" value="yes" checked>
+                    <label for="splitPropYes">Income Ratio</label>
+                    <input type="radio" name="depositSplitType" id="splitPropNo" value="no">
+                    <label for="splitPropNo">Equal (50/50)</label>
+                </div>
+                <div id="deposit-split-help" class="help-text">Choose whether the initial cash deposit should match your salary ratio or be equal.</div>
+            </fieldset>
+
+            <div class="alert-info" id="equity-mortgage-summary" aria-live="polite">
+                Total Equity Required: <span id="totalEquityDisplay" class="fw-bold">£0</span><br>
+                Mortgage Required: <span id="mortgageRequiredDisplay" class="fw-bold">£0</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="mortgageInterestRate">Annual Interest Rate (APR %)</label>
+                <div class="input-group">
+                    <input type="number" id="mortgageInterestRate" class="input-control" value="5" min="0" step="0.1" required aria-describedby="mortgageInterestRate-error">
+                    <span class="input-addon">%</span>
+                </div>
+                <div id="mortgageInterestRate-error" class="error-text" hidden>Please enter an interest rate.</div>
+
+                <label class="form-label" for="mortgageTerm">Mortgage Term (Years)</label>
+                <input type="number" id="mortgageTerm" class="input-control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error">
+                <div id="mortgageTerm-error" class="error-text" hidden>Please enter a term (1-50 years).</div>
+                <div id="mortgageTerm-help" class="help-text">The duration of your mortgage repayment plan.</div>
+            </div>
+
+            <div class="summary-cards" id="deposit-share-summary">
+                <div class="summary-card share-his">
+                    <p class="summary-card-label">Person A's Deposit Share</p>
+                    <p id="equityHisDisplay" class="summary-card-value" aria-live="polite">£0</p>
+                </div>
+                <div class="summary-card share-her">
+                    <p class="summary-card-label">Person B's Deposit Share</p>
+                    <p id="equityHerDisplay" class="summary-card-value" aria-live="polite">£0</p>
+                </div>
+            </div>
+
+            <div class="nav-group">
+                <button onclick="switchScreen('screen-2')" class="btn-secondary">
+                    Back
+                </button>
+                <button onclick="validateAndNextMortgage()" class="btn-primary">
+                    Next
+                </button>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-3" aria-labelledby="heading-utilities" tabindex="-1" hidden>
+            <h2 id="heading-utilities">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                Monthly Utilities
+            </h2>
+
+            <p>Confirm the standard monthly running costs for your home.</p>
+            <p class="screen-summary">
+                These are the "non-negotiable" costs of running a household. We have provided estimates based on your previous property selections, but you can override them with exact quotes. Refining these numbers ensures Person A and Person B aren't over-committing to a lifestyle they can't actually afford.
+            </p>
+
+            <div class="master-toggle">
+                <div class="master-toggle-inner">
+                    <span class="master-toggle-label">Split Rule For All Fields:</span>
+                    <div class="btn-group-sm">
+                        <button type="button" onclick="setAllSplitTypes('utilities', 'yes')" class="btn-outline">Income Ratio</button>
+                        <button type="button" onclick="setAllSplitTypes('utilities', 'no')" class="btn-outline">Equal (50/50)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="field-header">
+                    <label class="form-label" for="councilTaxCost">Monthly Council Tax (£)</label>
+                    <div class="mini-toggle">
+                        <input type="radio" name="councilTaxSplitType" id="ctPropYes" value="yes" checked>
+                        <label for="ctPropYes">Ratio</label>
+                        <input type="radio" name="councilTaxSplitType" id="ctPropNo" value="no">
+                        <label for="ctPropNo">50/50</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="councilTaxCost" class="input-control" required aria-describedby="councilTaxCost-help councilTaxCost-error">
+                </div>
+                <div id="councilTaxCost-error" class="error-text" hidden>Please enter the monthly council tax.</div>
+                <div id="councilTaxCost-help" class="help-text">Estimated based on your selected valuation band.</div>
+            </div>
+
+            <div class="form-group">
+                <div class="field-header">
+                    <label class="form-label" for="energyCost">Monthly Energy Estimate (£)</label>
+                    <div class="mini-toggle">
+                        <input type="radio" name="energySplitType" id="enPropYes" value="yes" checked>
+                        <label for="enPropYes">Ratio</label>
+                        <input type="radio" name="energySplitType" id="enPropNo" value="no">
+                        <label for="enPropNo">50/50</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="energyCost" class="input-control" required aria-describedby="energy-explainer energyCost-error">
+                </div>
+                <div id="energyCost-error" class="error-text" hidden>Please enter an energy estimate.</div>
+                <div id="energy-explainer" class="help-text">Estimated gas and electricity usage for this property size and region.</div>
+            </div>
+
+            <div class="form-group">
+                <div class="field-header">
+                    <label class="form-label" for="waterBill">Monthly Water Bill (£)</label>
+                    <div class="mini-toggle">
+                        <input type="radio" name="waterSplitType" id="wtPropYes" value="yes" checked>
+                        <label for="wtPropYes">Ratio</label>
+                        <input type="radio" name="waterSplitType" id="wtPropNo" value="no">
+                        <label for="wtPropNo">50/50</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="waterBill" class="input-control" value="30" required aria-describedby="waterBill-help waterBill-error">
+                </div>
+                <div id="waterBill-error" class="error-text" hidden>Please enter a water bill amount.</div>
+                <div id="waterBill-help" class="help-text">Estimated regional average based on bathrooms and postcode.</div>
+            </div>
+
+            <div class="form-group">
+                <div class="field-header">
+                    <label class="form-label" for="broadbandCost">Monthly Broadband & TV (£)</label>
+                    <div class="mini-toggle">
+                        <input type="radio" name="broadbandSplitType" id="bbPropYes" value="yes" checked>
+                        <label for="bbPropYes">Ratio</label>
+                        <input type="radio" name="broadbandSplitType" id="bbPropNo" value="no">
+                        <label for="bbPropNo">50/50</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="broadbandCost" class="input-control" placeholder="30" aria-describedby="broadband-help broadband-error">
+                </div>
+                <div id="broadband-error" class="error-text" hidden>Please enter a valid amount.</div>
+                <div id="broadband-help" class="help-text">Internet, cable, and streaming subscriptions.</div>
+            </div>
+
+            <div class="nav-group">
+                <button onclick="switchScreen('screen-4')" class="btn-secondary">
+                    Back
+                </button>
+                <button onclick="validateAndNext3()" class="btn-primary">
+                    Next
+                </button>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-committed" aria-labelledby="heading-committed" tabindex="-1" hidden>
+            <h2 id="heading-committed">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m.75 3.375H5.625c-.621 0-1.125-.504-1.125-1.125V4.125c0-.621.504-1.125 1.125-1.125h12.75c.621 0 1.125.504 1.125 1.125v12.75c0 .621-.504 1.125-1.125 1.125H15m-3 0v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" /></svg>
+                Committed Spending
+            </h2>
+            <p>Optional shared monthly costs you both contribute to.</p>
+            <p class="screen-summary">
+                Beyond the roof over your head, shared life costs like food and childcare are where most budget disagreements happen. By populating these fields, you turn hidden expenses into visible, agreed-upon line items. You can choose to split these exactly 50/50 or by income ratio depending on your preferences.
+            </p>
+
+            <div class="master-toggle">
+                <div class="master-toggle-inner">
+                    <span class="master-toggle-label">Split Rule For All Fields:</span>
+                    <div class="btn-group-sm">
+                        <button type="button" onclick="setAllSplitTypes('committed', 'yes')" class="btn-outline">Income Ratio</button>
+                        <button type="button" onclick="setAllSplitTypes('committed', 'no')" class="btn-outline">Equal (50/50)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="field-header">
+                    <label class="form-label" for="groceriesCost">Monthly Groceries (£)</label>
+                    <div class="mini-toggle">
+                        <input type="radio" name="groceriesSplitType" id="grPropYes" value="yes" checked>
+                        <label for="grPropYes">Ratio</label>
+                        <input type="radio" name="groceriesSplitType" id="grPropNo" value="no">
+                        <label for="grPropNo">50/50</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="groceriesCost" class="input-control" placeholder="e.g. 400" aria-describedby="groceries-help groceries-error">
+                </div>
+                <div id="groceries-error" class="error-text" hidden>Please enter a valid amount.</div>
+                <div id="groceries-help" class="help-text">Food, household supplies, and shared toiletries.</div>
+            </div>
+
+            <div class="form-group">
+                <div class="field-header">
+                    <label class="form-label" for="childcareCost">Monthly Childcare (£)</label>
+                    <div class="mini-toggle">
+                        <input type="radio" name="childcareSplitType" id="ccPropYes" value="yes" checked>
+                        <label for="ccPropYes">Ratio</label>
+                        <input type="radio" name="childcareSplitType" id="ccPropNo" value="no">
+                        <label for="ccPropNo">50/50</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="childcareCost" class="input-control" placeholder="e.g. 200" aria-describedby="childcare-help childcare-error">
+                </div>
+                <div id="childcare-error" class="error-text" hidden>Please enter a valid amount.</div>
+                <div id="childcare-help" class="help-text">Nursery, childminders, or other care costs.</div>
+            </div>
+
+            <div class="form-group">
+                <div class="field-header">
+                    <label class="form-label" for="insuranceCost">Shared Insurances (£)</label>
+                    <div class="mini-toggle">
+                        <input type="radio" name="insuranceSplitType" id="isPropYes" value="yes" checked>
+                        <label for="isPropYes">Ratio</label>
+                        <input type="radio" name="insuranceSplitType" id="isPropNo" value="no">
+                        <label for="isPropNo">50/50</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="insuranceCost" class="input-control" placeholder="e.g. 50" aria-describedby="insurance-help insurance-error">
+                </div>
+                <div id="insurance-error" class="error-text" hidden>Please enter a valid amount.</div>
+                <div id="insurance-help" class="help-text">Combined life, health, or pet insurance.</div>
+            </div>
+
+            <div class="form-group">
+                <div class="field-header">
+                    <label class="form-label" for="otherSharedCosts">Other Shared Monthly Costs (£)</label>
+                    <div class="mini-toggle">
+                        <input type="radio" name="otherSharedSplitType" id="osPropYes" value="yes" checked>
+                        <label for="osPropYes">Ratio</label>
+                        <input type="radio" name="otherSharedSplitType" id="osPropNo" value="no">
+                        <label for="osPropNo">50/50</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-addon">£</span>
+                    <input type="number" id="otherSharedCosts" class="input-control" placeholder="e.g. 100" aria-describedby="other-help other-error">
+                </div>
+                <div id="other-error" class="error-text" hidden>Please enter a valid amount.</div>
+                <div id="other-help" class="help-text">Gym memberships, streaming services, or car payments.</div>
+            </div>
+
+            <div class="nav-group">
+                <button onclick="switchScreen('screen-3')" class="btn-secondary">
+                    Back
+                </button>
+                <button onclick="validateAndNextCommitted()" class="btn-success">Calculate</button>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-5" aria-labelledby="heading-results" tabindex="-1" hidden>
+            <h2 id="heading-results">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" /></svg>
+                Calculation Results
+            </h2>
+            
+            <p>Review your proportionate household budget below.</p>
+            <p class="screen-summary">
+                This final report is the result of every detail you've provided. By populating all fields, you now have a rock-solid roadmap for your shared life. You can use these figures to set up your standing orders or joint account contributions, knowing that the math is balanced, fair, and based on your unique relative incomes.
+            </p>
+
+            <div class="result-ratio-bar" id="result-ratio-bar">
+                <p class="text-center fw-bold">Your Fair Share Split</p>
+                <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent Person A and 50 percent Person B">
+                    <div class="bar-his" id="bar-his" aria-hidden="true">50%</div>
+                    <div class="bar-her" id="bar-her" aria-hidden="true">50%</div>
+                </div>
+                <p class="sr-only" id="ratio-text-desc">Ratio is 50 percent Person A and 50 percent Person B.</p>
+            </div>
+
+            <h3 class="text-center">Your Monthly Shares</h3>
+            <div class="monthly-shares-summary" id="monthly-shares-summary">
+                <div class="result-card result-share-his" id="result-share-his">
+                    <p class="result-card-label">Person A Pays</p>
+                    <p class="result-card-value result-his" id="result-his" aria-live="polite">£0</p>
+                </div>
+                <div class="result-card result-share-her" id="result-share-her">
+                    <p class="result-card-label">Person B Pays</p>
+                    <p class="result-card-value result-her" id="result-her" aria-live="polite">£0</p>
+                </div>
+            </div>
+            <p class="text-center total-bill-row" id="total-bill-row">
+                Total Monthly Bill: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite">£0</span>
+            </p>
+            <p class="text-center info-text result-summary" id="result-summary" aria-live="polite"></p>
+
+            <div class="workings-container">
+                <h4>Calculation Workings</h4>
+                <div class="calculation-workings" id="calculation-workings">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <hr aria-hidden="true">
+            
+            <h3>Full Cost Breakdown</h3>
+            <div class="table-scroll-container" id="table-scroll-container">
+                <table class="data-table" id="results-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Expense</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Person A</th>
+                            <th scope="col">Person B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Mortgage</th>
+                            <td id="bd-mortgage-total" aria-live="polite">£0</td>
+                            <td id="bd-mortgage-his" aria-live="polite">£0</td>
+                            <td id="bd-mortgage-her" aria-live="polite">£0</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Council Tax</th>
+                            <td id="bd-tax-total" aria-live="polite">£0</td>
+                            <td id="bd-tax-his" aria-live="polite">£0</td>
+                            <td id="bd-tax-her" aria-live="polite">£0</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Energy</th>
+                            <td id="bd-energy-total" aria-live="polite">£0</td>
+                            <td id="bd-energy-his" aria-live="polite">£0</td>
+                            <td id="bd-energy-her" aria-live="polite">£0</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Water</th>
+                            <td id="bd-water-total" aria-live="polite">£0</td>
+                            <td id="bd-water-his" aria-live="polite">£0</td>
+                            <td id="bd-water-her" aria-live="polite">£0</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Broadband & TV</th>
+                            <td id="bd-broadband-total" aria-live="polite">£0</td>
+                            <td id="bd-broadband-his" aria-live="polite">£0</td>
+                            <td id="bd-broadband-her" aria-live="polite">£0</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Groceries</th>
+                            <td id="bd-groceries-total" aria-live="polite">£0</td>
+                            <td id="bd-groceries-his" aria-live="polite">£0</td>
+                            <td id="bd-groceries-her" aria-live="polite">£0</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Committed Spending</th>
+                            <td id="bd-committed-total" aria-live="polite">£0</td>
+                            <td id="bd-committed-his" aria-live="polite">£0</td>
+                            <td id="bd-committed-her" aria-live="polite">£0</td>
+                        </tr>
+                        <tr class="table-total-row" id="table-total-row">
+                            <th scope="row">Total</th>
+                            <td id="bd-total-total" aria-live="polite">£0</td>
+                            <td id="bd-total-his" aria-live="polite">£0</td>
+                            <td id="bd-total-her" aria-live="polite">£0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="help-text breakdown-summary" id="breakdown-summary" style="margin-top: 1rem; border-top: 1px solid var(--color-border); padding-top: 1rem;"></p>
+
+            <div class="nav-group-vertical">
+                <button onclick="downloadCSV()" class="btn-outline" style="margin-bottom: 1.5rem;">
+                    Export to CSV (.csv)
+                </button>
+                <button onclick="switchScreen('screen-committed')" class="btn-secondary">Back to Committed Spending</button>
+                <button onclick="clearCacheAndReload()" class="btn-text">Start Over (Clear Cache)</button>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    Vibe coded by Ash Davies (DrizzlyOwl) and Gemini
+</footer>
+
+<script src="app.js"></script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(reg => console.log('Service Worker: Registered (Scope: ' + reg.scope + ')'))
+                .catch(err => console.log('Service Worker: Registration Failed', err));
+        });
+    }
+</script>
+
+</body>
+</html>
