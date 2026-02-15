@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postcode: document.getElementById('postcode').value,
             propertyPrice: document.getElementById('propertyPrice').value,
             taxBand: document.querySelector('input[name="taxBand"]:checked')?.value,
+            homeType: document.querySelector('input[name="homeType"]:checked')?.value,
             bedrooms: document.getElementById('bedrooms').value,
             bathrooms: document.getElementById('bathrooms').value,
             councilTaxCost: document.getElementById('councilTaxCost').value,
@@ -111,6 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         radio.checked = true;
                         updatePricePreview(value);
                     }
+                }
+                if (id === 'homeType' && value) {
+                    const radio = document.querySelector(`input[name="homeType"][value="${value}"]`);
+                    if (radio) radio.checked = true;
                 }
                 if (id === 'depositSplitType' && value) {
                     const radio = document.querySelector(`input[name="depositSplitType"][value="${value}"]`);
@@ -273,18 +278,32 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // SDLT Calculation (Standard Residential UK Rates as of 2026)
         // Rates: 0% up to £125k, 2% up to £250k, 5% up to £925k, 10% up to £1.5m, 12% above.
+        // 2nd Home surcharge: +5% on all bands.
         let sdlt = 0;
         const p = propertyPrice;
+        const isSecondHome = document.querySelector('input[name="homeType"]:checked')?.value === 'second';
+        const surcharge = isSecondHome ? 0.05 : 0;
+
         if (p > 1500000) {
-            sdlt = (125000 * 0.02) + (675000 * 0.05) + (575000 * 0.10) + ((p - 1500000) * 0.12);
+            sdlt = (125000 * (0.00 + surcharge)) + 
+                   (125000 * (0.02 + surcharge)) + 
+                   (675000 * (0.05 + surcharge)) + 
+                   (575000 * (0.10 + surcharge)) + 
+                   ((p - 1500000) * (0.12 + surcharge));
         } else if (p > 925000) {
-            sdlt = (125000 * 0.02) + (675000 * 0.05) + ((p - 925000) * 0.10);
+            sdlt = (125000 * (0.00 + surcharge)) + 
+                   (125000 * (0.02 + surcharge)) + 
+                   (675000 * (0.05 + surcharge)) + 
+                   ((p - 925000) * (0.10 + surcharge));
         } else if (p > 250000) {
-            sdlt = (125000 * 0.02) + ((p - 250000) * 0.05);
+            sdlt = (125000 * (0.00 + surcharge)) + 
+                   (125000 * (0.02 + surcharge)) + 
+                   ((p - 250000) * (0.05 + surcharge));
         } else if (p > 125000) {
-            sdlt = (p - 125000) * 0.02;
+            sdlt = (125000 * (0.00 + surcharge)) + 
+                   ((p - 125000) * (0.02 + surcharge));
         } else {
-            sdlt = 0;
+            sdlt = p * surcharge;
         }
 
         // Legal Fees Estimate
@@ -335,7 +354,8 @@ document.addEventListener('DOMContentLoaded', () => {
         appData.band = band;
         const cost = bandPrices[band];
         const display = document.getElementById('band-price-display');
-        display.innerText = `Band ${band} selected. Estimated cost: £${cost} per month.`;
+        const icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>`;
+        display.innerHTML = `${icon} <span>Band ${band} selected. Estimated cost: £${cost} per month.</span>`;
     }
 
     function updateRatioBar() {
@@ -395,7 +415,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function showWarning(screenNum, msg) {
         const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
         if (!warnDiv) return;
-        warnDiv.innerText = msg;
+        const icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>`;
+        warnDiv.innerHTML = `${icon} <span>${msg}</span>`;
         warnDiv.removeAttribute('hidden');
     }
 
@@ -787,6 +808,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.querySelectorAll('input[name="depositSplitType"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            calculateEquityDetails();
+            saveToCache();
+        });
+    });
+
+    document.querySelectorAll('input[name="homeType"]').forEach(radio => {
         radio.addEventListener('change', () => {
             calculateEquityDetails();
             saveToCache();
