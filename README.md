@@ -1,52 +1,36 @@
-# His&Hers - Fair Share Calculator
+# FairShare - Fair Bill Splitting Calculator
 
-His&Hers is a modern, high-performance web utility designed to help couples determine a fair and proportionate way to split household expenses. By moving beyond the standard 50/50 split—which can be inequitable when salaries differ significantly—this tool calculates contributions based on each partner's relative earning power.
+**FairShare** is a modern, high-performance web utility designed to help couples determine a fair and proportionate way to split household expenses. By moving beyond the standard 50/50 split—which can be inequitable when salaries differ significantly—this tool calculates contributions based on each partner's relative earning power.
 
 ## Key Features
 
-- **Proportionate Bill Splitting**: Automatically calculates a "Fair Share" ratio based on annual pre-tax salaries, ensuring both partners retain a similar proportion of their disposable income.
-- **Smart Estimation Logic**:
-  - **Property Valuation**: Integrates with the UK Land Registry SPARQL endpoint to fetch real-world price data by postcode.
-  - **Regional Stamp Duty**: Automatically applies the correct tax rates for England/NI (SDLT), Scotland (LBTT), and Wales (LTT) based on the property postcode.
-  - **Regional Utilities**: Adjusts energy and water estimates based on postcode prefixes (e.g., Northern vs. Southern adjustments) and property size.
-  - **Tax Bands**: Provides monthly estimates based on standard UK Council Tax bands (A-H).
-- **Comprehensive Financial Planning**:
-  - **Mortgage & Equity**: Calculates monthly repayments and breaks down initial deposit requirements.
-  - **Buyer Status Support**: Accurately handles "Sole Property" vs "Additional Property" scenarios, including First Time Buyer (FTB) relief calculations where applicable.
-  - **Flexible Rules**: Users can choose to split specific line items (like Council Tax or Groceries) either by the income ratio or exactly 50/50.
-  - **Committed Spending**: Includes optional categories for childcare, insurance, and shared lifestyle costs.
-- **Advanced Results & Export**:
-  - **Visual Breakdown**: Dynamic ratio bars and summary cards for instant clarity.
-  - **CSV Export**: Generate a portable `.csv` report of the full cost breakdown for household record-keeping.
-- **Progressive Web App (PWA)**: Fully installable on mobile and desktop, works offline, and loads instantly via service worker caching.
+- **Proportionate Splitting**: Calculates a fair contribution ratio based on individual pre-tax annual salaries.
+- **Real-World Data Integration**: Fetches estimated market values for properties via the UK Land Registry SPARQL endpoint.
+- **Regional Utilities**: Adjusts energy and water estimates based on postcode prefixes (e.g., Northern vs. Southern adjustments) and property size.
+- **Comprehensive Cost Breakdown**: Includes Mortgage, Council Tax, Energy, Water, Broadband, Groceries, and other committed spending.
+- **Buyer Status Support**: Accurately handles "Sole Property" vs "Additional Property" scenarios, including First Time Buyer (FTB) relief calculations where applicable.
+- **Flexible Rules**: Users can choose to split specific line items (like Council Tax or Groceries) either by the income ratio or exactly 50/50.
+- **Local Persistence**: Saves your progress automatically to `localStorage` so you can return to your calculation at any time.
+- **Export to CSV**: Allows you to download your full "Fair Share" report for easy reference.
+- **PWA Ready**: Works offline via a service worker and can be installed on your home screen.
 
 ## Technical Architecture
 
 This application adheres to a "naked" but highly polished architectural philosophy:
 
-- **Zero Dependencies**: Built with pure Semantic HTML5, CSS3, and Vanilla JavaScript. No frameworks (React/Vue), no CSS libraries (Bootstrap), and no external icon sets.
-- **High-Performance CSS**: Refactored to use a modern class-based component system with CSS Variables for theme management, ensuring low specificity and easy maintainability.
-- **Accessibility First**: Features a WCAG 2.0 AA compliant color palette (Navy/Teal pairing to avoid bias), "Skip to Content" keyboard navigation, heading anchors, and full screen-reader support.
-- **Data Persistence**: Uses `localStorage` to save progress automatically, allowing users to return to their calculation at any time.
-- **Automated CI/CD**: Integrated GitHub Actions workflow for automatic deployment to GitHub Pages.
+- **Vanilla JS**: No frameworks (React/Vue/Angular) to ensure maximum speed and zero dependencies.
+- **Modern CSS**: Uses CSS variables and Flexbox/Grid for a responsive, accessible UI without a CSS framework.
+- **Progressive Enhancement**: Built as a PWA with a focus on core web vitals and accessibility (WCAG 2.1 compliance).
+- **Automated Testing**: Comprehensive integration tests using Cypress.
 
-## User Journey (7 Steps)
+## How to Use
 
-1.  **Welcome**: Introduction to fair splitting principles.
-2.  **Income**: Establish the core contribution ratio.
-3.  **Property Details**: Locate and specify the new home.
-4.  **Mortgage & Equity**: Finalize financing and deposit shares.
-5.  **Monthly Utilities**: Confirm non-negotiable running costs.
-6.  **Committed Spending**: Detail shared lifestyle and lifestyle costs.
-7.  **Results**: Review the final balanced budget and export data.
+1. **Enter Salaries**: Input your and your partner's pre-tax annual income.
+2. **Property Details**: Provide the postcode and size of your new home.
+3. **Mortgage & Equity**: Configure your deposit and interest rates.
+4. **Utilities & Spending**: Review and refine the estimated monthly costs.
+5. **Results**: View your custom Fair Share report and download the CSV breakdown.
 
-## Development
+---
 
-This project was "Vibe Coded" by **Ash Davies (DrizzlyOwl)** and **Gemini**.
-
-### Local Setup
-
-The application is entirely static. To run it locally:
-1. Clone the repository.
-2. Open `index.html` in any modern web browser.
-3. (Optional) For PWA features, serve the directory via a local web server (e.g., `npx serve .`).
+Vibe coded by Ash Davies (DrizzlyOwl) and Gemini.

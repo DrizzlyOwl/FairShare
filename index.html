@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>His&Hers - Fair Bill Splitting Calculator</title>
+    <title>FairShare - Fair Bill Splitting Calculator</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -20,7 +21,7 @@
 <main id="main-content">
     <div class="app-container">
         <header class="header-brand" id="header-brand">
-            <img src="header.jpg" alt="His and Hers - Salary Proportion Calculator">
+            <img src="logo.svg" alt="FairShare - Salary Proportion Calculator">
             <button id="start-over-button" onclick="clearCacheAndReload()" aria-label="Start over and clear all data">
                 Start Over  
             </button>
@@ -29,7 +30,7 @@
         <section class="screen" id="screen-1" aria-labelledby="heading-landing" tabindex="-1">
             <h2 id="heading-landing">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
-                Welcome to His&Hers
+                Welcome to FairShare
             </h2>
 
             <div class="landing-intro" id="landing-intro">
@@ -38,7 +39,7 @@
                     Splitting household bills exactly 50/50 can be a burden when one partner earns significantly more than the other.
                 </p>
                 <p>
-                    <strong>His&Hers</strong> helps you move in together with confidence by calculating
+                    <strong>FairShare</strong> helps you move in together with confidence by calculating
                     <strong>proportionate contributions</strong> based on your relative incomes.
                 </p>
                 <p class="screen-summary">
@@ -68,29 +69,29 @@
             </p>
 
             <div class="form-group">
-                <label class="form-label" for="salaryHis">Person A's Annual Salary (Pre-tax)</label>
+                <label class="form-label" for="salaryP1">Your Annual Salary (Pre-tax)</label>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="salaryHis" class="input-control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryHis-help salaryHis-error">
+                    <input type="number" id="salaryP1" class="input-control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-help salaryP1-error">
                 </div>
-                <div id="salaryHis-error" class="error-text" hidden>
+                <div id="salaryP1-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
-                    <span>Please enter a valid annual salary for Person A.</span>
+                    <span>Please enter a valid annual salary.</span>
                 </div>
-                <div id="salaryHis-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
+                <div id="salaryP1-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="salaryHer">Person B's Annual Salary (Pre-tax)</label>
+                <label class="form-label" for="salaryP2">Your Partner's Annual Salary (Pre-tax)</label>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="salaryHer" class="input-control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryHer-help salaryHer-error">
+                    <input type="number" id="salaryP2" class="input-control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-help salaryP2-error">
                 </div>
-                <div id="salaryHer-error" class="error-text" hidden>
+                <div id="salaryP2-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
-                    <span>Please enter a valid annual salary for Person B.</span>
+                    <span>Please enter a valid annual salary for your partner.</span>
                 </div>
-                <div id="salaryHer-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
+                <div id="salaryP2-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
             </div>
         </section>
 
@@ -307,13 +308,13 @@
             <div id="mortgageTerm-help" class="help-text" style="margin-top: -1rem; margin-bottom: 1.5rem;">The duration of your mortgage repayment plan.</div>
 
             <div class="summary-cards" id="deposit-share-summary">
-                <div class="summary-card share-his">
-                    <p class="summary-card-label">Person A's Deposit Share</p>
-                    <p id="equityHisDisplay" class="summary-card-value" aria-live="polite">£0</p>
+                <div class="summary-card share-p1">
+                    <p class="summary-card-label">Your Deposit Share</p>
+                    <p id="equityP1Display" class="summary-card-value" aria-live="polite">£0</p>
                 </div>
-                <div class="summary-card share-her">
-                    <p class="summary-card-label">Person B's Deposit Share</p>
-                    <p id="equityHerDisplay" class="summary-card-value" aria-live="polite">£0</p>
+                <div class="summary-card share-p2">
+                    <p class="summary-card-label">Partner's Deposit Share</p>
+                    <p id="equityP2Display" class="summary-card-value" aria-live="polite">£0</p>
                 </div>
             </div>
         </section>
@@ -326,7 +327,7 @@
 
             <p>Confirm the standard monthly running costs for your home.</p>
             <p class="screen-summary">
-                These are the "non-negotiable" costs of running a household. We have provided estimates based on your previous property selections, but you can override them with exact quotes. Refining these numbers ensures Person A and Person B aren't over-committing to a lifestyle they can't actually afford.
+                These are the "non-negotiable" costs of running a household. We have provided estimates based on your previous property selections, but you can override them with exact quotes. Refining these numbers ensures both partners aren't over-committing to a lifestyle they can't actually afford.
             </p>
 
             <div class="master-toggle">
@@ -556,22 +557,22 @@
 
             <div class="result-ratio-bar" id="result-ratio-bar">
                 <p class="text-center fw-bold">Your Fair Share Split</p>
-                <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent Person A and 50 percent Person B">
-                    <div class="bar-his" id="bar-his" aria-hidden="true">50%</div>
-                    <div class="bar-her" id="bar-her" aria-hidden="true">50%</div>
+                <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent You and 50 percent Your Partner">
+                    <div class="bar-p1" id="bar-p1" aria-hidden="true">50%</div>
+                    <div class="bar-p2" id="bar-p2" aria-hidden="true">50%</div>
                 </div>
-                <p class="sr-only" id="ratio-text-desc">Ratio is 50 percent Person A and 50 percent Person B.</p>
+                <p class="sr-only" id="ratio-text-desc">Ratio is 50 percent You and 50 percent Your Partner.</p>
             </div>
 
             <h3 class="text-center">Your Monthly Shares</h3>
             <div class="monthly-shares-summary" id="monthly-shares-summary">
-                <div class="result-card result-share-his" id="result-share-his">
-                    <p class="result-card-label">Person A Pays</p>
-                    <p class="result-card-value result-his" id="result-his" aria-live="polite">£0</p>
+                <div class="result-card result-share-p1" id="result-share-p1">
+                    <p class="result-card-label">You Pay</p>
+                    <p class="result-card-value result-p1" id="result-p1" aria-live="polite">£0</p>
                 </div>
-                <div class="result-card result-share-her" id="result-share-her">
-                    <p class="result-card-label">Person B Pays</p>
-                    <p class="result-card-value result-her" id="result-her" aria-live="polite">£0</p>
+                <div class="result-card result-share-p2" id="result-share-p2">
+                    <p class="result-card-label">Your Partner Pays</p>
+                    <p class="result-card-value result-p2" id="result-p2" aria-live="polite">£0</p>
                 </div>
             </div>
             <p class="text-center total-bill-row" id="total-bill-row">
@@ -595,58 +596,58 @@
                         <tr>
                             <th scope="col">Expense</th>
                             <th scope="col">Total</th>
-                            <th scope="col">Person A</th>
-                            <th scope="col">Person B</th>
+                            <th scope="col">You</th>
+                            <th scope="col">Your Partner</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <th scope="row">Mortgage</th>
                             <td id="bd-mortgage-total" aria-live="polite">£0</td>
-                            <td id="bd-mortgage-his" aria-live="polite">£0</td>
-                            <td id="bd-mortgage-her" aria-live="polite">£0</td>
+                            <td id="bd-mortgage-p1" aria-live="polite">£0</td>
+                            <td id="bd-mortgage-p2" aria-live="polite">£0</td>
                         </tr>
                         <tr>
                             <th scope="row">Council Tax</th>
                             <td id="bd-tax-total" aria-live="polite">£0</td>
-                            <td id="bd-tax-his" aria-live="polite">£0</td>
-                            <td id="bd-tax-her" aria-live="polite">£0</td>
+                            <td id="bd-tax-p1" aria-live="polite">£0</td>
+                            <td id="bd-tax-p2" aria-live="polite">£0</td>
                         </tr>
                         <tr>
                             <th scope="row">Energy</th>
                             <td id="bd-energy-total" aria-live="polite">£0</td>
-                            <td id="bd-energy-his" aria-live="polite">£0</td>
-                            <td id="bd-energy-her" aria-live="polite">£0</td>
+                            <td id="bd-energy-p1" aria-live="polite">£0</td>
+                            <td id="bd-energy-p2" aria-live="polite">£0</td>
                         </tr>
                         <tr>
                             <th scope="row">Water</th>
                             <td id="bd-water-total" aria-live="polite">£0</td>
-                            <td id="bd-water-his" aria-live="polite">£0</td>
-                            <td id="bd-water-her" aria-live="polite">£0</td>
+                            <td id="bd-water-p1" aria-live="polite">£0</td>
+                            <td id="bd-water-p2" aria-live="polite">£0</td>
                         </tr>
                         <tr>
                             <th scope="row">Broadband & TV</th>
                             <td id="bd-broadband-total" aria-live="polite">£0</td>
-                            <td id="bd-broadband-his" aria-live="polite">£0</td>
-                            <td id="bd-broadband-her" aria-live="polite">£0</td>
+                            <td id="bd-broadband-p1" aria-live="polite">£0</td>
+                            <td id="bd-broadband-p2" aria-live="polite">£0</td>
                         </tr>
                         <tr>
                             <th scope="row">Groceries</th>
                             <td id="bd-groceries-total" aria-live="polite">£0</td>
-                            <td id="bd-groceries-his" aria-live="polite">£0</td>
-                            <td id="bd-groceries-her" aria-live="polite">£0</td>
+                            <td id="bd-groceries-p1" aria-live="polite">£0</td>
+                            <td id="bd-groceries-p2" aria-live="polite">£0</td>
                         </tr>
                         <tr>
                             <th scope="row">Committed Spending</th>
                             <td id="bd-committed-total" aria-live="polite">£0</td>
-                            <td id="bd-committed-his" aria-live="polite">£0</td>
-                            <td id="bd-committed-her" aria-live="polite">£0</td>
+                            <td id="bd-committed-p1" aria-live="polite">£0</td>
+                            <td id="bd-committed-p2" aria-live="polite">£0</td>
                         </tr>
                         <tr class="table-total-row" id="table-total-row">
                             <th scope="row">Total</th>
                             <td id="bd-total-total" aria-live="polite">£0</td>
-                            <td id="bd-total-his" aria-live="polite">£0</td>
-                            <td id="bd-total-her" aria-live="polite">£0</td>
+                            <td id="bd-total-p1" aria-live="polite">£0</td>
+                            <td id="bd-total-p2" aria-live="polite">£0</td>
                         </tr>
                     </tbody>
                 </table>

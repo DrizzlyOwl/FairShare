@@ -1,16 +1,22 @@
 {
-  "name": "hishers",
+  "name": "fairshare",
   "version": "1.0.0",
-  "description": "Fair Bill Splitting Calculator",
+  "description": "Fair bill splitting calculator for couples based on salary proportions.",
   "main": "app.js",
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "test": "cypress run",
+    "cypress:open": "cypress open"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "calculator",
+    "bills",
+    "splitting",
+    "salary",
+    "proportion"
+  ],
+  "author": "Ash Davies (DrizzlyOwl) and Gemini",
+  "license": "MIT",
   "devDependencies": {
-    "cypress": "^13.6.0"
+    "cypress": "^12.0.0"
   }
 }

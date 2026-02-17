@@ -7,8 +7,8 @@
     --color-input-bg: #ffffff;
 
     /* Partner Specific Colors (Neutral Pairing to avoid bias) */
-    --color-person-a: #2C3E63;    /* Professional Navy */
-    --color-person-b: #345f57;    /* Darkened Teal for WCAG 2.0 AA Compliance */
+    --color-p1: #2C3E63;    /* Professional Navy */
+    --color-p2: #345f57;    /* Darkened Teal for WCAG 2.0 AA Compliance */
 
     /* Backgrounds */
     --color-bg-body: #E9EDF0;    /* Soft Slate */
@@ -158,7 +158,7 @@ h2 svg {
     width: 1.5rem;
     height: 1.5rem;
     flex-shrink: 0;
-    color: var(--color-person-b);
+    color: var(--color-p2);
     animation: iconPulse 3s ease-in-out infinite;
 }
 
@@ -585,7 +585,7 @@ input:read-only {
 .info-text {
     font-weight: 700;
     font-size: 1rem;
-    color: var(--color-person-b);
+    color: var(--color-p2);
     margin-bottom: 1rem;
 }
 
@@ -644,7 +644,7 @@ button {
 
 .btn-primary { background-color: var(--color-primary); color: white; padding: 0.875rem 1.5rem; }
 .btn-secondary { background-color: white; color: var(--color-primary); border: 2px solid var(--color-primary); padding: 0.875rem 1.5rem; }
-.btn-success { background-color: var(--color-person-b); color: white; padding: 0.875rem 1.5rem; }
+.btn-success { background-color: var(--color-p2); color: white; padding: 0.875rem 1.5rem; }
 
 @media (min-width: 768px) {
     .btn-primary, .btn-secondary, .btn-success { padding: 1rem 2rem; }
@@ -703,8 +703,8 @@ button {
     .result-card { padding: 1.5rem; }
 }
 
-.result-share-his { border-color: var(--color-person-a); }
-.result-share-her { border-color: var(--color-person-b); }
+.result-share-p1 { border-color: var(--color-p1); }
+.result-share-p2 { border-color: var(--color-p2); }
 
 .result-card-label {
     font-weight: 700;
@@ -715,8 +715,8 @@ button {
     color: var(--color-text-light);
 }
 
-.result-his { color: var(--color-person-a); }
-.result-her { color: var(--color-person-b); }
+.result-p1 { color: var(--color-p1); }
+.result-p2 { color: var(--color-p2); }
 
 .result-card-value {
     font-size: 1.75rem;
@@ -742,8 +742,8 @@ button {
     .ratio-bar-display { height: 2.5rem; margin: 1.5rem 0; }
 }
 
-.bar-his { background-color: var(--color-person-a); color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; }
-.bar-her { background-color: var(--color-person-b); color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; }
+.bar-p1 { background-color: var(--color-p1); color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; }
+.bar-p2 { background-color: var(--color-p2); color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; }
 
 .summary-cards {
     display: flex;
@@ -769,8 +769,8 @@ button {
     background: white;
 }
 
-.share-his { border-color: var(--color-person-a); color: var(--color-person-a); }
-.share-her { border-color: var(--color-person-b); color: var(--color-person-b); }
+.share-p1 { border-color: var(--color-p1); color: var(--color-p1); }
+.share-p2 { border-color: var(--color-p2); color: var(--color-p2); }
 .summary-card-value { font-size: 1.25rem; font-weight: 800; }
 
 @media (min-width: 768px) {

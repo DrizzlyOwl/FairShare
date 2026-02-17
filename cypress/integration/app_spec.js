@@ -1,4 +1,4 @@
-describe('His&Hers App', () => {
+describe('FairShare App', () => {
   beforeEach(() => {
     // Unregister existing service workers
     if (window.navigator && navigator.serviceWorker) {
@@ -23,8 +23,8 @@ describe('His&Hers App', () => {
   const fillStep1 = () => {
     cy.get('#next-button').click();
     cy.get('#screen-2').should('be.visible');
-    cy.get('#salaryHis').type('35000');
-    cy.get('#salaryHer').type('45000');
+    cy.get('#salaryP1').type('35000');
+    cy.get('#salaryP2').type('45000');
     cy.get('#next-button').click();
     cy.get('#screen-3').should('be.visible');
   };
@@ -118,30 +118,30 @@ describe('His&Hers App', () => {
     
     // Should stay on screen 2 and show errors
     cy.get('#screen-2').should('be.visible');
-    cy.get('#salaryHis-error').should('be.visible');
-    cy.get('#salaryHer-error').should('be.visible');
+    cy.get('#salaryP1-error').should('be.visible');
+    cy.get('#salaryP2-error').should('be.visible');
     
     // Fill one field
-    cy.get('#salaryHis').type('30000');
+    cy.get('#salaryP1').type('30000');
     cy.get('#next-button').click();
     
     // Should still stay on screen 2
     cy.get('#screen-2').should('be.visible');
-    cy.get('#salaryHer-error').should('be.visible');
+    cy.get('#salaryP2-error').should('be.visible');
   });
 
   it('should persist entered data across page reloads', () => {
     cy.get('#next-button').click();
-    cy.get('#salaryHis').type('55000');
-    cy.get('#salaryHer').type('65000');
+    cy.get('#salaryP1').type('55000');
+    cy.get('#salaryP2').type('65000');
     
     // Reload the page
     cy.reload();
     
     // Check if values persisted
     cy.get('#next-button').click(); // Go to screen 2
-    cy.get('#salaryHis').should('have.value', '55000');
-    cy.get('#salaryHer').should('have.value', '65000');
+    cy.get('#salaryP1').should('have.value', '55000');
+    cy.get('#salaryP2').should('have.value', '65000');
   });
 
   it('should allow a complete user journey and display the results screen', () => {
@@ -152,12 +152,12 @@ describe('His&Hers App', () => {
     fillStep5();
     
     // Results screen assertions
-    cy.get('#result-his').should('not.have.text', '£0');
-    cy.get('#result-her').should('not.have.text', '£0');
+    cy.get('#result-p1').should('not.have.text', '£0');
+    cy.get('#result-p2').should('not.have.text', '£0');
     cy.get('#total-bill-display').should('not.have.text', '£0');
     
-    // Check if the ratio bar is updated (Person A earns 35k, Person B 45k -> Ratio is roughly 44% / 56%)
-    cy.get('#bar-his').invoke('text').then((text) => {
+    // Check if the ratio bar is updated (You earn 35k, Partner earns 45k -> Ratio is roughly 44% / 56%)
+    cy.get('#bar-p1').invoke('text').then((text) => {
       const percentage = parseInt(text);
       expect(percentage).to.be.closeTo(44, 1);
     });

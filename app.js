@@ -9,17 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Application Data
     const appData = {
-        salaryHis: 0,
-        salaryHer: 0,
-        ratioHis: 0.5,
-        ratioHer: 0.5,
+        salaryP1: 0,
+        salaryP2: 0,
+        ratioP1: 0.5,
+        ratioP2: 0.5,
         propertyPrice: 0,
         depositPercentage: 0,
         depositSplitProportional: true,
         totalEquity: 0,
         mortgageRequired: 0,
-        equityHis: 0,
-        equityHer: 0,
+        equityP1: 0,
+        equityP2: 0,
         waterBill: 0,
         broadbandCost: 0,
         groceriesCost: 0,
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // DOM Elements Cache
     const elements = {
-        salaryHis: document.getElementById('salaryHis'),
-        salaryHer: document.getElementById('salaryHer'),
+        salaryP1: document.getElementById('salaryP1'),
+        salaryP2: document.getElementById('salaryP2'),
         postcode: document.getElementById('postcode'),
         propertyPrice: document.getElementById('propertyPrice'),
         bedrooms: document.getElementById('bedrooms'),
@@ -82,18 +82,19 @@ document.addEventListener('DOMContentLoaded', () => {
         legalFeesEstimate: document.getElementById('legal-fees-estimate'),
         totalEquityDisplay: document.getElementById('totalEquityDisplay'),
         mortgageRequiredDisplay: document.getElementById('mortgageRequiredDisplay'),
-        equityHisDisplay: document.getElementById('equityHisDisplay'),
-        equityHerDisplay: document.getElementById('equityHerDisplay'),
+        equityP1Display: document.getElementById('equityP1Display'),
+        equityP2Display: document.getElementById('equityP2Display'),
         bandPriceDisplay: document.getElementById('band-price-display'),
-        barHis: document.getElementById('bar-his'),
-        barHer: document.getElementById('bar-her'),
+        barP1: document.getElementById('bar-p1'),
+        barP2: document.getElementById('bar-p2'),
         ratioTextDesc: document.getElementById('ratio-text-desc'),
         resultsTable: document.getElementById('results-table'),
         displayPropertyPrice: document.getElementById('displayPropertyPrice'),
+        headerBrand: document.getElementById('header-brand'),
         
         // Errors
-        salaryHisError: document.getElementById('salaryHis-error'),
-        salaryHerError: document.getElementById('salaryHer-error'),
+        salaryP1Error: document.getElementById('salaryP1-error'),
+        salaryP2Error: document.getElementById('salaryP2-error'),
         taxBandError: document.getElementById('taxBand-error'),
         propertyPriceError: document.getElementById('propertyPrice-error'),
         bedroomsError: document.getElementById('bedrooms-error'),
@@ -111,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
         otherError: document.getElementById('other-error'),
 
         // Results
-        resultHis: document.getElementById('result-his'),
-        resultHer: document.getElementById('result-her'),
+        resultP1: document.getElementById('result-p1'),
+        resultP2: document.getElementById('result-p2'),
         totalBillDisplay: document.getElementById('total-bill-display'),
         resultSummary: document.getElementById('result-summary'),
         calculationWorkings: document.getElementById('calculation-workings'),
@@ -120,34 +121,34 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Breakdown Table (Prefix: bd-)
         bdMortgageTotal: document.getElementById('bd-mortgage-total'),
-        bdMortgageHis: document.getElementById('bd-mortgage-his'),
-        bdMortgageHer: document.getElementById('bd-mortgage-her'),
+        bdMortgageP1: document.getElementById('bd-mortgage-p1'),
+        bdMortgageP2: document.getElementById('bd-mortgage-p2'),
         bdTaxTotal: document.getElementById('bd-tax-total'),
-        bdTaxHis: document.getElementById('bd-tax-his'),
-        bdTaxHer: document.getElementById('bd-tax-her'),
+        bdTaxP1: document.getElementById('bd-tax-p1'),
+        bdTaxP2: document.getElementById('bd-tax-p2'),
         bdEnergyTotal: document.getElementById('bd-energy-total'),
-        bdEnergyHis: document.getElementById('bd-energy-his'),
-        bdEnergyHer: document.getElementById('bd-energy-her'),
+        bdEnergyP1: document.getElementById('bd-energy-p1'),
+        bdEnergyP2: document.getElementById('bd-energy-p2'),
         bdWaterTotal: document.getElementById('bd-water-total'),
-        bdWaterHis: document.getElementById('bd-water-his'),
-        bdWaterHer: document.getElementById('bd-water-her'),
+        bdWaterP1: document.getElementById('bd-water-p1'),
+        bdWaterP2: document.getElementById('bd-water-p2'),
         bdBroadbandTotal: document.getElementById('bd-broadband-total'),
-        bdBroadbandHis: document.getElementById('bd-broadband-his'),
-        bdBroadbandHer: document.getElementById('bd-broadband-her'),
+        bdBroadbandP1: document.getElementById('bd-broadband-p1'),
+        bdBroadbandP2: document.getElementById('bd-broadband-p2'),
         bdGroceriesTotal: document.getElementById('bd-groceries-total'),
-        bdGroceriesHis: document.getElementById('bd-groceries-his'),
-        bdGroceriesHer: document.getElementById('bd-groceries-her'),
+        bdGroceriesP1: document.getElementById('bd-groceries-p1'),
+        bdGroceriesP2: document.getElementById('bd-groceries-p2'),
         bdCommittedTotal: document.getElementById('bd-committed-total'),
-        bdCommittedHis: document.getElementById('bd-committed-his'),
-        bdCommittedHer: document.getElementById('bd-committed-her'),
+        bdCommittedP1: document.getElementById('bd-committed-p1'),
+        bdCommittedP2: document.getElementById('bd-committed-p2'),
         bdTotalTotal: document.getElementById('bd-total-total'),
-        bdTotalHis: document.getElementById('bd-total-his'),
-        bdTotalHer: document.getElementById('bd-total-her')
+        bdTotalP1: document.getElementById('bd-total-p1'),
+        bdTotalP2: document.getElementById('bd-total-p2')
     };
 
     const FORM_FIELDS = [
-        { id: 'salaryHis', type: 'number' },
-        { id: 'salaryHer', type: 'number' },
+        { id: 'salaryP1', type: 'number' },
+        { id: 'salaryP2', type: 'number' },
         { id: 'postcode', type: 'text' },
         { id: 'propertyPrice', type: 'number' },
         { id: 'bedrooms', type: 'number', key: 'beds' },
@@ -166,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const bandPrices = { 'A': 110, 'B': 128, 'C': 146, 'D': 165, 'E': 201, 'F': 238, 'G': 275, 'H': 330 };
-    const CACHE_KEY = 'his_and_hers_cache';
+    const CACHE_KEY = 'fairshare_cache';
     const SCREENS = {
         LANDING: 'screen-1',
         INCOME: 'screen-2',
@@ -269,10 +270,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Derived Data
-        const total = appData.salaryHis + appData.salaryHer;
+        const total = appData.salaryP1 + appData.salaryP2;
         if (total > 0) {
-            appData.ratioHis = appData.salaryHis / total;
-            appData.ratioHer = appData.salaryHer / total;
+            appData.ratioP1 = appData.salaryP1 / total;
+            appData.ratioP2 = appData.salaryP2 / total;
         }
         appData.band = inputs.taxBand || '';
         appData.depositSplitProportional = inputs.depositSplitType === 'yes';
@@ -349,11 +350,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function getRegionFromPostcode(postcode) {
         const pc = postcode.trim().toUpperCase();
         if (!pc) return null;
-        const prefix2 = pc.substring(0, 2);
-        const prefix1 = pc.substring(0, 1);
+        
+        // Extract the alphabetic area part (1 or 2 letters at the start)
+        const areaMatch = pc.match(/^[A-Z]+/);
+        if (!areaMatch) return null;
+        const area = areaMatch[0];
 
         for (const regionKey in REGIONS) {
-            if (REGIONS[regionKey].prefixes.some(p => prefix2.startsWith(p) || (p.length === 1 && prefix1 === p))) {
+            if (REGIONS[regionKey].prefixes.includes(area)) {
                 return regionKey;
             }
         }
@@ -531,17 +535,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (legalEl) legalEl.value = legalFees.toLocaleString();
 
         if (appData.depositSplitProportional) {
-            appData.equityHis = appData.totalEquity * appData.ratioHis;
-            appData.equityHer = appData.totalEquity * appData.ratioHer;
+            appData.equityP1 = appData.totalEquity * appData.ratioP1;
+            appData.equityP2 = appData.totalEquity * appData.ratioP2;
         } else {
-            appData.equityHis = appData.totalEquity * 0.5;
-            appData.equityHer = appData.totalEquity * 0.5;
+            appData.equityP1 = appData.totalEquity * 0.5;
+            appData.equityP2 = appData.totalEquity * 0.5;
         }
 
         elements.totalEquityDisplay.innerText = formatCurrency(appData.totalEquity);
         elements.mortgageRequiredDisplay.innerText = formatCurrency(appData.mortgageRequired);
-        elements.equityHisDisplay.innerText = formatCurrency(appData.equityHis);
-        elements.equityHerDisplay.innerText = formatCurrency(appData.equityHer);
+        elements.equityP1Display.innerText = formatCurrency(appData.equityP1);
+        elements.equityP2Display.innerText = formatCurrency(appData.equityP2);
     }
 
     function calculateMonthlyMortgage() {
@@ -568,13 +572,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateRatioBar() {
-        const hP = Math.round(appData.ratioHis * 100);
-        const sP = Math.round(appData.ratioHer * 100);
-        elements.barHis.style.width = hP + '%';
-        elements.barHis.innerText = hP + '%';
-        elements.barHer.style.width = sP + '%';
-        elements.barHer.innerText = sP + '%';
-        elements.ratioTextDesc.innerText = `Income ratio is ${hP}% Person A and ${sP}% Person B.`;
+        const p1P = Math.round(appData.ratioP1 * 100);
+        const p2P = Math.round(appData.ratioP2 * 100);
+        elements.barP1.style.width = p1P + '%';
+        elements.barP1.innerText = p1P + '%';
+        elements.barP2.style.width = p2P + '%';
+        elements.barP2.innerText = p2P + '%';
+        elements.ratioTextDesc.innerText = `Income ratio is ${p1P}% You and ${p2P}% Your Partner.`;
     }
 
     function estimateWaterCost(postcode, bathrooms) {
@@ -633,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "HisAndHers_FairShare_Breakdown.csv");
+        link.setAttribute("download", "FairShare_Breakdown.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -710,6 +714,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (id === SCREENS.PROPERTY) hideWarning(3);
         if (id === SCREENS.UTILITIES || id === SCREENS.RESULTS) updateRatioBar();
+        
+        // Toggle logo visibility based on screen
+        const logo = elements.headerBrand.querySelector('img');
+        if (id === SCREENS.LANDING) {
+            logo.removeAttribute('hidden');
+            elements.headerBrand.style.marginBottom = '2rem';
+        } else {
+            logo.setAttribute('hidden', '');
+            elements.headerBrand.style.marginBottom = '3rem'; // Space for the 'Start Over' button
+        }
+
         if (id === SCREENS.MORTGAGE) {
             const propPrice = parseFloat(elements.propertyPrice.value) || 0;
             appData.propertyPrice = propPrice;
@@ -782,13 +797,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const validateAndNext1 = () => validateAndNext([
-        { id: 'salaryHis', errorId: 'salaryHisError', type: 'number', min: 0.01, saveTo: 'salaryHis' },
-        { id: 'salaryHer', errorId: 'salaryHerError', type: 'number', min: 0.01, saveTo: 'salaryHer' }
+        { id: 'salaryP1', errorId: 'salaryP1Error', type: 'number', min: 0.01, saveTo: 'salaryP1' },
+        { id: 'salaryP2', errorId: 'salaryP2Error', type: 'number', min: 0.01, saveTo: 'salaryP2' }
     ], 'screen-3', {
         onSuccess: () => {
-            const total = appData.salaryHis + appData.salaryHer;
-            appData.ratioHis = appData.salaryHis / total;
-            appData.ratioHer = appData.salaryHer / total;
+            const total = appData.salaryP1 + appData.salaryP2;
+            appData.ratioP1 = appData.salaryP1 / total;
+            appData.ratioP2 = appData.salaryP2 / total;
         }
     });
 
@@ -842,15 +857,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const validateAndNextMortgage = () => validateAndNext([
-        { id: 'depositPercentage', errorId: 'depositPercentageError', type: 'number', min: 0, max: 100 }, // No saveTo, handled by calc? No, saveTo should be used.
-        // wait, original validteAndNextMortgage set appData.mortgageInterestRate/Term.
-        // It did NOT set depositPercentage? 
-        // Original: const deposit = ...; if invalid return; appData.mortgageInterestRate = rate; ...
-        // It calculated calculateMonthlyMortgage() at the end.
-        // depositPercentage is used in calculateEquityDetails called by event listener.
-        // But appData.depositPercentage needs to be accurate?
-        // Actually, calculateEquityDetails updates appData.depositPercentage. 
-        // So validation just needs to ensure it's valid.
+        { id: 'depositPercentage', errorId: 'depositPercentageError', type: 'number', min: 0, max: 100 },
         { id: 'mortgageInterestRate', errorId: 'mortgageInterestRateError', type: 'number', min: 0, saveTo: 'mortgageInterestRate' },
         { id: 'mortgageTerm', errorId: 'mortgageTermError', type: 'number', min: 1, max: 50, saveTo: 'mortgageTerm' }
     ], 'screen-5', {
@@ -860,25 +867,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const validateAndNext3 = () => validateAndNext([
-        { id: 'councilTaxCost', errorId: 'councilTaxCostError', type: 'number', min: 0 }, // councilTax is NOT saved to appData in original?
-        // Original validateAndNext3 checked inputs but only set appData.broadbandCost?
-        // Wait, appData only stores broadbandCost, groceriesCost etc?
-        // calculateFinalSplit reads VALUES from inputs directly.
-        // So saving to appData here is actually Optional if calculateFinalSplit still reads DOM.
-        // But better to be consistent.
-        // The original logic ONLY updated appData.broadbandCost explicitly.
-        // The others were just left in the inputs.
-        // I will replicate original behavior or improve it?
-        // Task 5 is "Refactor Final Split Calculation". I will likely make it read from appData.
-        // So I should save to appData here.
-        // appData has placeholders for these? Yes in init: waterBill: 0, broadbandCost: 0...
-        // But not councilTaxCost or energyCost in appData init object?
-        // "councilTaxCost: document.getElementById...value" in saveToCache.
-        // appData init has: "waterBill: 0, broadbandCost: 0".
-        // It DOES NOT have councilTaxCost or energyCost in appData.
-        // I should probably add them to appData if I want to be clean, but for now I'll just validate.
+        { id: 'councilTaxCost', errorId: 'councilTaxCostError', type: 'number', min: 0 },
         { id: 'energyCost', errorId: 'energyCostError', type: 'number', min: 0 },
-        { id: 'waterBill', errorId: 'waterBillError', type: 'number', min: 0, saveTo: 'waterBill' }, // appData has waterBill
+        { id: 'waterBill', errorId: 'waterBillError', type: 'number', min: 0, saveTo: 'waterBill' }, 
         { id: 'broadbandCost', errorId: 'broadbandError', type: 'number', min: 0, saveTo: 'broadbandCost' }
     ], 'screen-6');
 
@@ -904,8 +895,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const getSplit = (key, val) => {
             const pref = document.querySelector(`input[name="${key}SplitType"]:checked`)?.value || 'yes';
-            const r = pref === 'yes' ? appData.ratioHis : 0.5;
-            return { h: val * r, s: val * (1 - r) };
+            const r = pref === 'yes' ? appData.ratioP1 : 0.5;
+            return { p1: val * r, p2: val * (1 - r) };
         };
 
         const tax = getSplit('councilTax', taxVal);
@@ -917,66 +908,67 @@ document.addEventListener('DOMContentLoaded', () => {
         const insurance = getSplit('insurance', isVal);
         const otherShared = getSplit('otherShared', osVal);
         
-        const mort = { h: mortgage * appData.ratioHis, s: mortgage * appData.ratioHer };
+        const mort = { p1: mortgage * appData.ratioP1, p2: mortgage * appData.ratioP2 };
 
         const committedTotal = ccVal + isVal + osVal;
-        const committedH = childcare.h + insurance.h + otherShared.h;
-        const committedS = childcare.s + insurance.s + otherShared.s;
+        const committedP1 = childcare.p1 + insurance.p1 + otherShared.p1;
+        const committedP2 = childcare.p2 + insurance.p2 + otherShared.p2;
 
-        const totalH = tax.h + energy.h + water.h + broadband.h + groceries.h + committedH + mort.h;
-        const totalS = tax.s + energy.s + water.s + broadband.s + groceries.s + committedS + mort.s;
-        const total = totalH + totalS;
+        const totalP1 = tax.p1 + energy.p1 + water.p1 + broadband.p1 + groceries.p1 + committedP1 + mort.p1;
+        const totalP2 = tax.p2 + energy.p2 + water.p2 + broadband.p2 + groceries.p2 + committedP2 + mort.p2;
+        const total = totalP1 + totalP2;
 
-        elements.resultHis.innerText = formatCurrency(totalH, 2);
-        elements.resultHer.innerText = formatCurrency(totalS, 2);
+        elements.resultP1.innerText = formatCurrency(totalP1, 2);
+        elements.resultP2.innerText = formatCurrency(totalP2, 2);
         elements.totalBillDisplay.innerText = formatCurrency(total, 2);
 
         elements.bdMortgageTotal.innerText = formatCurrency(mortgage, 2);
-        elements.bdMortgageHis.innerText = formatCurrency(mort.h, 2);
-        elements.bdMortgageHer.innerText = formatCurrency(mort.s, 2);
+        elements.bdMortgageP1.innerText = formatCurrency(mort.p1, 2);
+        elements.bdMortgageP2.innerText = formatCurrency(mort.p2, 2);
         elements.bdTaxTotal.innerText = formatCurrency(taxVal, 2);
-        elements.bdTaxHis.innerText = formatCurrency(tax.h, 2);
-        elements.bdTaxHer.innerText = formatCurrency(tax.s, 2);
+        elements.bdTaxP1.innerText = formatCurrency(tax.p1, 2);
+        elements.bdTaxP2.innerText = formatCurrency(tax.p2, 2);
         elements.bdEnergyTotal.innerText = formatCurrency(enVal, 2);
-        elements.bdEnergyHis.innerText = formatCurrency(energy.h, 2);
-        elements.bdEnergyHer.innerText = formatCurrency(energy.s, 2);
+        elements.bdEnergyP1.innerText = formatCurrency(energy.p1, 2);
+        elements.bdEnergyP2.innerText = formatCurrency(energy.p2, 2);
         elements.bdWaterTotal.innerText = formatCurrency(wtVal, 2);
-        elements.bdWaterHis.innerText = formatCurrency(water.h, 2);
-        elements.bdWaterHer.innerText = formatCurrency(water.s, 2);
+        elements.bdWaterP1.innerText = formatCurrency(water.p1, 2);
+        elements.bdWaterP2.innerText = formatCurrency(water.p2, 2);
         elements.bdBroadbandTotal.innerText = formatCurrency(bbVal, 2);
-        elements.bdBroadbandHis.innerText = formatCurrency(broadband.h, 2);
-        elements.bdBroadbandHer.innerText = formatCurrency(broadband.s, 2);
+        elements.bdBroadbandP1.innerText = formatCurrency(broadband.p1, 2);
+        elements.bdBroadbandP2.innerText = formatCurrency(broadband.p2, 2);
         elements.bdGroceriesTotal.innerText = formatCurrency(grVal, 2);
-        elements.bdGroceriesHis.innerText = formatCurrency(groceries.h, 2);
-        elements.bdGroceriesHer.innerText = formatCurrency(groceries.s, 2);
+        elements.bdGroceriesP1.innerText = formatCurrency(groceries.p1, 2);
+        elements.bdGroceriesP2.innerText = formatCurrency(groceries.p2, 2);
         elements.bdCommittedTotal.innerText = formatCurrency(committedTotal, 2);
-        elements.bdCommittedHis.innerText = formatCurrency(committedH, 2);
-        elements.bdCommittedHer.innerText = formatCurrency(committedS, 2);
+        elements.bdCommittedP1.innerText = formatCurrency(committedP1, 2);
+        elements.bdCommittedP2.innerText = formatCurrency(committedP2, 2);
         elements.bdTotalTotal.innerText = formatCurrency(total, 2);
-        elements.bdTotalHis.innerText = formatCurrency(totalH, 2);
-        elements.bdTotalHer.innerText = formatCurrency(totalS, 2);
+        elements.bdTotalP1.innerText = formatCurrency(totalP1, 2);
+        elements.bdTotalP2.innerText = formatCurrency(totalP2, 2);
 
         const summaryEl = elements.resultSummary;
         if (summaryEl) {
-            const diff = Math.abs(totalH - totalS);
-            const moreP = totalH > totalS ? 'Person A' : 'Person B';
-            const lessP = totalH > totalS ? 'Person B' : 'Person A';
+            const diff = Math.abs(totalP1 - totalP2);
+            const moreP = totalP1 > totalP2 ? 'You' : 'Your Partner';
+            const lessP = totalP1 > totalP2 ? 'Your Partner' : 'You';
+            const verb = moreP === 'You' ? 'pay' : 'pays';
             if (diff < 0.01) summaryEl.innerText = "Both partners contribute equally based on your selected split rules.";
-            else summaryEl.innerText = `${moreP} pays ${formatCurrency(diff, 2)} more than ${lessP} per month overall.`;
+            else summaryEl.innerText = `${moreP} ${verb} ${formatCurrency(diff, 2)} more than ${lessP} per month overall.`;
         }
 
         const workingsEl = elements.calculationWorkings;
         if (workingsEl) {
-            const totalSalary = appData.salaryHis + appData.salaryHer;
-            const hPerc = (appData.ratioHis * 100).toFixed(1);
-            const sPerc = (appData.ratioHer * 100).toFixed(1);
+            const totalSalary = appData.salaryP1 + appData.salaryP2;
+            const p1Perc = (appData.ratioP1 * 100).toFixed(1);
+            const p2Perc = (appData.ratioP2 * 100).toFixed(1);
             workingsEl.innerHTML = `
                 <div>
-                    <div><strong>1. Combined Annual Income:</strong> £${appData.salaryHis.toLocaleString()} + £${appData.salaryHer.toLocaleString()} = <strong>£${totalSalary.toLocaleString()}</strong></div>
+                    <div><strong>1. Combined Annual Income:</strong> £${appData.salaryP1.toLocaleString()} + £${appData.salaryP2.toLocaleString()} = <strong>£${totalSalary.toLocaleString()}</strong></div>
                     <div><strong>2. Established Fair Share Ratio:</strong>
                         <ul>
-                            <li>Person A: £${appData.salaryHis.toLocaleString()} / £${totalSalary.toLocaleString()} = <strong>${hPerc}%</strong></li>
-                            <li>Person B: £${appData.salaryHer.toLocaleString()} / £${totalSalary.toLocaleString()} = <strong>${sPerc}%</strong></li>
+                            <li>You: £${appData.salaryP1.toLocaleString()} / £${totalSalary.toLocaleString()} = <strong>${p1Perc}%</strong></li>
+                            <li>Your Partner: £${appData.salaryP2.toLocaleString()} / £${totalSalary.toLocaleString()} = <strong>${p2Perc}%</strong></li>
                         </ul>
                     </div>
                     <div><strong>3. Calculation Application:</strong> Each line item was split using either the <strong>Ratio</strong> above or <strong>50/50</strong> based on your specific rule choices.</div>
@@ -986,7 +978,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const breakdownSummaryEl = elements.breakdownSummary;
         if (breakdownSummaryEl) {
-            const mainCosts = mort.h + mort.s + taxVal + enVal + wtVal;
+            const mainCosts = mort.p1 + mort.p2 + taxVal + enVal + wtVal;
             const lifestyleCosts = bbVal + grVal + committedTotal;
             breakdownSummaryEl.innerText = `Out of the £${total.toLocaleString(undefined, {minimumFractionDigits: 2})} total monthly spend, £${mainCosts.toLocaleString(undefined, {minimumFractionDigits: 2})} is dedicated to the property and utilities, while £${lifestyleCosts.toLocaleString(undefined, {minimumFractionDigits: 2})} covers shared lifestyle and committed costs. This report captures all your shared commitments in one place.`;
         }
