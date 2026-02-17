@@ -187,6 +187,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    function updateOnlineStatus() {
+        const offlineIndicator = document.getElementById('offline-indicator');
+        if (offlineIndicator) {
+            if (navigator.onLine) {
+                offlineIndicator.setAttribute('hidden', '');
+            } else {
+                offlineIndicator.removeAttribute('hidden');
+            }
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus(); // Initial check
+
     function saveToCache() {
         const inputs = {};
         

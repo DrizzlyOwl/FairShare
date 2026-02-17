@@ -1,15 +1,26 @@
 {
   "name": "FairShare - Fair Bill Splitting Calculator",
   "short_name": "FairShare",
+  "description": "Calculate fair household contributions based on relative incomes. Move in together with financial confidence.",
   "start_url": "./index.html",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#E9EDF0",
   "theme_color": "#2C3E63",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "logo.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Calculation",
+      "url": "./index.html?action=new",
+      "description": "Start a new fair share calculation"
     }
   ]
 }

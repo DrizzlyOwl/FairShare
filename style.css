@@ -51,6 +51,31 @@ body {
 
 [hidden] { display: none !important; }
 
+/* --- Offline Indicator --- */
+#offline-indicator {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translate(-50%, -2rem); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
 /* --- Screen Transitions --- */
 .screen:not([hidden]) {
     animation: screenIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
