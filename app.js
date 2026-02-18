@@ -188,6 +188,60 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements[`bd${key}P2`]) elements[`bd${key}P2`].innerText = formatCurrency(p2, 2);
     };
 
+    const TAX_BRACKETS = {
+        EN: {
+            standard: [
+                { upto: 125000, rate: 0 },
+                { upto: 250000, rate: 0.02 },
+                { upto: 925000, rate: 0.05 },
+                { upto: 1500000, rate: 0.10 },
+                { over: 1500000, rate: 0.12 }
+            ],
+            ftb: [
+                { upto: 300000, rate: 0 },
+                { upto: 500000, rate: 0.05 }
+            ],
+            additionalSurcharge: 0.03
+        },
+        SC: {
+            standard: [
+                { upto: 145000, rate: 0 },
+                { upto: 250000, rate: 0.02 },
+                { upto: 325000, rate: 0.05 },
+                { upto: 750000, rate: 0.10 },
+                { over: 750000, rate: 0.12 }
+            ],
+            ftbRelief: 600, // Flat amount
+            additionalSurcharge: 0.04
+        },
+        WA: {
+            standard: [
+                { upto: 180000, rate: 0 },
+                { upto: 250000, rate: 0.035 },
+                { upto: 400000, rate: 0.05 },
+                { upto: 750000, rate: 0.075 },
+                { upto: 1500000, rate: 0.10 },
+                { over: 1500000, rate: 0.12 }
+            ],
+            additionalSurcharge: 0.03
+        }
+    };
+
+    const calculateTieredTax = (price, brackets) => {
+        let tax = 0;
+        let prevLimit = 0;
+        for (const bracket of brackets) {
+            if (price > prevLimit) {
+                const limit = bracket.upto || Infinity;
+                const taxableAmount = Math.min(price, limit) - prevLimit;
+                tax += taxableAmount * bracket.rate;
+                if (price <= limit) break;
+                prevLimit = limit;
+            }
+        }
+        return tax;
+    };
+    
     const formatCurrency = (num, decimals = 0) => {
         return '£' + num.toLocaleString(undefined, {
             minimumFractionDigits: decimals,
@@ -465,62 +519,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function calculateStampDuty(price, region, homeType, isFTB) {
         if (price <= 0) return 0;
-        let tax = 0;
+        
+        const regionBrackets = TAX_BRACKETS[region] || TAX_BRACKETS.EN;
         const isAdditional = homeType === 'second';
+        let tax = 0;
 
-        if (region === 'SC') { // Scotland (LBTT)
-            if (isAdditional) {
-                // ADS 8% on total price if >= £40k
-                if (price >= 40000) tax += price * 0.08;
-                
-                // Standard LBTT Rates
-                if (price > 750000) tax += (145000 * 0) + (105000 * 0.02) + (75000 * 0.05) + (425000 * 0.10) + ((price - 750000) * 0.12);
-                else if (price > 325000) tax += (145000 * 0) + (105000 * 0.02) + (75000 * 0.05) + ((price - 325000) * 0.10);
-                else if (price > 250000) tax += (145000 * 0) + (105000 * 0.02) + ((price - 250000) * 0.05);
-                else if (price > 145000) tax += (price - 145000) * 0.02;
-            } else {
-                // Standard Rates first
-                if (price > 750000) tax += (145000 * 0) + (105000 * 0.02) + (75000 * 0.05) + (425000 * 0.10) + ((price - 750000) * 0.12);
-                else if (price > 325000) tax += (145000 * 0) + (105000 * 0.02) + (75000 * 0.05) + ((price - 325000) * 0.10);
-                else if (price > 250000) tax += (145000 * 0) + (105000 * 0.02) + ((price - 250000) * 0.05);
-                else if (price > 145000) tax += (price - 145000) * 0.02;
-
-                // FTB Relief: 0% up to £175k (Save up to £600)
-                if (isFTB) {
-                    const relief = 600;
-                    if (tax < relief) tax = 0;
-                    else tax -= relief;
-                }
+        // First-Time Buyer (FTB) logic
+        if (isFTB && !isAdditional) {
+            if (region === 'EN' && price <= 500000) {
+                return calculateTieredTax(price, regionBrackets.ftb);
             }
-        } else if (region === 'WA') { // Wales (LTT)
-            const surcharge = isAdditional ? 0.05 : 0;
-            // Bands: 0-225, 225-400, 400-750, 750-1.5m, 1.5m+
-            if (price > 1500000) tax += (225000 * (0 + surcharge)) + (175000 * (0.06 + surcharge)) + (350000 * (0.075 + surcharge)) + (750000 * (0.10 + surcharge)) + ((price - 1500000) * (0.12 + surcharge));
-            else if (price > 750000) tax += (225000 * (0 + surcharge)) + (175000 * (0.06 + surcharge)) + (350000 * (0.075 + surcharge)) + ((price - 750000) * (0.10 + surcharge));
-            else if (price > 400000) tax += (225000 * (0 + surcharge)) + (175000 * (0.06 + surcharge)) + ((price - 400000) * (0.075 + surcharge));
-            else if (price > 225000) tax += (225000 * (0 + surcharge)) + ((price - 225000) * (0.06 + surcharge));
-            else tax += price * surcharge;
-
-            if (isAdditional && price < 40000) tax = 0;
-        } else { // England & NI (SDLT)
-            const surcharge = isAdditional ? 0.05 : 0;
-            
-            if (isFTB && !isAdditional) {
-                if (price <= 500000) {
-                    if (price > 300000) tax = (price - 300000) * 0.05;
-                    else tax = 0;
-                    return tax;
-                }
+            if (region === 'SC') {
+                const standardTax = calculateTieredTax(price, regionBrackets.standard);
+                return Math.max(0, standardTax - regionBrackets.ftbRelief);
             }
-            
-            if (price > 1500000) tax += (125000 * (0 + surcharge)) + (125000 * (0.02 + surcharge)) + (675000 * (0.05 + surcharge)) + (575000 * (0.10 + surcharge)) + ((price - 1500000) * (0.12 + surcharge));
-            else if (price > 925000) tax += (125000 * (0 + surcharge)) + (125000 * (0.02 + surcharge)) + (675000 * (0.05 + surcharge)) + ((price - 925000) * (0.10 + surcharge));
-            else if (price > 250000) tax += (125000 * (0 + surcharge)) + (125000 * (0.02 + surcharge)) + ((price - 250000) * (0.05 + surcharge));
-            else if (price > 125000) tax += (125000 * (0 + surcharge)) + ((price - 125000) * (0.02 + surcharge));
-            else tax += price * surcharge;
-
-            if (isAdditional && price < 40000) tax = 0;
         }
+
+        // Standard and Additional Property logic
+        tax = calculateTieredTax(price, regionBrackets.standard);
+        if (isAdditional && price >= 40000) {
+            tax += price * regionBrackets.additionalSurcharge;
+        }
+
         return Math.floor(tax);
     }
 
