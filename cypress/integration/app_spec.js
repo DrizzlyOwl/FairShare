@@ -9,7 +9,7 @@ describe('FairShare App', () => {
       });
     }
     cy.clearLocalStorage();
-    
+
     // Prevent Service Worker registration during test
     cy.on('window:before:load', (win) => {
       if (win.navigator && win.navigator.serviceWorker) {
@@ -21,47 +21,47 @@ describe('FairShare App', () => {
   });
 
   const fillStep1 = () => {
-    cy.get('#next-button').click();
+    cy.get('[data-cy="next-button"]').click();
     cy.get('#screen-2').should('be.visible');
-    cy.get('#salaryP1').type('35000');
-    cy.get('#salaryP2').type('45000');
-    cy.get('#next-button').click();
+    cy.get('[data-cy="salaryP1-input"]').type('35000');
+    cy.get('[data-cy="salaryP2-input"]').type('45000');
+    cy.get('[data-cy="next-button"]').click();
     cy.get('#screen-3').should('be.visible');
   };
 
   const fillStep2 = (postcode) => {
-    cy.get('#postcode').clear().type(postcode);
-    cy.get('#postcode').blur();
-    cy.get('#bC').click();
-    cy.get('#bedrooms').clear().type('3');
-    cy.get('#bathrooms').clear().type('2');
-    cy.get('#next-button').click();
+    cy.get('[data-cy="postcode-input"]').clear().type(postcode);
+    cy.get('[data-cy="postcode-input"]').blur();
+    cy.get('[data-cy="taxBand-fieldset"]').contains('C').click();
+    cy.get('[data-cy="bedrooms-input"]').clear().type('3');
+    cy.get('[data-cy="bathrooms-input"]').clear().type('2');
+    cy.get('[data-cy="next-button"]').click();
     cy.get('#screen-4').should('be.visible');
   };
 
   const fillStep3 = () => {
-    cy.get('#depositPercentage').clear().type('10');
-    cy.get('#mortgageInterestRate').clear().type('5');
-    cy.get('#mortgageTerm').clear().type('25');
-    cy.get('#next-button').click();
+    cy.get('[data-cy="depositPercentage-input"]').clear().type('10');
+    cy.get('[data-cy="mortgageInterestRate-input"]').clear().type('5');
+    cy.get('[data-cy="mortgageTerm-input"]').clear().type('25');
+    cy.get('[data-cy="next-button"]').click();
     cy.get('#screen-5').should('be.visible');
   };
-  
+
   const fillStep4 = () => {
-    cy.get('#councilTaxCost').should('not.have.value', ''); // Should be pre-filled
-    cy.get('#energyCost').should('not.have.value', ''); // Should be pre-filled
-    cy.get('#waterBill').should('not.have.value', ''); // Should be pre-filled
-    cy.get('#broadbandCost').type('35');
-    cy.get('#next-button').click();
+    cy.get('[data-cy="councilTaxCost-input"]').should('not.have.value', ''); // Should be pre-filled
+    cy.get('[data-cy="energyCost-input"]').should('not.have.value', ''); // Should be pre-filled
+    cy.get('[data-cy="waterBill-input"]').should('not.have.value', ''); // Should be pre-filled
+    cy.get('[data-cy="broadbandCost-input"]').type('35');
+    cy.get('[data-cy="next-button"]').click();
     cy.get('#screen-6').should('be.visible');
   };
 
   const fillStep5 = () => {
-    cy.get('#groceriesCost').type('400');
-    cy.get('#childcareCost').type('0');
-    cy.get('#insuranceCost').type('50');
-    cy.get('#otherSharedCosts').type('100');
-    cy.get('#next-button').click();
+    cy.get('[data-cy="groceriesCost-input"]').type('400');
+    cy.get('[data-cy="childcareCost-input"]').type('0');
+    cy.get('[data-cy="insuranceCost-input"]').type('50');
+    cy.get('[data-cy="otherSharedCosts-input"]').type('100');
+    cy.get('[data-cy="next-button"]').click();
     cy.get('#screen-7').should('be.visible');
   };
 
@@ -71,17 +71,17 @@ describe('FairShare App', () => {
     cy.get('#region-announcement').should('contain.text', 'North of England region detected. Heating estimates adjusted.');
     fillStep3();
 
-    cy.get('#energyCost').invoke('val').then((energyCost) => {
+    cy.get('[data-cy="energyCost-input"]').invoke('val').then((energyCost) => {
       const northernEnergyCost = parseFloat(energyCost);
 
       // Go back and change to a southern postcode
-      cy.get('#back-button').click();
-      cy.get('#back-button').click();
+      cy.get('[data-cy="back-button"]').click();
+      cy.get('[data-cy="back-button"]').click();
       fillStep2('SW1A 0AA'); // London
       cy.get('#region-announcement').should('contain.text', 'London region detected.');
       fillStep3();
 
-      cy.get('#energyCost').invoke('val').then((southernEnergyCost) => {
+      cy.get('[data-cy="energyCost-input"]').invoke('val').then((southernEnergyCost) => {
         expect(northernEnergyCost).to.be.gt(parseFloat(southernEnergyCost));
       });
     });
@@ -93,55 +93,55 @@ describe('FairShare App', () => {
     cy.get('#region-announcement').should('contain.text', 'London region detected.');
     fillStep3();
 
-    cy.get('#energyCost').invoke('val').then((energyCost) => {
+    cy.get('[data-cy="energyCost-input"]').invoke('val').then((energyCost) => {
       const southernEnergyCost = parseFloat(energyCost);
 
       // Go back and change to a northern postcode
-      cy.get('#back-button').click();
-      cy.get('#back-button').click();
+      cy.get('[data-cy="back-button"]').click();
+      cy.get('[data-cy="back-button"]').click();
       fillStep2('M1 1AD'); // Manchester
       cy.get('#region-announcement').should('contain.text', 'North of England region detected. Heating estimates adjusted.');
       fillStep3();
 
-      cy.get('#energyCost').invoke('val').then((northernEnergyCost) => {
+      cy.get('[data-cy="energyCost-input"]').invoke('val').then((northernEnergyCost) => {
         expect(southernEnergyCost).to.be.lt(parseFloat(northernEnergyCost));
       });
     });
   });
 
   it('should prevent navigation if required fields are empty', () => {
-    cy.get('#next-button').click();
+    cy.get('[data-cy="next-button"]').click();
     cy.get('#screen-2').should('be.visible');
-    
+
     // Try clicking next without entering salaries
-    cy.get('#next-button').click();
-    
+    cy.get('[data-cy="next-button"]').click();
+
     // Should stay on screen 2 and show errors
     cy.get('#screen-2').should('be.visible');
     cy.get('#salaryP1-error').should('be.visible');
     cy.get('#salaryP2-error').should('be.visible');
-    
+
     // Fill one field
-    cy.get('#salaryP1').type('30000');
-    cy.get('#next-button').click();
-    
+    cy.get('[data-cy="salaryP1-input"]').type('30000');
+    cy.get('[data-cy="next-button"]').click();
+
     // Should still stay on screen 2
     cy.get('#screen-2').should('be.visible');
     cy.get('#salaryP2-error').should('be.visible');
   });
 
   it('should persist entered data across page reloads', () => {
-    cy.get('#next-button').click();
-    cy.get('#salaryP1').type('55000');
-    cy.get('#salaryP2').type('65000');
-    
+    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="salaryP1-input"]').type('55000');
+    cy.get('[data-cy="salaryP2-input"]').type('65000');
+
     // Reload the page
     cy.reload();
-    
+
     // Check if values persisted
-    cy.get('#next-button').click(); // Go to screen 2
-    cy.get('#salaryP1').should('have.value', '55000');
-    cy.get('#salaryP2').should('have.value', '65000');
+    cy.get('[data-cy="next-button"]').click(); // Go to screen 2
+    cy.get('[data-cy="salaryP1-input"]').should('have.value', '55000');
+    cy.get('[data-cy="salaryP2-input"]').should('have.value', '65000');
   });
 
   it('should allow a complete user journey and display the results screen', () => {
@@ -150,14 +150,14 @@ describe('FairShare App', () => {
     fillStep3();
     fillStep4();
     fillStep5();
-    
+
     // Results screen assertions
-    cy.get('#result-p1').should('not.have.text', '£0');
-    cy.get('#result-p2').should('not.have.text', '£0');
-    cy.get('#total-bill-display').should('not.have.text', '£0');
-    
+    cy.get('[data-cy="result-p1"]').should('not.have.text', '£0');
+    cy.get('[data-cy="result-p2"]').should('not.have.text', '£0');
+    cy.get('[data-cy="total-bill-display"]').should('not.have.text', '£0');
+
     // Check if the ratio bar is updated (You earn 35k, Partner earns 45k -> Ratio is roughly 44% / 56%)
-    cy.get('#bar-p1').invoke('text').then((text) => {
+    cy.get('[data-cy="ratio-bar-p1"]').invoke('text').then((text) => {
       const percentage = parseInt(text);
       expect(percentage).to.be.closeTo(44, 1);
     });

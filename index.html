@@ -77,7 +77,7 @@
                 <label class="form-label" for="salaryP1">Your Annual Salary (Pre-tax)</label>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="salaryP1" class="input-control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-help salaryP1-error">
+                    <input type="number" id="salaryP1" class="input-control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-help salaryP1-error" data-cy="salaryP1-input">
                 </div>
                 <div id="salaryP1-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -90,7 +90,7 @@
                 <label class="form-label" for="salaryP2">Your Partner's Annual Salary (Pre-tax)</label>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="salaryP2" class="input-control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-help salaryP2-error">
+                    <input type="number" id="salaryP2" class="input-control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-help salaryP2-error" data-cy="salaryP2-input">
                 </div>
                 <div id="salaryP2-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -113,7 +113,7 @@
 
             <div class="form-group">
                 <label class="form-label" for="postcode">Property Postcode</label>
-                <input type="text" id="postcode" class="input-control" aria-describedby="postcode-help postcode-error" onblur="checkRegion()" placeholder="e.g. SW1A 0AA">
+                <input type="text" id="postcode" class="input-control" aria-describedby="postcode-help postcode-error" onblur="checkRegion()" placeholder="e.g. SW1A 0AA" data-cy="postcode-input">
                 <div id="postcode-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
                     <span>Please enter a valid UK postcode.</span>
@@ -126,8 +126,8 @@
                 <label class="form-label" for="propertyPrice">Current Market Value (£)</label>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="propertyPrice" class="input-control" placeholder="e.g. 250000" aria-describedby="propertyPrice-error">
-                    <button type="button" id="estimatePriceBtn" class="btn-addon">Estimate</button>
+                    <input type="number" id="propertyPrice" class="input-control" placeholder="e.g. 250000" aria-describedby="propertyPrice-error" data-cy="propertyPrice-input">
+                    <button type="button" id="estimatePriceBtn" class="btn-addon" data-cy="estimatePrice-button">Estimate</button>
                 </div>
                 <div id="propertyPrice-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -146,7 +146,7 @@
                 </a>
             </div>
 
-            <fieldset class="form-group">
+            <fieldset class="form-group" data-cy="taxBand-fieldset">
                 <legend class="form-label">Select Valuation Band</legend>
                 <div class="segmented-control band-grid">
                     <input type="radio" name="taxBand" id="bA" value="A" onchange="updatePricePreview('A')"><label for="bA">A</label>
@@ -172,7 +172,7 @@
             <div class="form-row">
                 <div class="form-group col">
                     <label class="form-label" for="bedrooms">Bedrooms</label>
-                    <input type="number" id="bedrooms" class="input-control" value="2" min="1" required aria-describedby="bedrooms-error">
+                    <input type="number" id="bedrooms" class="input-control" value="2" min="1" required aria-describedby="bedrooms-error" data-cy="bedrooms-input">
                     <div id="bedrooms-error" class="error-text" hidden>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
                         <span>Required.</span>
@@ -180,7 +180,7 @@
                 </div>
                 <div class="form-group col">
                     <label class="form-label" for="bathrooms">Bathrooms</label>
-                    <input type="number" id="bathrooms" class="input-control" value="1" min="1" required aria-describedby="bathrooms-error">
+                    <input type="number" id="bathrooms" class="input-control" value="1" min="1" required aria-describedby="bathrooms-error" data-cy="bathrooms-input">
                     <div id="bathrooms-error" class="error-text" hidden>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
                         <span>Required.</span>
@@ -238,7 +238,7 @@
             <div class="form-group">
                 <label class="form-label" for="depositPercentage">Total Deposit Percentage (%)</label>
                 <div class="input-group">
-                    <input type="number" id="depositPercentage" class="input-control" value="10" min="0" max="100" required aria-describedby="depositPercentage-help depositPercentage-error">
+                    <input type="number" id="depositPercentage" class="input-control" value="10" min="0" max="100" required aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input">
                     <span class="input-addon">%</span>
                 </div>
                 <div id="depositPercentage-error" class="error-text" hidden>
@@ -292,7 +292,7 @@
                 <div class="form-group col">
                     <label class="form-label" for="mortgageInterestRate">Interest Rate (APR %)</label>
                     <div class="input-group">
-                        <input type="number" id="mortgageInterestRate" class="input-control" value="5" min="0" step="0.1" required aria-describedby="mortgageInterestRate-error">
+                        <input type="number" id="mortgageInterestRate" class="input-control" value="5" min="0" step="0.1" required aria-describedby="mortgageInterestRate-error" data-cy="mortgageInterestRate-input">
                         <span class="input-addon">%</span>
                     </div>
                     <div id="mortgageInterestRate-error" class="error-text" hidden>
@@ -303,7 +303,7 @@
 
                 <div class="form-group col">
                     <label class="form-label" for="mortgageTerm">Term (Years)</label>
-                    <input type="number" id="mortgageTerm" class="input-control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error">
+                    <input type="number" id="mortgageTerm" class="input-control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error" data-cy="mortgageTerm-input">
                     <div id="mortgageTerm-error" class="error-text" hidden>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
                         <span>Invalid.</span>
@@ -361,7 +361,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="councilTaxCost" class="input-control" required aria-describedby="councilTaxCost-help councilTaxCost-error">
+                    <input type="number" id="councilTaxCost" class="input-control" required aria-describedby="councilTaxCost-help councilTaxCost-error" data-cy="councilTaxCost-input">
                 </div>
                 <div id="councilTaxCost-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -383,7 +383,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="energyCost" class="input-control" required aria-describedby="energy-explainer energyCost-error">
+                    <input type="number" id="energyCost" class="input-control" required aria-describedby="energy-explainer energyCost-error" data-cy="energyCost-input">
                 </div>
                 <div id="energyCost-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -405,7 +405,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="waterBill" class="input-control" value="30" required aria-describedby="waterBill-help waterBill-error">
+                    <input type="number" id="waterBill" class="input-control" value="30" required aria-describedby="waterBill-help waterBill-error" data-cy="waterBill-input">
                 </div>
                 <div id="waterBill-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -427,7 +427,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="broadbandCost" class="input-control" placeholder="e.g. 30" aria-describedby="broadband-help broadband-error">
+                    <input type="number" id="broadbandCost" class="input-control" placeholder="e.g. 30" aria-describedby="broadband-help broadband-error" data-cy="broadbandCost-input">
                 </div>
                 <div id="broadband-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -473,7 +473,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="groceriesCost" class="input-control" placeholder="e.g. 400" aria-describedby="groceries-help groceries-error">
+                    <input type="number" id="groceriesCost" class="input-control" placeholder="e.g. 400" aria-describedby="groceries-help groceries-error" data-cy="groceriesCost-input">
                 </div>
                 <div id="groceries-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -495,7 +495,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="childcareCost" class="input-control" placeholder="e.g. 200" aria-describedby="childcare-help childcare-error">
+                    <input type="number" id="childcareCost" class="input-control" placeholder="e.g. 200" aria-describedby="childcare-help childcare-error" data-cy="childcareCost-input">
                 </div>
                 <div id="childcare-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -517,7 +517,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="insuranceCost" class="input-control" placeholder="e.g. 50" aria-describedby="insurance-help insurance-error">
+                    <input type="number" id="insuranceCost" class="input-control" placeholder="e.g. 50" aria-describedby="insurance-help insurance-error" data-cy="insuranceCost-input">
                 </div>
                 <div id="insurance-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -539,7 +539,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-addon">£</span>
-                    <input type="number" id="otherSharedCosts" class="input-control" placeholder="e.g. 100" aria-describedby="other-help other-error">
+                    <input type="number" id="otherSharedCosts" class="input-control" placeholder="e.g. 100" aria-describedby="other-help other-error" data-cy="otherSharedCosts-input">
                 </div>
                 <div id="other-error" class="error-text" hidden>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -563,8 +563,8 @@
             <div class="result-ratio-bar" id="result-ratio-bar">
                 <p class="text-center fw-bold">Your Fair Share Split</p>
                 <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent You and 50 percent Your Partner">
-                    <div class="bar-p1" id="bar-p1" aria-hidden="true">50%</div>
-                    <div class="bar-p2" id="bar-p2" aria-hidden="true">50%</div>
+                    <div class="bar-p1" id="bar-p1" aria-hidden="true" data-cy="ratio-bar-p1">50%</div>
+                    <div class="bar-p2" id="bar-p2" aria-hidden="true" data-cy="ratio-bar-p2">50%</div>
                 </div>
                 <p class="sr-only" id="ratio-text-desc">Ratio is 50 percent You and 50 percent Your Partner.</p>
             </div>
@@ -573,15 +573,15 @@
             <div class="monthly-shares-summary" id="monthly-shares-summary">
                 <div class="result-card result-share-p1" id="result-share-p1">
                     <p class="result-card-label">You Pay</p>
-                    <p class="result-card-value result-p1" id="result-p1" aria-live="polite">£0</p>
+                    <p class="result-card-value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1">£0</p>
                 </div>
                 <div class="result-card result-share-p2" id="result-share-p2">
                     <p class="result-card-label">Your Partner Pays</p>
-                    <p class="result-card-value result-p2" id="result-p2" aria-live="polite">£0</p>
+                    <p class="result-card-value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2">£0</p>
                 </div>
             </div>
             <p class="text-center total-bill-row" id="total-bill-row">
-                Total Monthly Bill: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite">£0</span>
+                Total Monthly Bill: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display">£0</span>
             </p>
             <p class="text-center info-text result-summary" id="result-summary" aria-live="polite"></p>
 
@@ -662,8 +662,8 @@
         </section>
 
         <div class="nav-group">
-            <button id="back-button" class="btn-secondary">Back</button>
-            <button id="next-button" class="btn-primary">Next</button>
+            <button id="back-button" class="btn-secondary" data-cy="back-button">Back</button>
+            <button id="next-button" class="btn-primary" data-cy="next-button">Next</button>
         </div>
     </div>
 </main>
