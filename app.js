@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function formatPostcode(input) {
-        let value = input.value.replace(/\s+/g, '').toUpperCase();
+        const value = input.value.replace(/\s+/g, '').toUpperCase();
         if (value.length > 3) {
             const incode = value.slice(-3);
             const outcode = value.slice(0, -3);
@@ -663,14 +663,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.downloadCSV = function() {
         const table = elements.resultsTable;
-        let csv = [];
+        const csv = [];
         const rows = table.querySelectorAll('tr');
         
         for (let i = 0; i < rows.length; i++) {
             const row = [], cols = rows[i].querySelectorAll('td, th');
             for (let j = 0; j < cols.length; j++) {
                 // Clean currency symbols and commas for CSV
-                let data = cols[j].innerText.replace(/£/g, '').replace(/,/g, '');
+                const data = cols[j].innerText.replace(/£/g, '').replace(/,/g, '');
                 row.push('"' + data + '"');
             }
             csv.push(row.join(','));
