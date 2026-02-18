@@ -620,9 +620,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (['E','F','G','H'].includes(appData.band)) energy *= 1.15;
         elements.energyCost.value = Math.round(energy);
         elements.waterBill.value = Math.round(estimateWaterCost(appData.postcode, appData.baths));
-        appData.waterBill = parseFloat(elements.waterBill.value) || 0;
-        appData.mortgageInterestRate = parseFloat(elements.mortgageInterestRate.value) || 0;
-        appData.mortgageTerm = parseFloat(elements.mortgageTerm.value) || 0;
+        appData.waterBill = getVal('waterBill');
+        appData.mortgageInterestRate = getVal('mortgageInterestRate');
+        appData.mortgageTerm = getVal('mortgageTerm');
         calculateMonthlyMortgage();
     }
 
@@ -906,14 +906,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.calculateFinalSplit = function() {
-        const taxVal = parseFloat(elements.councilTaxCost.value) || 0;
-        const enVal = parseFloat(elements.energyCost.value) || 0;
-        const wtVal = parseFloat(elements.waterBill.value) || 0;
-        const bbVal = parseFloat(elements.broadbandCost.value) || 0;
-        const grVal = parseFloat(elements.groceriesCost.value) || 0;
-        const ccVal = parseFloat(elements.childcareCost.value) || 0;
-        const isVal = parseFloat(elements.insuranceCost.value) || 0;
-        const osVal = parseFloat(elements.otherSharedCosts.value) || 0;
+        const taxVal = getVal('councilTaxCost');
+        const enVal = getVal('energyCost');
+        const wtVal = getVal('waterBill');
+        const bbVal = getVal('broadbandCost');
+        const grVal = getVal('groceriesCost');
+        const ccVal = getVal('childcareCost');
+        const isVal = getVal('insuranceCost');
+        const osVal = getVal('otherSharedCosts');
         const mortgage = appData.monthlyMortgagePayment;
 
         const getSplit = (key, val) => {
@@ -945,30 +945,14 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.resultP2.innerText = formatCurrency(totalP2, 2);
         elements.totalBillDisplay.innerText = formatCurrency(total, 2);
 
-        elements.bdMortgageTotal.innerText = formatCurrency(mortgage, 2);
-        elements.bdMortgageP1.innerText = formatCurrency(mort.p1, 2);
-        elements.bdMortgageP2.innerText = formatCurrency(mort.p2, 2);
-        elements.bdTaxTotal.innerText = formatCurrency(taxVal, 2);
-        elements.bdTaxP1.innerText = formatCurrency(tax.p1, 2);
-        elements.bdTaxP2.innerText = formatCurrency(tax.p2, 2);
-        elements.bdEnergyTotal.innerText = formatCurrency(enVal, 2);
-        elements.bdEnergyP1.innerText = formatCurrency(energy.p1, 2);
-        elements.bdEnergyP2.innerText = formatCurrency(energy.p2, 2);
-        elements.bdWaterTotal.innerText = formatCurrency(wtVal, 2);
-        elements.bdWaterP1.innerText = formatCurrency(water.p1, 2);
-        elements.bdWaterP2.innerText = formatCurrency(water.p2, 2);
-        elements.bdBroadbandTotal.innerText = formatCurrency(bbVal, 2);
-        elements.bdBroadbandP1.innerText = formatCurrency(broadband.p1, 2);
-        elements.bdBroadbandP2.innerText = formatCurrency(broadband.p2, 2);
-        elements.bdGroceriesTotal.innerText = formatCurrency(grVal, 2);
-        elements.bdGroceriesP1.innerText = formatCurrency(groceries.p1, 2);
-        elements.bdGroceriesP2.innerText = formatCurrency(groceries.p2, 2);
-        elements.bdCommittedTotal.innerText = formatCurrency(committedTotal, 2);
-        elements.bdCommittedP1.innerText = formatCurrency(committedP1, 2);
-        elements.bdCommittedP2.innerText = formatCurrency(committedP2, 2);
-        elements.bdTotalTotal.innerText = formatCurrency(total, 2);
-        elements.bdTotalP1.innerText = formatCurrency(totalP1, 2);
-        elements.bdTotalP2.innerText = formatCurrency(totalP2, 2);
+        updateBreakdownRow('Mortgage', mortgage, mort.p1, mort.p2);
+        updateBreakdownRow('Tax', taxVal, tax.p1, tax.p2);
+        updateBreakdownRow('Energy', enVal, energy.p1, energy.p2);
+        updateBreakdownRow('Water', wtVal, water.p1, water.p2);
+        updateBreakdownRow('Broadband', bbVal, broadband.p1, broadband.p2);
+        updateBreakdownRow('Groceries', grVal, groceries.p1, groceries.p2);
+        updateBreakdownRow('Committed', committedTotal, committedP1, committedP2);
+        updateBreakdownRow('Total', total, totalP1, totalP2);
 
         const summaryEl = elements.resultSummary;
         if (summaryEl) {
