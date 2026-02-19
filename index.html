@@ -18,7 +18,7 @@
 </div>
 
 <div id="offline-indicator" class="offline-badge" hidden aria-live="polite">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M10.34 10.34a3 3 0 004.318 4.318M7.93 7.93a7 7 0 009.848 9.848M5.12 5.12a11 11 0 0015.657 15.657" /></svg>
+    <img src="icons/icon-offline.svg" alt="Offline Indicator" width="16" height="16">
     Working Offline
 </div>
 
@@ -35,7 +35,7 @@
 
         <section class="screen" id="screen-1" aria-labelledby="heading-landing" tabindex="-1">
             <h2 id="heading-landing">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
+                <img src="icons/icon-heart.svg" alt="Welcome Icon">
                 Welcome to FairShare
             </h2>
 
@@ -45,7 +45,7 @@
                     Establish proportionate bill splitting based on your relative incomes in just 7 steps.
                 </p>
                 <div class="alert-info" id="efficiency-tip">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                    <img src="icons/icon-info.svg" alt="Info Icon">
                     <p style="margin-bottom: 0;"><strong>Efficiency Tip:</strong> Use your <strong>Arrow Keys</strong> or <strong>Enter</strong> to navigate quickly between screens.</p>
                 </div>
                 <p class="screen-summary">
@@ -65,10 +65,9 @@
 
         <section class="screen" id="screen-2" aria-labelledby="heading-income" tabindex="-1" hidden>
             <h2 id="heading-income">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" /></svg>
+                <img src="icons/icon-money.svg" alt="Income Icon">
                 Your Income
             </h2>
-
             <p>Establish your base contribution ratio.</p>
             <p class="screen-summary">
                 Provide your annual pre-tax salaries to calculate your unique contribution percentage. This ensures all shared bills are split proportionately to each partner's individual earning power.
@@ -81,7 +80,7 @@
                     <input type="number" id="salaryP1" class="input-control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-help salaryP1-error" data-cy="salaryP1-input">
                 </div>
                 <div id="salaryP1-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a valid annual salary.</span>
                 </div>
                 <div id="salaryP1-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
@@ -94,7 +93,7 @@
                     <input type="number" id="salaryP2" class="input-control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-help salaryP2-error" data-cy="salaryP2-input">
                 </div>
                 <div id="salaryP2-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a valid annual salary for your partner.</span>
                 </div>
                 <div id="salaryP2-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
@@ -103,10 +102,9 @@
 
         <section class="screen" id="screen-3" aria-labelledby="heading-property" tabindex="-1" hidden>
             <h2 id="heading-property">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" /></svg>
+                <img src="icons/icon-building.svg" alt="Property Icon">
                 Property Details
             </h2>
-
             <p>Define your home to automate cost estimates.</p>
             <p class="screen-summary">
                 Enter your postcode and property size. We use regional data to automate accurate estimates for Council Tax and local utility rates based on your specific location.
@@ -118,7 +116,7 @@
                     <input type="text" id="postcode" class="input-control" aria-describedby="postcode-help postcode-error" onblur="checkRegion()" placeholder="e.g. SW1A 0AA" data-cy="postcode-input">
                 </div>
                 <div id="postcode-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a valid UK postcode.</span>
                 </div>
                 <div id="postcode-help" class="help-text">Used to estimate local market prices and regional utility variations.</div>
@@ -133,7 +131,7 @@
                     <button type="button" id="estimatePriceBtn" class="btn-addon" data-cy="estimatePrice-button">Estimate</button>
                 </div>
                 <div id="propertyPrice-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a property value or use a postcode to estimate.</span>
                 </div>
                 <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden>
@@ -146,7 +144,7 @@
                 <p class="help-text">Council Tax is determined by the property's assigned valuation band.</p>
                 <a href="https://www.gov.uk/council-tax-bands" target="_blank" rel="nofollow" class="link-external">
                     Find your Council Tax Band
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                    <img src="icons/icon-external-link.svg" alt="External Link Icon">
                 </a>
                 <div class="segmented-control">
                     <input type="radio" name="taxBand" id="bA" value="A" onchange="updatePricePreview('A')"><label for="bA">A</label>
@@ -159,13 +157,13 @@
                     <input type="radio" name="taxBand" id="bH" value="H" onchange="updatePricePreview('H')"><label for="bH">H</label>
                 </div>
                 <div id="taxBand-error" class="error-text" aria-live="assertive" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please select a valuation band to continue.</span>
                 </div>
             </fieldset>
 
             <div class="alert-info" id="band-price-display" aria-live="polite">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                <img src="icons/icon-info.svg" alt="Info Icon">
                 <span>Select a band to see estimated cost</span>
             </div>
 
@@ -176,7 +174,7 @@
                         <input type="number" id="bedrooms" class="input-control" value="2" min="1" max="50" required aria-describedby="bedrooms-error" data-cy="bedrooms-input">
                     </div>
                     <div id="bedrooms-error" class="error-text" hidden>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                        <img src="icons/icon-error.svg" alt="Error Icon">
                         <span>Required.</span>
                     </div>
                 </div>
@@ -186,7 +184,7 @@
                         <input type="number" id="bathrooms" class="input-control" value="1" min="1" max="50" required aria-describedby="bathrooms-error" data-cy="bathrooms-input">
                     </div>
                     <div id="bathrooms-error" class="error-text" hidden>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                        <img src="icons/icon-error.svg" alt="Error Icon">
                         <span>Required.</span>
                     </div>
                 </div>
@@ -197,7 +195,7 @@
 
         <section class="screen" id="screen-4" aria-labelledby="heading-mortgage" tabindex="-1" hidden>
             <h2 id="heading-mortgage">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>
+                <img src="icons/icon-money.svg" alt="Mortgage Icon">
                 Mortgage & Equity
             </h2>
 
@@ -240,7 +238,7 @@
                         <span class="input-addon">%</span>
                     </div>
                     <div id="mortgageInterestRate-error" class="error-text" hidden>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                        <img src="icons/icon-error.svg" alt="Error Icon">
                         <span>Invalid.</span>
                     </div>
                 </div>
@@ -251,7 +249,7 @@
                         <input type="number" id="mortgageTerm" class="input-control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error" data-cy="mortgageTerm-input">
                     </div>
                     <div id="mortgageTerm-error" class="error-text" hidden>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                        <img src="icons/icon-error.svg" alt="Error Icon">
                         <span>Invalid.</span>
                     </div>
                 </div>
@@ -337,7 +335,7 @@
 
         <section class="screen" id="screen-5" aria-labelledby="heading-utilities" tabindex="-1" hidden>
             <h2 id="heading-utilities">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                <img src="icons/icon-lightning.svg" alt="Utilities Icon">
                 Monthly Utilities
             </h2>
 
@@ -375,7 +373,7 @@
                     <input type="number" id="councilTaxCost" class="input-control" required aria-describedby="councilTaxCost-help councilTaxCost-error" data-cy="councilTaxCost-input">
                 </div>
                 <div id="councilTaxCost-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter the monthly council tax.</span>
                 </div>
                 <div id="councilTaxCost-help" class="help-text">Estimated based on your selected valuation band.</div>
@@ -397,7 +395,7 @@
                     <input type="number" id="energyCost" class="input-control" required aria-describedby="energy-explainer energyCost-error" data-cy="energyCost-input">
                 </div>
                 <div id="energyCost-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter an energy estimate.</span>
                 </div>
                 <div id="energy-explainer" class="help-text">Estimated gas and electricity usage for this property size and region.</div>
@@ -419,7 +417,7 @@
                     <input type="number" id="waterBill" class="input-control" value="30" required aria-describedby="waterBill-help waterBill-error" data-cy="waterBill-input">
                 </div>
                 <div id="waterBill-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a water bill amount.</span>
                 </div>
                 <div id="waterBill-help" class="help-text">Estimated regional average based on bathrooms and postcode.</div>
@@ -441,7 +439,7 @@
                     <input type="number" id="broadbandCost" class="input-control" placeholder="e.g. 30" aria-describedby="broadband-help broadband-error" data-cy="broadbandCost-input">
                 </div>
                 <div id="broadband-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a valid amount.</span>
                 </div>
                 <div id="broadband-help" class="help-text">Internet, cable, and streaming subscriptions.</div>
@@ -450,7 +448,7 @@
 
         <section class="screen" id="screen-6" aria-labelledby="heading-committed" tabindex="-1" hidden>
             <h2 id="heading-committed">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m.75 3.375H5.625c-.621 0-1.125-.504-1.125-1.125V4.125c0-.621.504-1.125 1.125-1.125h12.75c.621 0 1.125.504 1.125 1.125v12.75c0 .621-.504 1.125-1.125 1.125H15m-3 0v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" /></svg>
+                <img src="icons/icon-receipt.svg" alt="Committed Spending Icon">
                 Committed Spending
             </h2>
             <p>Add optional shared monthly expenses.</p>
@@ -487,7 +485,7 @@
                     <input type="number" id="groceriesCost" class="input-control" placeholder="e.g. 400" aria-describedby="groceries-help groceries-error" data-cy="groceriesCost-input">
                 </div>
                 <div id="groceries-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a valid amount.</span>
                 </div>
                 <div id="groceries-help" class="help-text">Food, household supplies, and shared toiletries.</div>
@@ -509,7 +507,7 @@
                     <input type="number" id="childcareCost" class="input-control" placeholder="e.g. 200" aria-describedby="childcare-help childcare-error" data-cy="childcareCost-input">
                 </div>
                 <div id="childcare-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a valid amount.</span>
                 </div>
                 <div id="childcare-help" class="help-text">Nursery, childminders, or other care costs.</div>
@@ -531,7 +529,7 @@
                     <input type="number" id="insuranceCost" class="input-control" placeholder="e.g. 50" aria-describedby="insurance-help insurance-error" data-cy="insuranceCost-input">
                 </div>
                 <div id="insurance-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a valid amount.</span>
                 </div>
                 <div id="insurance-help" class="help-text">Combined life, health, or pet insurance.</div>
@@ -553,7 +551,7 @@
                     <input type="number" id="otherSharedCosts" class="input-control" placeholder="e.g. 100" aria-describedby="other-help other-error" data-cy="otherSharedCosts-input">
                 </div>
                 <div id="other-error" class="error-text" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                    <img src="icons/icon-error.svg" alt="Error Icon">
                     <span>Please enter a valid amount.</span>
                 </div>
                 <div id="other-help" class="help-text">Gym memberships, streaming services, or car payments.</div>
@@ -562,7 +560,7 @@
 
         <section class="screen" id="screen-7" aria-labelledby="heading-results" tabindex="-1" hidden>
             <h2 id="heading-results">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" /></svg>
+                <img src="icons/icon-pie-chart.svg" alt="Detailed Analysis Icon">
                 Detailed Analysis
             </h2>
 
@@ -697,7 +695,7 @@
 
             <div class="nav-group-vertical">
                 <button type="button" id="downloadCSVBtn" class="btn-success btn-block" onclick="downloadCSV()">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 1.25rem; height: 1.25rem; vertical-align: middle; margin-right: 0.5rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    <img src="icons/icon-download.svg" alt="Download Icon" style="width: 1.25rem; height: 1.25rem; vertical-align: middle; margin-right: 0.5rem;">
                     Download results as CSV
                 </button>
             </div>

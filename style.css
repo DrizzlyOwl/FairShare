@@ -379,6 +379,7 @@ input[type=number] {
     flex-wrap: wrap; /* Allow wrapping on small screens */
     gap: 0.5rem; /* Consistent spacing */
     margin-bottom: 1rem;
+    justify-content: center; /* Center items and distribute space */
 }
 
 .segmented-control label {
