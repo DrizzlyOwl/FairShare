@@ -78,8 +78,8 @@
             <div class="form-group">
                 <label class="form-label" for="salaryP1">Your Annual Salary (Pre-tax)</label>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="salaryP1" class="input-control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-help salaryP1-error" data-cy="salaryP1-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-help salaryP1-error" data-cy="salaryP1-input">
                 </div>
                 <div id="salaryP1-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -91,8 +91,8 @@
             <div class="form-group">
                 <label class="form-label" for="salaryP2">Your Partner's Annual Salary (Pre-tax)</label>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="salaryP2" class="input-control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-help salaryP2-error" data-cy="salaryP2-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-help salaryP2-error" data-cy="salaryP2-input">
                 </div>
                 <div id="salaryP2-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -115,7 +115,7 @@
             <div class="form-group">
                 <label class="form-label" for="postcode">Property Postcode</label>
                 <div class="input-group">
-                    <input type="text" id="postcode" class="input-control" aria-describedby="postcode-help postcode-error" onblur="checkRegion()" placeholder="e.g. SW1A 0AA" data-cy="postcode-input">
+                    <input type="text" id="postcode" class="input-group__control" aria-describedby="postcode-help postcode-error" onblur="checkRegion()" placeholder="e.g. SW1A 0AA" data-cy="postcode-input">
                 </div>
                 <div id="postcode-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -131,8 +131,8 @@
             <div class="form-group">
                 <label class="form-label" for="propertyPrice">Current Market Value (£)</label>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="propertyPrice" class="input-control" placeholder="e.g. 250000" aria-describedby="propertyPrice-error" data-cy="propertyPrice-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="propertyPrice" class="input-group__control" placeholder="e.g. 250000" aria-describedby="propertyPrice-error" data-cy="propertyPrice-input">
                     <button type="button" id="estimatePriceBtn" class="btn-addon" data-cy="estimatePrice-button">Estimate</button>
                 </div>
                 <div id="propertyPrice-error" class="alert alert--error" hidden>
@@ -152,14 +152,29 @@
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-external-link.svg'); mask-image: url('icons/icon-external-link.svg');" aria-hidden="true"></span>
                 </a>
                 <div class="segmented-control">
-                    <input type="radio" name="taxBand" id="bA" value="A" onchange="updatePricePreview('A')"><label for="bA">A</label>
-                    <input type="radio" name="taxBand" id="bB" value="B" onchange="updatePricePreview('B')"><label for="bB">B</label>
-                    <input type="radio" name="taxBand" id="bC" value="C" onchange="updatePricePreview('C')"><label for="bC">C</label>
-                    <input type="radio" name="taxBand" id="bD" value="D" onchange="updatePricePreview('D')"><label for="bD">D</label>
-                    <input type="radio" name="taxBand" id="bE" value="E" onchange="updatePricePreview('E')"><label for="bE">E</label>
-                    <input type="radio" name="taxBand" id="bF" value="F" onchange="updatePricePreview('F')"><label for="bF">F</label>
-                    <input type="radio" name="taxBand" id="bG" value="G" onchange="updatePricePreview('G')"><label for="bG">G</label>
-                    <input type="radio" name="taxBand" id="bH" value="H" onchange="updatePricePreview('H')"><label for="bH">H</label>
+                    <input type="radio" name="taxBand" id="bA" value="A" onchange="updatePricePreview('A')" class="segmented-control__input">
+                    <label for="bA" class="segmented-control__label">A</label>
+                    
+                    <input type="radio" name="taxBand" id="bB" value="B" onchange="updatePricePreview('B')" class="segmented-control__input">
+                    <label for="bB" class="segmented-control__label">B</label>
+                    
+                    <input type="radio" name="taxBand" id="bC" value="C" onchange="updatePricePreview('C')" class="segmented-control__input">
+                    <label for="bC" class="segmented-control__label">C</label>
+                    
+                    <input type="radio" name="taxBand" id="bD" value="D" onchange="updatePricePreview('D')" class="segmented-control__input">
+                    <label for="bD" class="segmented-control__label">D</label>
+                    
+                    <input type="radio" name="taxBand" id="bE" value="E" onchange="updatePricePreview('E')" class="segmented-control__input">
+                    <label for="bE" class="segmented-control__label">E</label>
+                    
+                    <input type="radio" name="taxBand" id="bF" value="F" onchange="updatePricePreview('F')" class="segmented-control__input">
+                    <label for="bF" class="segmented-control__label">F</label>
+                    
+                    <input type="radio" name="taxBand" id="bG" value="G" onchange="updatePricePreview('G')" class="segmented-control__input">
+                    <label for="bG" class="segmented-control__label">G</label>
+                    
+                    <input type="radio" name="taxBand" id="bH" value="H" onchange="updatePricePreview('H')" class="segmented-control__input">
+                    <label for="bH" class="segmented-control__label">H</label>
                 </div>
                 <div id="taxBand-error" class="alert alert--error" aria-live="assertive" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -176,7 +191,7 @@
                 <div class="form-group col">
                     <label class="form-label" for="bedrooms">Bedrooms</label>
                     <div class="input-group">
-                        <input type="number" id="bedrooms" class="input-control" value="2" min="1" max="50" required aria-describedby="bedrooms-error" data-cy="bedrooms-input">
+                        <input type="number" id="bedrooms" class="input-group__control" value="2" min="1" max="50" required aria-describedby="bedrooms-error" data-cy="bedrooms-input">
                     </div>
                     <div id="bedrooms-error" class="alert alert--error" hidden>
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -186,7 +201,7 @@
                 <div class="form-group col">
                     <label class="form-label" for="bathrooms">Bathrooms</label>
                     <div class="input-group">
-                        <input type="number" id="bathrooms" class="input-control" value="1" min="1" max="50" required aria-describedby="bathrooms-error" data-cy="bathrooms-input">
+                        <input type="number" id="bathrooms" class="input-group__control" value="1" min="1" max="50" required aria-describedby="bathrooms-error" data-cy="bathrooms-input">
                     </div>
                     <div id="bathrooms-error" class="alert alert--error" hidden>
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -216,8 +231,8 @@
             <div class="form-group">
                 <label class="form-label" for="depositPercentage">Total Deposit Percentage (%)</label>
                 <div class="input-group">
-                    <input type="number" id="depositPercentage" class="input-control" value="10" min="0" max="100" required aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input">
-                    <span class="input-addon">%</span>
+                    <input type="number" id="depositPercentage" class="input-group__control" value="10" min="0" max="100" required aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input">
+                    <span class="input-group__addon">%</span>
                 </div>
                 <div id="depositPercentage-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -228,12 +243,12 @@
 
             <fieldset class="form-group">
                 <legend class="form-label">Split Deposit Proportionally?</legend>
-                <div class="switch-toggle">
-                    <input type="radio" name="depositSplitType" id="splitPropYes" value="yes" checked>
-                    <label for="splitPropYes">Income Ratio</label>
-                    <input type="radio" name="depositSplitType" id="splitPropNo" value="no">
-                    <label for="splitPropNo">Equal (50/50)</label>
-                    <span class="switch-slider" aria-hidden="true"></span>
+                <div class="toggle">
+                    <input type="radio" name="depositSplitType" id="splitPropYes" value="yes" checked class="toggle__input">
+                    <label for="splitPropYes" class="toggle__label">Income Ratio</label>
+                    <input type="radio" name="depositSplitType" id="splitPropNo" value="no" class="toggle__input">
+                    <label for="splitPropNo" class="toggle__label">Equal (50/50)</label>
+                    <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
                 <div id="deposit-split-help" class="help-text">Choose whether the initial cash deposit should match your salary ratio or be equal.</div>
             </fieldset>
@@ -242,8 +257,8 @@
                 <div class="form-group col">
                     <label class="form-label" for="mortgageInterestRate">Interest Rate (APR %)</label>
                     <div class="input-group">
-                        <input type="number" id="mortgageInterestRate" class="input-control" value="5" min="0" step="0.1" required aria-describedby="mortgageInterestRate-error" data-cy="mortgageInterestRate-input">
-                        <span class="input-addon">%</span>
+                        <input type="number" id="mortgageInterestRate" class="input-group__control" value="5" min="0" step="0.1" required aria-describedby="mortgageInterestRate-error" data-cy="mortgageInterestRate-input">
+                        <span class="input-group__addon">%</span>
                     </div>
                     <div id="mortgageInterestRate-error" class="alert alert--error" hidden>
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -254,7 +269,7 @@
                 <div class="form-group col">
                     <label class="form-label" for="mortgageTerm">Term (Years)</label>
                     <div class="input-group">
-                        <input type="number" id="mortgageTerm" class="input-control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error" data-cy="mortgageTerm-input">
+                        <input type="number" id="mortgageTerm" class="input-group__control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error" data-cy="mortgageTerm-input">
                     </div>
                     <div id="mortgageTerm-error" class="alert alert--error" hidden>
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -267,24 +282,24 @@
             <!-- 2. Context: Purchase Costs -->
             <fieldset class="form-group">
                 <legend class="form-label">Purchase Type</legend>
-                <div class="switch-toggle">
-                    <input type="radio" name="homeType" id="homeFirst" value="first" checked>
-                    <label for="homeFirst">Sole Property</label>
-                    <input type="radio" name="homeType" id="homeSecond" value="second">
-                    <label for="homeSecond">Additional Property</label>
-                    <span class="switch-slider" aria-hidden="true"></span>
+                <div class="toggle">
+                    <input type="radio" name="homeType" id="homeFirst" value="first" checked class="toggle__input">
+                    <label for="homeFirst" class="toggle__label">Sole Property</label>
+                    <input type="radio" name="homeType" id="homeSecond" value="second" class="toggle__input">
+                    <label for="homeSecond" class="toggle__label">Additional Property</label>
+                    <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
                 <div id="home-type-help" class="help-text">Determines the Stamp Duty (SDLT) rate applied to this purchase.</div>
             </fieldset>
 
             <fieldset class="form-group" id="ftb-container">
                 <legend class="form-label">Buyer Status</legend>
-                <div class="switch-toggle">
-                    <input type="radio" name="buyerStatus" id="buyerStandard" value="standard" checked>
-                    <label for="buyerStandard">Standard</label>
-                    <input type="radio" name="buyerStatus" id="buyerFTB" value="ftb">
-                    <label for="buyerFTB">First Time Buyer</label>
-                    <span class="switch-slider" aria-hidden="true"></span>
+                <div class="toggle">
+                    <input type="radio" name="buyerStatus" id="buyerStandard" value="standard" checked class="toggle__input">
+                    <label for="buyerStandard" class="toggle__label">Standard</label>
+                    <input type="radio" name="buyerStatus" id="buyerFTB" value="ftb" class="toggle__input">
+                    <label for="buyerFTB" class="toggle__label">First Time Buyer</label>
+                    <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
                 <div id="buyer-status-help" class="help-text">Eligible for First Time Buyer relief in applicable regions.</div>
             </fieldset>
@@ -294,16 +309,16 @@
                 <div class="form-group">
                     <label class="form-label">Estimated Stamp Duty (SDLT)</label>
                     <div class="input-group">
-                        <span class="input-addon">£</span>
-                        <input type="text" id="sdlt-estimate" class="input-control" readonly>
+                        <span class="input-group__addon">£</span>
+                        <input type="text" id="sdlt-estimate" class="input-group__control" readonly>
                     </div>
                     <p class="help-text">Standard residential rate estimate.</p>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Estimated Legal Fees</label>
                     <div class="input-group">
-                        <span class="input-addon">£</span>
-                        <input type="text" id="legal-fees-estimate" class="input-control" readonly>
+                        <span class="input-group__addon">£</span>
+                        <input type="text" id="legal-fees-estimate" class="input-group__control" readonly>
                     </div>
                     <p class="help-text">Includes conveyancing, searches, and bank transfer fees.</p>
                 </div>
@@ -313,8 +328,8 @@
             <div class="form-group">
                 <label class="form-label" for="displayPropertyPrice">Current Market Value</label>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="text" id="displayPropertyPrice" class="input-control" readonly aria-describedby="displayPropertyPrice-help">
+                    <span class="input-group__addon">£</span>
+                    <input type="text" id="displayPropertyPrice" class="input-group__control" readonly aria-describedby="displayPropertyPrice-help">
                 </div>
                 <div id="displayPropertyPrice-help" class="help-text">As specified in the property details section.</div>
             </div>
@@ -330,13 +345,13 @@
             </div>
 
             <div class="summary-cards" id="deposit-share-summary">
-                <div class="summary-card share-p1">
-                    <p class="summary-card-label">Your Deposit Share</p>
-                    <p id="equityP1Display" class="summary-card-value" aria-live="polite">£0</p>
+                <div class="card card--share-p1">
+                    <p class="card__label">Your Deposit Share</p>
+                    <p id="equityP1Display" class="card__value" aria-live="polite">£0</p>
                 </div>
-                <div class="summary-card share-p2">
-                    <p class="summary-card-label">Partner's Deposit Share</p>
-                    <p id="equityP2Display" class="summary-card-value" aria-live="polite">£0</p>
+                <div class="card card--share-p2">
+                    <p class="card__label">Partner's Deposit Share</p>
+                    <p id="equityP2Display" class="card__value" aria-live="polite">£0</p>
                 </div>
             </div>
         </section>
@@ -355,12 +370,12 @@
             <div class="master-toggle">
                 <div class="master-toggle-inner">
                     <span class="master-toggle-label">Set All Rules:</span>
-                    <div class="switch-toggle" style="margin-bottom: 0; max-width: 18rem;">
-                        <input type="radio" name="masterUtilities" id="muRatio" value="yes" onchange="setAllSplitTypes('utilities', 'yes')">
-                        <label for="muRatio">Ratio</label>
-                        <input type="radio" name="masterUtilities" id="muEqual" value="no" onchange="setAllSplitTypes('utilities', 'no')">
-                        <label for="muEqual">50/50</label>
-                        <span class="switch-slider"></span>
+                    <div class="toggle" style="margin-bottom: 0; max-width: 18rem;">
+                        <input type="radio" name="masterUtilities" id="muRatio" value="yes" onchange="setAllSplitTypes('utilities', 'yes')" class="toggle__input">
+                        <label for="muRatio" class="toggle__label">Ratio</label>
+                        <input type="radio" name="masterUtilities" id="muEqual" value="no" onchange="setAllSplitTypes('utilities', 'no')" class="toggle__input">
+                        <label for="muEqual" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
             </div>
@@ -368,17 +383,17 @@
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="councilTaxCost">Monthly Council Tax (£)</label>
-                    <div class="mini-switch">
-                        <input type="radio" name="councilTaxSplitType" id="ctPropYes" value="yes" checked>
-                        <label for="ctPropYes">Ratio</label>
-                        <input type="radio" name="councilTaxSplitType" id="ctPropNo" value="no">
-                        <label for="ctPropNo">50/50</label>
-                        <span class="mini-switch-slider"></span>
+                    <div class="toggle toggle--mini">
+                        <input type="radio" name="councilTaxSplitType" id="ctPropYes" value="yes" checked class="toggle__input">
+                        <label for="ctPropYes" class="toggle__label">Ratio</label>
+                        <input type="radio" name="councilTaxSplitType" id="ctPropNo" value="no" class="toggle__input">
+                        <label for="ctPropNo" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="councilTaxCost" class="input-control" required aria-describedby="councilTaxCost-help councilTaxCost-error" data-cy="councilTaxCost-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="councilTaxCost" class="input-group__control" required aria-describedby="councilTaxCost-help councilTaxCost-error" data-cy="councilTaxCost-input">
                 </div>
                 <div id="councilTaxCost-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -390,17 +405,17 @@
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="energyCost">Monthly Energy Estimate (£)</label>
-                    <div class="mini-switch">
-                        <input type="radio" name="energySplitType" id="enPropYes" value="yes" checked>
-                        <label for="enPropYes">Ratio</label>
-                        <input type="radio" name="energySplitType" id="enPropNo" value="no">
-                        <label for="enPropNo">50/50</label>
-                        <span class="mini-switch-slider"></span>
+                    <div class="toggle toggle--mini">
+                        <input type="radio" name="energySplitType" id="enPropYes" value="yes" checked class="toggle__input">
+                        <label for="enPropYes" class="toggle__label">Ratio</label>
+                        <input type="radio" name="energySplitType" id="enPropNo" value="no" class="toggle__input">
+                        <label for="enPropNo" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="energyCost" class="input-control" required aria-describedby="energy-explainer energyCost-error" data-cy="energyCost-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="energyCost" class="input-group__control" required aria-describedby="energy-explainer energyCost-error" data-cy="energyCost-input">
                 </div>
                 <div id="energyCost-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -412,17 +427,17 @@
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="waterBill">Monthly Water Bill (£)</label>
-                    <div class="mini-switch">
-                        <input type="radio" name="waterSplitType" id="wtPropYes" value="yes" checked>
-                        <label for="wtPropYes">Ratio</label>
-                        <input type="radio" name="waterSplitType" id="wtPropNo" value="no">
-                        <label for="wtPropNo">50/50</label>
-                        <span class="mini-switch-slider"></span>
+                    <div class="toggle toggle--mini">
+                        <input type="radio" name="waterSplitType" id="wtPropYes" value="yes" checked class="toggle__input">
+                        <label for="wtPropYes" class="toggle__label">Ratio</label>
+                        <input type="radio" name="waterSplitType" id="wtPropNo" value="no" class="toggle__input">
+                        <label for="wtPropNo" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="waterBill" class="input-control" value="30" required aria-describedby="waterBill-help waterBill-error" data-cy="waterBill-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="waterBill" class="input-group__control" value="30" required aria-describedby="waterBill-help waterBill-error" data-cy="waterBill-input">
                 </div>
                 <div id="waterBill-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -434,17 +449,17 @@
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="broadbandCost">Monthly Broadband & TV (£)</label>
-                    <div class="mini-switch">
-                        <input type="radio" name="broadbandSplitType" id="bbPropYes" value="yes" checked>
-                        <label for="bbPropYes">Ratio</label>
-                        <input type="radio" name="broadbandSplitType" id="bbPropNo" value="no">
-                        <label for="bbPropNo">50/50</label>
-                        <span class="mini-switch-slider"></span>
+                    <div class="toggle toggle--mini">
+                        <input type="radio" name="broadbandSplitType" id="bbPropYes" value="yes" checked class="toggle__input">
+                        <label for="bbPropYes" class="toggle__label">Ratio</label>
+                        <input type="radio" name="broadbandSplitType" id="bbPropNo" value="no" class="toggle__input">
+                        <label for="bbPropNo" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="broadbandCost" class="input-control" placeholder="e.g. 30" aria-describedby="broadband-help broadband-error" data-cy="broadbandCost-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="broadbandCost" class="input-group__control" placeholder="e.g. 30" aria-describedby="broadband-help broadband-error" data-cy="broadbandCost-input">
                 </div>
                 <div id="broadband-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -467,12 +482,12 @@
             <div class="master-toggle">
                 <div class="master-toggle-inner">
                     <span class="master-toggle-label">Set All Rules:</span>
-                    <div class="switch-toggle" style="margin-bottom: 0; max-width: 18rem;">
-                        <input type="radio" name="masterCommitted" id="mcRatio" value="yes" onchange="setAllSplitTypes('committed', 'yes')">
-                        <label for="mcRatio">Ratio</label>
-                        <input type="radio" name="masterCommitted" id="mcEqual" value="no" onchange="setAllSplitTypes('committed', 'no')">
-                        <label for="mcEqual">50/50</label>
-                        <span class="switch-slider"></span>
+                    <div class="toggle" style="margin-bottom: 0; max-width: 18rem;">
+                        <input type="radio" name="masterCommitted" id="mcRatio" value="yes" onchange="setAllSplitTypes('committed', 'yes')" class="toggle__input">
+                        <label for="mcRatio" class="toggle__label">Ratio</label>
+                        <input type="radio" name="masterCommitted" id="mcEqual" value="no" onchange="setAllSplitTypes('committed', 'no')" class="toggle__input">
+                        <label for="mcEqual" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
             </div>
@@ -480,17 +495,17 @@
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="groceriesCost">Monthly Groceries (£)</label>
-                    <div class="mini-switch">
-                        <input type="radio" name="groceriesSplitType" id="grPropYes" value="yes" checked>
-                        <label for="grPropYes">Ratio</label>
-                        <input type="radio" name="groceriesSplitType" id="grPropNo" value="no">
-                        <label for="grPropNo">50/50</label>
-                        <span class="mini-switch-slider"></span>
+                    <div class="toggle toggle--mini">
+                        <input type="radio" name="groceriesSplitType" id="grPropYes" value="yes" checked class="toggle__input">
+                        <label for="grPropYes" class="toggle__label">Ratio</label>
+                        <input type="radio" name="groceriesSplitType" id="grPropNo" value="no" class="toggle__input">
+                        <label for="grPropNo" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="groceriesCost" class="input-control" placeholder="e.g. 400" aria-describedby="groceries-help groceries-error" data-cy="groceriesCost-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="groceriesCost" class="input-group__control" placeholder="e.g. 400" aria-describedby="groceries-help groceries-error" data-cy="groceriesCost-input">
                 </div>
                 <div id="groceries-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -502,17 +517,17 @@
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="childcareCost">Monthly Childcare (£)</label>
-                    <div class="mini-switch">
-                        <input type="radio" name="childcareSplitType" id="ccPropYes" value="yes" checked>
-                        <label for="ccPropYes">Ratio</label>
-                        <input type="radio" name="childcareSplitType" id="ccPropNo" value="no">
-                        <label for="ccPropNo">50/50</label>
-                        <span class="mini-switch-slider"></span>
+                    <div class="toggle toggle--mini">
+                        <input type="radio" name="childcareSplitType" id="ccPropYes" value="yes" checked class="toggle__input">
+                        <label for="ccPropYes" class="toggle__label">Ratio</label>
+                        <input type="radio" name="childcareSplitType" id="ccPropNo" value="no" class="toggle__input">
+                        <label for="ccPropNo" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="childcareCost" class="input-control" placeholder="e.g. 200" aria-describedby="childcare-help childcare-error" data-cy="childcareCost-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="childcareCost" class="input-group__control" placeholder="e.g. 200" aria-describedby="childcare-help childcare-error" data-cy="childcareCost-input">
                 </div>
                 <div id="childcare-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -524,17 +539,17 @@
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="insuranceCost">Shared Insurances (£)</label>
-                    <div class="mini-switch">
-                        <input type="radio" name="insuranceSplitType" id="isPropYes" value="yes" checked>
-                        <label for="isPropYes">Ratio</label>
-                        <input type="radio" name="insuranceSplitType" id="isPropNo" value="no">
-                        <label for="isPropNo">50/50</label>
-                        <span class="mini-switch-slider"></span>
+                    <div class="toggle toggle--mini">
+                        <input type="radio" name="insuranceSplitType" id="isPropYes" value="yes" checked class="toggle__input">
+                        <label for="isPropYes" class="toggle__label">Ratio</label>
+                        <input type="radio" name="insuranceSplitType" id="isPropNo" value="no" class="toggle__input">
+                        <label for="isPropNo" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="insuranceCost" class="input-control" placeholder="e.g. 50" aria-describedby="insurance-help insurance-error" data-cy="insuranceCost-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="insuranceCost" class="input-group__control" placeholder="e.g. 50" aria-describedby="insurance-help insurance-error" data-cy="insuranceCost-input">
                 </div>
                 <div id="insurance-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -546,17 +561,17 @@
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="otherSharedCosts">Other Shared Monthly Costs (£)</label>
-                    <div class="mini-switch">
-                        <input type="radio" name="otherSharedSplitType" id="osPropYes" value="yes" checked>
-                        <label for="osPropYes">Ratio</label>
-                        <input type="radio" name="otherSharedSplitType" id="osPropNo" value="no">
-                        <label for="osPropNo">50/50</label>
-                        <span class="mini-switch-slider"></span>
+                    <div class="toggle toggle--mini">
+                        <input type="radio" name="otherSharedSplitType" id="osPropYes" value="yes" checked class="toggle__input">
+                        <label for="osPropYes" class="toggle__label">Ratio</label>
+                        <input type="radio" name="otherSharedSplitType" id="osPropNo" value="no" class="toggle__input">
+                        <label for="osPropNo" class="toggle__label">50/50</label>
+                        <span class="toggle__slider"></span>
                     </div>
                 </div>
                 <div class="input-group">
-                    <span class="input-addon">£</span>
-                    <input type="number" id="otherSharedCosts" class="input-control" placeholder="e.g. 100" aria-describedby="other-help other-error" data-cy="otherSharedCosts-input">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="otherSharedCosts" class="input-group__control" placeholder="e.g. 100" aria-describedby="other-help other-error" data-cy="otherSharedCosts-input">
                 </div>
                 <div id="other-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -588,13 +603,13 @@
 
             <h3 class="text-center">Your Monthly Shares</h3>
             <div class="monthly-shares-summary" id="monthly-shares-summary">
-                <div class="result-card result-share-p1" id="result-share-p1">
-                    <p class="result-card-label">You Pay</p>
-                    <p class="result-card-value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1">£0</p>
+                <div class="card card--result card--share-p1" id="result-share-p1">
+                    <p class="card__label">You Pay</p>
+                    <p class="card__value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1">£0</p>
                 </div>
-                <div class="result-card result-share-p2" id="result-share-p2">
-                    <p class="result-card-label">Your Partner Pays</p>
-                    <p class="result-card-value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2">£0</p>
+                <div class="card card--result card--share-p2" id="result-share-p2">
+                    <p class="card__label">Your Partner Pays</p>
+                    <p class="card__value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2">£0</p>
                 </div>
             </div>
             <p class="text-center total-bill-row" id="total-bill-row">
@@ -605,23 +620,23 @@
                 <div class="alert__text"></div>
             </div>
 
-            <div class="workings-container">
-                <h4>Calculation Workings</h4>
-                <div class="calculation-workings" id="calculation-workings">
-                    <div class="workings-sections">
-                        <div class="workings-section">
-                            <h5>1. Combined Annual Income & Ratio</h5>
+            <div class="workings">
+                <h4 class="workings__title">Calculation Workings</h4>
+                <div class="workings__content" id="calculation-workings">
+                    <div class="workings__sections">
+                        <div class="workings__section">
+                            <h5 class="workings__subtitle">1. Combined Annual Income & Ratio</h5>
                             <p><span id="wk-salary-p1">£0</span> + <span id="wk-salary-p2">£0</span> = <strong id="wk-total-salary">£0</strong></p>
-                            <ul>
+                            <ul class="workings__list">
                                 <li>You: <strong id="wk-p1-perc">0%</strong> share</li>
                                 <li>Your Partner: <strong id="wk-p2-perc">0%</strong> share</li>
                             </ul>
                         </div>
 
-                        <div class="workings-section">
-                            <h5>2. Mortgage & Equity Summary</h5>
+                        <div class="workings__section">
+                            <h5 class="workings__subtitle">2. Mortgage & Equity Summary</h5>
                             <p>Property Value: <strong id="wk-property-price">£0</strong></p>
-                            <ul>
+                            <ul class="workings__list">
                                 <li>Deposit: <strong id="wk-deposit-perc">0%</strong> (<span id="wk-total-equity">£0</span>) split by <strong id="wk-deposit-split-type">Income Ratio</strong></li>
                                 <li>Mortgage Required: <strong id="wk-mortgage-required">£0</strong></li>
                                 <li>Terms: <strong id="wk-interest-rate">0%</strong> over <strong id="wk-mortgage-term">0</strong> years</li>
@@ -630,8 +645,8 @@
                             </ul>
                         </div>
 
-                        <div class="workings-section">
-                            <h5>3. Calculation Application</h5>
+                        <div class="workings__section">
+                            <h5 class="workings__subtitle">3. Calculation Application</h5>
                             <p>Each monthly line item was split using either your <strong>Income Ratio</strong> or <strong>50/50</strong> based on your specific rule choices throughout the form. The mortgage payment is always split by your Income Ratio to ensure long-term fairness.</p>
                         </div>
                     </div>
@@ -704,17 +719,17 @@
 
             <p class="help-text breakdown-summary" id="breakdown-summary" style="margin-top: 1rem; border-top: 1px solid var(--color-border); padding-top: 1rem;"></p>
 
-            <div class="nav-group-vertical">
-                <button type="button" id="downloadCSVBtn" class="btn-success btn-block" onclick="downloadCSV()">
+            <div class="nav nav--vertical">
+                <button type="button" id="downloadCSVBtn" class="btn btn-success btn-block" onclick="downloadCSV()">
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-download.svg'); mask-image: url('icons/icon-download.svg'); width: 1.25rem; height: 1.25rem; vertical-align: middle; margin-right: 0.5rem; display: inline-block;" aria-hidden="true"></span>
                     Download results as CSV
                 </button>
             </div>
         </section>
 
-        <div class="nav-group">
-            <button id="back-button" class="btn-secondary" data-cy="back-button">Back</button>
-            <button id="next-button" class="btn-primary" data-cy="next-button">Next</button>
+        <div class="nav">
+            <button id="back-button" class="btn btn-secondary nav__button" data-cy="back-button">Back</button>
+            <button id="next-button" class="btn btn-primary nav__button" data-cy="next-button">Next</button>
         </div>
     </div>
 </main>
@@ -723,10 +738,10 @@
     Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="README.md" target="_blank" style="color: inherit; text-decoration: underline;">Project Info</a>
 </footer>
 
-<div class="progress-container" id="progress-container">
-    <div class="progress-track" id="progress-track">
-        <span class="progress-text-alt" id="progress-text-alt" aria-live="polite">Step 1 of 7: Welcome</span>
-        <div class="app-progress" id="app-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome"></div>
+<div class="progress" id="progress-container">
+    <div class="progress__track" id="progress-track">
+        <span class="progress__text" id="progress-text-alt" aria-live="polite">Step 1 of 7: Welcome</span>
+        <div class="progress__bar" id="app-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome"></div>
     </div>
 </div>
 

@@ -136,10 +136,10 @@ runTest('createAlertHTML should generate correct HTML structure', () => {
   console.assert(alertDiv.classList.contains('alert--info'), 'Should have alert--info class');
   console.assert(alertDiv.hasAttribute('hidden'), 'Should have hidden attribute');
   
-  const img = alertDiv.querySelector('img');
-  console.assert(img !== null, 'Icon image should exist');
-  console.assert(img.getAttribute('src') === 'icons/icon-info.svg', 'Icon src should be correct');
-  console.assert(img.classList.contains('alert__icon'), 'Icon should have alert__icon class');
+  const iconSpan = alertDiv.querySelector('.alert__icon');
+  console.assert(iconSpan !== null, 'Icon span should exist');
+  console.assert(iconSpan.getAttribute('aria-hidden') === 'true', 'Icon should be aria-hidden');
+  console.assert(iconSpan.style.maskImage.includes('icons/icon-info.svg') || iconSpan.style.webkitMaskImage.includes('icons/icon-info.svg'), 'Icon mask-image should be correct');
   
   const textDiv = alertDiv.querySelector('.alert__text');
   console.assert(textDiv !== null, 'Text div should exist');
