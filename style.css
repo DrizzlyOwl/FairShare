@@ -186,11 +186,10 @@ h2 {
     }
 }
 
-h2 svg {
+h2 img {
     width: 1.5rem;
     height: 1.5rem;
     flex-shrink: 0;
-    color: var(--color-p2);
     animation: iconPulse 3s ease-in-out infinite;
 }
 
@@ -608,36 +607,8 @@ input[type=number] {
     .help-text { font-size: var(--font-size-base); }
 }
 
-.error-text {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    margin-top: var(--spacing-sm);
-    font-size: 1rem;
-    font-weight: 700;
-    background-color: #FEF2F2; /* Soft Red Bg */
-    color: #991B1B;            /* Dark Red Text */
-    border: 1px solid #FEE2E2; /* Subtle Red Border */
-}
 
-.error-text svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    flex-shrink: 0;
-    margin-top: 0.05rem;
-}
-
-.info-text {
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--color-p2);
-    margin-bottom: 1rem;
-}
-
-/* Alerts */
-.alert-info, .alert-warning {
+.alert {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
@@ -646,38 +617,51 @@ input[type=number] {
     margin-bottom: var(--spacing-lg);
     font-size: 1rem;
     text-align: left;
-    border: 1px solid transparent;
+    border: 1px solid transparent; /* Default for all alerts */
 }
 
-.alert-info svg, .alert-warning svg {
+.alert__icon {
     width: 1.5rem;
     height: 1.5rem;
     flex-shrink: 0;
-    margin-top: 0.05rem;
+    margin-top: 0.05rem; /* Optical alignment */
 }
 
+.alert__text {
+    flex-grow: 1;
+}
+
+/* Media queries for alerts */
 @media (min-width: 768px) {
-    .alert-info, .alert-warning {
+    .alert {
         padding: 1.25rem;
         margin-bottom: 1.5rem;
         gap: 1rem;
     }
 }
 
-.alert-info { 
-    background-color: #EBF5FF; 
-    color: #1E429F; 
-    border-color: #C3DDFD; 
+/* Alert Variants */
+.alert--info {
+    background-color: #EBF5FF;
+    color: #1E429F;
+    border-color: #C3DDFD;
 }
 
-.alert-warning { 
-    background-color: #FFFBEB; 
-    color: #92400E; 
-    border-color: #FDE68A; 
+.alert--warning {
+    background-color: #FFFBEB;
+    color: #92400E;
+    border-color: #FDE68A;
 }
 
-/* Utilities */
-.fw-bold { font-weight: 700; }
+.alert--error {
+    background-color: #FEF2F2; /* Soft Red Bg */
+    color: #991B1B;            /* Dark Red Text */
+    border-color: #FEE2F2;     /* Subtle Red Border */
+    margin-top: var(--spacing-sm);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    gap: 0.5rem;
+}
 
 /* Buttons */
 button {

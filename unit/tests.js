@@ -125,4 +125,25 @@ runTest(
   }
 );
 
+runTest('createAlertHTML should generate correct HTML structure', () => {
+  const html = createAlertHTML('info', 'icon-info.svg', 'Test Message', 'test-id', true);
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  const alertDiv = tempDiv.querySelector('#test-id');
+  
+  console.assert(alertDiv !== null, 'Alert div should exist');
+  console.assert(alertDiv.classList.contains('alert'), 'Should have alert class');
+  console.assert(alertDiv.classList.contains('alert--info'), 'Should have alert--info class');
+  console.assert(alertDiv.hasAttribute('hidden'), 'Should have hidden attribute');
+  
+  const img = alertDiv.querySelector('img');
+  console.assert(img !== null, 'Icon image should exist');
+  console.assert(img.getAttribute('src') === 'icons/icon-info.svg', 'Icon src should be correct');
+  console.assert(img.classList.contains('alert__icon'), 'Icon should have alert__icon class');
+  
+  const textDiv = alertDiv.querySelector('.alert__text');
+  console.assert(textDiv !== null, 'Text div should exist');
+  console.assert(textDiv.innerText === 'Test Message', 'Text content should be correct');
+});
+
 // -- END: Unit Tests --

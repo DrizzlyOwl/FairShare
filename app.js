@@ -188,6 +188,17 @@ window.REGIONS = REGIONS;
 
 // --- Core Functions ---
 
+window.createAlertHTML = (variant, iconName, text, id = '', hidden = false) => {
+    const idAttr = id ? `id="${id}"` : '';
+    const hiddenAttr = hidden ? 'hidden' : '';
+    return `
+        <div ${idAttr} class="alert alert--${variant}" ${hiddenAttr}>
+            <img src="icons/${iconName}" alt="${variant} icon" class="alert__icon">
+            <div class="alert__text">${text}</div>
+        </div>
+    `;
+};
+
 window.getVal = (id) => parseFloat(elements[id]?.value) || 0;
 window.updateBreakdownRow = (key, total, p1, p2) => {
     if (elements[`bd${key}Total`]) elements[`bd${key}Total`].innerText = formatCurrency(total, 2);
@@ -370,22 +381,26 @@ window.checkRegion = () => {
     const regionKey = getRegionFromPostcode(pc);
     const northernRegions = ['NORTH', 'MIDLANDS', 'WALES', 'SCOTLAND'];
     const announceDiv = elements.regionAnnouncement;
+    const announceText = announceDiv?.querySelector('.alert__text');
     if (regionKey) {
         const regionName = REGIONS[regionKey].name;
         appData.regionCode = REGIONS[regionKey].code;
+        announceDiv.removeAttribute('hidden');
         if (northernRegions.includes(regionKey)) {
             appData.isNorth = true;
-            announceDiv.innerText = `${regionName} region detected. Heating estimates adjusted.`;
+            if (announceText) announceText.innerText = `${regionName} region detected. Heating estimates adjusted.`;
         } else {
             appData.isNorth = false;
-            announceDiv.innerText = `${regionName} region detected.`;
+            if (announceText) announceText.innerText = `${regionName} region detected.`;
         }
     } else if (pc.length > 0) {
         appData.isNorth = false;
         appData.regionCode = 'EN'; // Default
-        announceDiv.innerText = "Region could not be determined.";
+        announceDiv.removeAttribute('hidden');
+        if (announceText) announceText.innerText = "Region could not be determined.";
     } else {
-        announceDiv.innerText = "";
+        announceDiv.setAttribute('hidden', '');
+        if (announceText) announceText.innerText = "";
     }
 };
 window.getEstimatedPropertyPrice = async (postcode) => {
@@ -504,8 +519,11 @@ window.updatePricePreview = (band) => {
     appData.band = band;
     const cost = bandPrices[band];
     const display = elements.bandPriceDisplay;
-    const icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>`;
-    display.innerHTML = `${icon} <span>Band ${band} selected. Estimated cost: ${formatCurrency(cost)} per month.</span>`;
+    if (display) {
+        display.outerHTML = createAlertHTML('info', 'icon-info.svg', `Band ${band} selected. Estimated cost: ${formatCurrency(cost)} per month.`, 'band-price-display');
+        // Re-cache element after outerHTML replacement
+        elements.bandPriceDisplay = document.getElementById('band-price-display');
+    }
 };
 window.updateRatioBar = () => {
     const p1P = Math.round(appData.ratioP1 * 100);
@@ -543,9 +561,7 @@ window.hideWarning = (screenNum) => {
 window.showWarning = (screenNum, msg) => {
     const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
     if (!warnDiv) return;
-    const icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>`;
-    warnDiv.innerHTML = `${icon} <span>${msg}</span>`;
-    warnDiv.removeAttribute('hidden');
+    warnDiv.outerHTML = createAlertHTML('warning', 'icon-error.svg', msg, `warning-screen-${screenNum}`);
 };
 window.updatePagination = (screenId) => {
     const backButton = elements.backButton;
@@ -850,91 +866,6 @@ window.validateAndNext = async (screenId) => {
         if (config.onSuccess) config.onSuccess();
         window.switchScreen(config.nextScreen);
     }
-};
-window.calculateFinalSplit = () => {
-    const taxVal = getVal('councilTaxCost');
-    const enVal = getVal('energyCost');
-    const wtVal = getVal('waterBill');
-    const bbVal = getVal('broadbandCost');
-    const grVal = getVal('groceriesCost');
-    const ccVal = getVal('childcareCost');
-    const isVal = getVal('insuranceCost');
-    const osVal = getVal('otherSharedCosts');
-    const mortgage = appData.monthlyMortgagePayment;
-
-    const getSplit = (key, val) => {
-        const pref = document.querySelector(`input[name="${key}SplitType"]:checked`)?.value || 'yes';
-        const r = pref === 'yes' ? appData.ratioP1 : 0.5;
-        return { p1: val * r, p2: val * (1 - r) };
-    };
-
-    const tax = getSplit('councilTax', taxVal);
-    const energy = getSplit('energy', enVal);
-    const water = getSplit('water', wtVal);
-    const broadband = getSplit('broadband', bbVal);
-    const groceries = getSplit('groceries', grVal);
-    const childcare = getSplit('childcare', ccVal);
-    const insurance = getSplit('insurance', isVal);
-    const otherShared = getSplit('otherShared', osVal);
-
-    const mort = { p1: mortgage * appData.ratioP1, p2: mortgage * appData.ratioP2 };
-
-    const committedTotal = ccVal + isVal + osVal;
-    const committedP1 = childcare.p1 + insurance.p1 + otherShared.p1;
-    const committedP2 = childcare.p2 + insurance.p2 + otherShared.p2;
-
-    const totalP1 = tax.p1 + energy.p1 + water.p1 + broadband.p1 + groceries.p1 + committedP1 + mort.p1;
-    const totalP2 = tax.p2 + energy.p2 + water.p2 + broadband.p2 + groceries.p2 + committedP2 + mort.p2;
-    const total = totalP1 + totalP2;
-
-    elements.resultP1.innerText = formatCurrency(totalP1, 2);
-    elements.resultP2.innerText = formatCurrency(totalP2, 2);
-    elements.totalBillDisplay.innerText = formatCurrency(total, 2);
-
-    updateBreakdownRow('Mortgage', mortgage, mort.p1, mort.p2);
-    updateBreakdownRow('Tax', taxVal, tax.p1, tax.p2);
-    updateBreakdownRow('Energy', enVal, energy.p1, energy.p2);
-    updateBreakdownRow('Water', wtVal, water.p1, water.p2);
-    updateBreakdownRow('Broadband', bbVal, broadband.p1, broadband.p2);
-    updateBreakdownRow('Groceries', grVal, groceries.p1, groceries.p2);
-    updateBreakdownRow('Committed', committedTotal, committedP1, committedP2);
-    updateBreakdownRow('Total', total, totalP1, totalP2);
-
-    const summaryEl = elements.resultSummary;
-    if (summaryEl) {
-        const diff = Math.abs(totalP1 - totalP2);
-        const moreP = totalP1 > totalP2 ? 'You' : 'Your Partner';
-        const lessP = totalP1 > totalP2 ? 'Your Partner' : 'You';
-        const verb = moreP === 'You' ? 'pay' : 'pays';
-        if (diff < 0.01) summaryEl.innerText = "Both partners contribute equally based on your selected split rules.";
-        else summaryEl.innerText = `${moreP} ${verb} ${formatCurrency(diff, 2)} more than ${lessP} per month overall.`;
-    }
-
-    // Update Calculation Workings placeholders
-    if (elements.wkSalaryP1) elements.wkSalaryP1.innerText = formatCurrency(appData.salaryP1);
-    if (elements.wkSalaryP2) elements.wkSalaryP2.innerText = formatCurrency(appData.salaryP2);
-    if (elements.wkTotalSalary) elements.wkTotalSalary.innerText = formatCurrency(appData.salaryP1 + appData.salaryP2);
-    if (elements.wkP1Perc) elements.wkP1Perc.innerText = (appData.ratioP1 * 100).toFixed(1) + '%';
-    if (elements.wkP2Perc) elements.wkP2Perc.innerText = (appData.ratioP2 * 100).toFixed(1) + '%';
-
-    if (elements.wkPropertyPrice) elements.wkPropertyPrice.innerText = formatCurrency(appData.propertyPrice);
-    if (elements.wkDepositPerc) elements.wkDepositPerc.innerText = appData.depositPercentage + '%';
-    if (elements.wkTotalEquity) elements.wkTotalEquity.innerText = formatCurrency(appData.totalEquity);
-    if (elements.wkDepositSplitType) elements.wkDepositSplitType.innerText = appData.depositSplitProportional ? 'Income Ratio' : '50/50';
-    if (elements.wkMortgageRequired) elements.wkMortgageRequired.innerText = formatCurrency(appData.mortgageRequired);
-    if (elements.wkInterestRate) elements.wkInterestRate.innerText = appData.mortgageInterestRate + '%';
-    if (elements.wkMortgageTerm) elements.wkMortgageTerm.innerText = appData.mortgageTerm;
-    if (elements.wkMonthlyPayment) elements.wkMonthlyPayment.innerText = formatCurrency(appData.monthlyMortgagePayment, 2);
-    if (elements.wkTotalRepayment) elements.wkTotalRepayment.innerText = formatCurrency(appData.totalRepayment, 2);
-
-    const breakdownSummaryEl = elements.breakdownSummary;
-    if (breakdownSummaryEl) {
-        const mainCosts = mort.p1 + mort.p2 + taxVal + enVal + wtVal;
-        const lifestyleCosts = bbVal + grVal + committedTotal;
-        breakdownSummaryEl.innerText = `Out of the £${total.toLocaleString(undefined, {minimumFractionDigits: 2})} total monthly spend, £${mainCosts.toLocaleString(undefined, {minimumFractionDigits: 2})} is dedicated to the property and utilities, while £${lifestyleCosts.toLocaleString(undefined, {minimumFractionDigits: 2})} covers shared lifestyle and committed costs. This report captures all your shared commitments in one place.`;
-    }
-
-    window.switchScreen('screen-7');
 };
 
 

@@ -44,9 +44,11 @@
                     <strong>Build a fair financial foundation for your home.</strong><br>
                     Establish proportionate bill splitting based on your relative incomes in just 7 steps.
                 </p>
-                <div class="alert-info" id="efficiency-tip">
-                    <img src="icons/icon-info.svg" alt="Info Icon">
-                    <p style="margin-bottom: 0;"><strong>Efficiency Tip:</strong> Use your <strong>Arrow Keys</strong> or <strong>Enter</strong> to navigate quickly between screens.</p>
+                <div id="efficiency-tip" class="alert alert--info">
+                    <img src="icons/icon-info.svg" alt="info icon" class="alert__icon">
+                    <div class="alert__text">
+                        <strong>Efficiency Tip:</strong> Use your <strong>Arrow Keys</strong> or <strong>Enter</strong> to navigate quickly between screens.
+                    </div>
                 </div>
                 <p class="screen-summary">
                     This guide automates your household budgeting. By establishing a contribution ratio, you'll ensure both partners retain a fair share of disposable income, removing financial friction before it starts.
@@ -79,9 +81,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="salaryP1" class="input-control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-help salaryP1-error" data-cy="salaryP1-input">
                 </div>
-                <div id="salaryP1-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a valid annual salary.</span>
+                <div id="salaryP1-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a valid annual salary.</div>
                 </div>
                 <div id="salaryP1-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
             </div>
@@ -92,9 +94,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="salaryP2" class="input-control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-help salaryP2-error" data-cy="salaryP2-input">
                 </div>
-                <div id="salaryP2-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a valid annual salary for your partner.</span>
+                <div id="salaryP2-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a valid annual salary for your partner.</div>
                 </div>
                 <div id="salaryP2-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
             </div>
@@ -115,12 +117,15 @@
                 <div class="input-group">
                     <input type="text" id="postcode" class="input-control" aria-describedby="postcode-help postcode-error" onblur="checkRegion()" placeholder="e.g. SW1A 0AA" data-cy="postcode-input">
                 </div>
-                <div id="postcode-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a valid UK postcode.</span>
+                <div id="postcode-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a valid UK postcode.</div>
                 </div>
                 <div id="postcode-help" class="help-text">Used to estimate local market prices and regional utility variations.</div>
-                <div id="region-announcement" aria-live="polite" class="alert-info" hidden></div>
+                <div id="region-announcement" class="alert alert--info" aria-live="polite" hidden>
+                    <img src="icons/icon-info.svg" alt="info icon" class="alert__icon">
+                    <div class="alert__text"></div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -130,9 +135,9 @@
                     <input type="number" id="propertyPrice" class="input-control" placeholder="e.g. 250000" aria-describedby="propertyPrice-error" data-cy="propertyPrice-input">
                     <button type="button" id="estimatePriceBtn" class="btn-addon" data-cy="estimatePrice-button">Estimate</button>
                 </div>
-                <div id="propertyPrice-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a property value or use a postcode to estimate.</span>
+                <div id="propertyPrice-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a property value or use a postcode to estimate.</div>
                 </div>
                 <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden>
                     Using estimated market price: <span id="estimatedPriceValue" class="fw-bold"></span>
@@ -156,15 +161,15 @@
                     <input type="radio" name="taxBand" id="bG" value="G" onchange="updatePricePreview('G')"><label for="bG">G</label>
                     <input type="radio" name="taxBand" id="bH" value="H" onchange="updatePricePreview('H')"><label for="bH">H</label>
                 </div>
-                <div id="taxBand-error" class="error-text" aria-live="assertive" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please select a valuation band to continue.</span>
+                <div id="taxBand-error" class="alert alert--error" aria-live="assertive" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please select a valuation band to continue.</div>
                 </div>
             </fieldset>
 
-            <div class="alert-info" id="band-price-display" aria-live="polite">
-                <img src="icons/icon-info.svg" alt="Info Icon">
-                <span>Select a band to see estimated cost</span>
+            <div id="band-price-display" class="alert alert--info" aria-live="polite">
+                <img src="icons/icon-info.svg" alt="info icon" class="alert__icon">
+                <div class="alert__text">Select a band to see estimated cost</div>
             </div>
 
             <div class="form-row">
@@ -173,9 +178,9 @@
                     <div class="input-group">
                         <input type="number" id="bedrooms" class="input-control" value="2" min="1" max="50" required aria-describedby="bedrooms-error" data-cy="bedrooms-input">
                     </div>
-                    <div id="bedrooms-error" class="error-text" hidden>
-                        <img src="icons/icon-error.svg" alt="Error Icon">
-                        <span>Required.</span>
+                    <div id="bedrooms-error" class="alert alert--error" hidden>
+                        <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                        <div class="alert__text">Required.</div>
                     </div>
                 </div>
                 <div class="form-group col">
@@ -183,14 +188,17 @@
                     <div class="input-group">
                         <input type="number" id="bathrooms" class="input-control" value="1" min="1" max="50" required aria-describedby="bathrooms-error" data-cy="bathrooms-input">
                     </div>
-                    <div id="bathrooms-error" class="error-text" hidden>
-                        <img src="icons/icon-error.svg" alt="Error Icon">
-                        <span>Required.</span>
+                    <div id="bathrooms-error" class="alert alert--error" hidden>
+                        <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                        <div class="alert__text">Required.</div>
                     </div>
                 </div>
             </div>
 
-            <div class="alert-warning" id="warning-screen-3" role="alert" aria-live="polite" hidden></div>
+            <div id="warning-screen-3" class="alert alert--warning" role="alert" aria-live="polite" hidden>
+                <img src="icons/icon-error.svg" alt="warning icon" class="alert__icon">
+                <div class="alert__text"></div>
+            </div>
         </section>
 
         <section class="screen" id="screen-4" aria-labelledby="heading-mortgage" tabindex="-1" hidden>
@@ -237,9 +245,9 @@
                         <input type="number" id="mortgageInterestRate" class="input-control" value="5" min="0" step="0.1" required aria-describedby="mortgageInterestRate-error" data-cy="mortgageInterestRate-input">
                         <span class="input-addon">%</span>
                     </div>
-                    <div id="mortgageInterestRate-error" class="error-text" hidden>
-                        <img src="icons/icon-error.svg" alt="Error Icon">
-                        <span>Invalid.</span>
+                    <div id="mortgageInterestRate-error" class="alert alert--error" hidden>
+                        <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                        <div class="alert__text">Invalid.</div>
                     </div>
                 </div>
 
@@ -248,9 +256,9 @@
                     <div class="input-group">
                         <input type="number" id="mortgageTerm" class="input-control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error" data-cy="mortgageTerm-input">
                     </div>
-                    <div id="mortgageTerm-error" class="error-text" hidden>
-                        <img src="icons/icon-error.svg" alt="Error Icon">
-                        <span>Invalid.</span>
+                    <div id="mortgageTerm-error" class="alert alert--error" hidden>
+                        <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                        <div class="alert__text">Please enter a term between 1 and 50 years.</div>
                     </div>
                 </div>
             </div>
@@ -311,9 +319,9 @@
                 <div id="displayPropertyPrice-help" class="help-text">As specified in the property details section.</div>
             </div>
 
-            <div class="alert-info" id="equity-mortgage-summary" aria-live="polite">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
-                <div>
+            <div id="equity-mortgage-summary" class="alert alert--info" aria-live="polite">
+                <img src="icons/icon-info.svg" alt="info icon" class="alert__icon">
+                <div class="alert__text">
                     Total Equity Required: <span id="totalEquityDisplay" class="fw-bold">£0</span><br>
                     Mortgage Required: <span id="mortgageRequiredDisplay" class="fw-bold">£0</span><br>
                     Est. Monthly Mortgage: <span id="monthlyMortgageDisplay" class="fw-bold">£0</span><br>
@@ -372,9 +380,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="councilTaxCost" class="input-control" required aria-describedby="councilTaxCost-help councilTaxCost-error" data-cy="councilTaxCost-input">
                 </div>
-                <div id="councilTaxCost-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter the monthly council tax.</span>
+                <div id="councilTaxCost-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter the monthly council tax.</div>
                 </div>
                 <div id="councilTaxCost-help" class="help-text">Estimated based on your selected valuation band.</div>
             </div>
@@ -394,9 +402,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="energyCost" class="input-control" required aria-describedby="energy-explainer energyCost-error" data-cy="energyCost-input">
                 </div>
-                <div id="energyCost-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter an energy estimate.</span>
+                <div id="energyCost-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter an energy estimate.</div>
                 </div>
                 <div id="energy-explainer" class="help-text">Estimated gas and electricity usage for this property size and region.</div>
             </div>
@@ -416,9 +424,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="waterBill" class="input-control" value="30" required aria-describedby="waterBill-help waterBill-error" data-cy="waterBill-input">
                 </div>
-                <div id="waterBill-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a water bill amount.</span>
+                <div id="waterBill-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a water bill amount.</div>
                 </div>
                 <div id="waterBill-help" class="help-text">Estimated regional average based on bathrooms and postcode.</div>
             </div>
@@ -438,9 +446,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="broadbandCost" class="input-control" placeholder="e.g. 30" aria-describedby="broadband-help broadband-error" data-cy="broadbandCost-input">
                 </div>
-                <div id="broadband-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a valid amount.</span>
+                <div id="broadband-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a valid amount.</div>
                 </div>
                 <div id="broadband-help" class="help-text">Internet, cable, and streaming subscriptions.</div>
             </div>
@@ -484,9 +492,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="groceriesCost" class="input-control" placeholder="e.g. 400" aria-describedby="groceries-help groceries-error" data-cy="groceriesCost-input">
                 </div>
-                <div id="groceries-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a valid amount.</span>
+                <div id="groceries-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a valid amount.</div>
                 </div>
                 <div id="groceries-help" class="help-text">Food, household supplies, and shared toiletries.</div>
             </div>
@@ -506,9 +514,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="childcareCost" class="input-control" placeholder="e.g. 200" aria-describedby="childcare-help childcare-error" data-cy="childcareCost-input">
                 </div>
-                <div id="childcare-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a valid amount.</span>
+                <div id="childcare-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a valid amount.</div>
                 </div>
                 <div id="childcare-help" class="help-text">Nursery, childminders, or other care costs.</div>
             </div>
@@ -528,9 +536,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="insuranceCost" class="input-control" placeholder="e.g. 50" aria-describedby="insurance-help insurance-error" data-cy="insuranceCost-input">
                 </div>
-                <div id="insurance-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a valid amount.</span>
+                <div id="insurance-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a valid amount.</div>
                 </div>
                 <div id="insurance-help" class="help-text">Combined life, health, or pet insurance.</div>
             </div>
@@ -550,9 +558,9 @@
                     <span class="input-addon">£</span>
                     <input type="number" id="otherSharedCosts" class="input-control" placeholder="e.g. 100" aria-describedby="other-help other-error" data-cy="otherSharedCosts-input">
                 </div>
-                <div id="other-error" class="error-text" hidden>
-                    <img src="icons/icon-error.svg" alt="Error Icon">
-                    <span>Please enter a valid amount.</span>
+                <div id="other-error" class="alert alert--error" hidden>
+                    <img src="icons/icon-error.svg" alt="error icon" class="alert__icon">
+                    <div class="alert__text">Please enter a valid amount.</div>
                 </div>
                 <div id="other-help" class="help-text">Gym memberships, streaming services, or car payments.</div>
             </div>
