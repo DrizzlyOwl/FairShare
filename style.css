@@ -21,6 +21,13 @@
     --font-size-h2: 1.5rem;
     --font-size-h3: 1.25rem;
     --font-size-h4: 1.125rem;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
 }
 
 /* --- CSS Reset --- */
@@ -164,11 +171,11 @@ body {
 h2 {
     font-size: 1.25rem; /* Mobile size */
     color: var(--color-primary);
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--spacing-lg);
     font-weight: 800;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-md);
     line-height: 1.2;
 }
 
@@ -199,19 +206,19 @@ h2 svg {
     50% { transform: scale(1.1); opacity: 1; }
 }
 
-h3 { font-size: 1.125rem; margin-top: 1.25rem; color: var(--color-primary); }
+h3 { font-size: 1.125rem; margin-top: var(--spacing-lg); color: var(--color-primary); }
 @media (min-width: 768px) {
     h3 { font-size: var(--font-size-h3); margin-top: 1.5rem; }
 }
 
-p { margin-bottom: 1rem; font-size: 1rem; }
+p { margin-bottom: var(--spacing-lg); font-size: 1rem; }
 @media (min-width: 768px) {
     p { margin-bottom: 1.25rem; font-size: var(--font-size-base); }
 }
 
 ul, ol {
-    margin-bottom: 1.25rem;
-    padding-left: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+    padding-left: var(--spacing-lg);
 }
 
 @media (min-width: 768px) {
@@ -225,7 +232,7 @@ ul { list-style-type: disc; }
 ol { list-style-type: decimal; }
 
 li {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
     font-size: 1rem;
 }
 
@@ -242,7 +249,7 @@ fieldset {
 }
 
 .form-group {
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 @media (min-width: 768px) {
@@ -268,7 +275,7 @@ fieldset {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .field-header label { margin-bottom: 0; }
@@ -326,7 +333,7 @@ input[type=number] {
 
 .input-control {
     width: 100%;
-    border: 2px solid var(--color-border);
+    border: none;
     border-radius: 0.5rem;
     padding: 0.7rem 0.875rem;
     font-size: 1rem;
@@ -343,8 +350,7 @@ input[type=number] {
 }
 
 .input-control:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 4px rgba(61, 82, 127, 0.1);
+    outline: none; /* Remove default outline */
 }
 
 .input-control:read-only,
@@ -524,20 +530,20 @@ input:read-only {
 /* Master Toggle Area */
 .master-toggle {
     background-color: rgba(61, 82, 127, 0.05);
-    padding: 0.875rem;
+    padding: var(--spacing-lg);
     border-radius: 0.75rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
     border: 1px dashed var(--color-primary);
 }
 
 @media (min-width: 768px) {
-    .master-toggle { padding: 1rem; margin-bottom: 2rem; }
+    .master-toggle { padding: var(--spacing-md); margin-bottom: var(--spacing-xl); }
 }
 
 .master-toggle-inner {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--spacing-md);
     align-items: center;
     text-align: center;
 }
@@ -561,7 +567,7 @@ input:read-only {
     font-size: 1rem;
     color: var(--color-text-light);
     line-height: 1.5;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--color-border);
 }
@@ -577,7 +583,7 @@ input:read-only {
 .help-text {
     font-size: 1rem;
     color: var(--color-text-light);
-    margin-top: 0.25rem;
+    margin-top: var(--spacing-xs);
 }
 
 @media (min-width: 768px) {
@@ -590,7 +596,7 @@ input:read-only {
     gap: 0.5rem;
     padding: 0.75rem;
     border-radius: 0.5rem;
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-sm);
     font-size: 1rem;
     font-weight: 700;
     background-color: #FEF2F2; /* Soft Red Bg */
@@ -619,7 +625,7 @@ input:read-only {
     gap: 0.75rem;
     padding: 1rem;
     border-radius: 0.75rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--spacing-lg);
     font-size: 1rem;
     text-align: left;
     border: 1px solid transparent;
@@ -666,8 +672,22 @@ button {
 }
 
 .btn-primary { background-color: var(--color-primary); color: white; padding: 0.875rem 1.5rem; }
+.btn-primary:hover, .btn-primary:focus {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
 .btn-secondary { background-color: white; color: var(--color-primary); border: 2px solid var(--color-primary); padding: 0.875rem 1.5rem; }
+.btn-secondary:hover, .btn-secondary:focus {
+    background-color: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 .btn-success { background-color: var(--color-p2); color: white; padding: 0.875rem 1.5rem; }
+.btn-success:hover, .btn-success:focus {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
 
 @media (min-width: 768px) {
     .btn-primary, .btn-secondary, .btn-success { padding: 1rem 2rem; }
@@ -683,7 +703,7 @@ button {
     display: flex;
     flex-direction: column-reverse; /* Primary on top for mobile */
     gap: 0.75rem;
-    margin-top: 2rem;
+    margin-top: var(--spacing-xl);
 }
 
 @media (min-width: 480px) {
