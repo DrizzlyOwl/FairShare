@@ -590,7 +590,7 @@ window.switchScreen = (id) => {
     document.querySelectorAll('main section').forEach(el => el.setAttribute('hidden', ''));
     target.removeAttribute('hidden');
     if (heading) {
-        heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     target.focus();
     const progressMap = {
