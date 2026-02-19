@@ -353,15 +353,25 @@ input[type=number] {
     outline: none; /* Remove default outline */
 }
 
-.input-control:read-only,
-input:read-only {
-    background-color: rgba(44, 62, 99, 0.04);
-    border: 1px solid var(--color-border);
-    border-left: 4px solid var(--color-border);
+.input-control:read-only {
+    background-color: var(--color-bg-body); /* Use a more subtle background for readonly */
     color: var(--color-text-light);
     cursor: not-allowed;
     font-weight: 700;
+}
+
+/* Specific styling for readonly inputs within an input-group */
+.input-group input.input-control[readonly] {
+    border: none; /* Remove individual input border when inside input-group */
+    background-color: var(--color-bg-body);
     box-shadow: none;
+    padding-left: 0.875rem; /* Adjust padding if addon is present */
+    padding-right: 0.875rem;
+}
+
+/* Ensure the addon retains its styling */
+.input-group input.input-control[readonly] + .input-addon {
+    border-left: 1px solid var(--color-border);
 }
 
 /* Radio Button Controls */
