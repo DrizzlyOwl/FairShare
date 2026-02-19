@@ -362,11 +362,9 @@ input[type=number] {
 
 /* Specific styling for readonly inputs within an input-group */
 .input-group input.input-control[readonly] {
-    border: none; /* Remove individual input border when inside input-group */
     background-color: var(--color-bg-body);
     box-shadow: none;
-    padding-left: 0.875rem; /* Adjust padding if addon is present */
-    padding-right: 0.875rem;
+    /* Let border be handled by .input-group */
 }
 
 /* Ensure the addon retains its styling */
