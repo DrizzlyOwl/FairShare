@@ -382,7 +382,8 @@ input[type=number] {
 }
 
 .segmented-control label {
-    flex: 1 1 0%; /* Ensure all segmented control items are equal width */
+    flex: 1 1 0; /* Ensure all segmented control items are equal width */
+    min-width: 0; /* Allow items to shrink to 0 if needed, for better flex behavior */
     text-align: center;
     padding: 0.75rem 1rem;
     cursor: pointer;
