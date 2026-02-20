@@ -2,34 +2,79 @@
 
 **FairShare** is a modern, high-performance web utility designed to help couples determine a fair and proportionate way to split household expenses. By moving beyond the standard 50/50 split—which can be inequitable when salaries differ significantly—this tool calculates contributions based on each partner's relative earning power.
 
-## Key Features
+## 🌟 Project Overview
 
+FairShare automates household budgeting by establishing a contribution ratio based on relative income. It ensures both partners retain a fair share of disposable income, removing financial friction. The application guides users through a 7-step process to estimate property values, regional running costs, and shared lifestyle expenses, resulting in a detailed proportionate split report.
+
+### Key Features
 - **Proportionate Splitting**: Calculates a fair contribution ratio based on individual pre-tax annual salaries.
-- **Real-World Data Integration**: Fetches estimated market values for properties via the UK Land Registry SPARQL endpoint.
-- **Regional Utilities**: Adjusts energy and water estimates based on postcode prefixes (e.g., Northern vs. Southern adjustments) and property size.
-- **Comprehensive Cost Breakdown**: Includes Mortgage, Council Tax, Energy, Water, Broadband, Groceries, and other committed spending.
-- **Buyer Status Support**: Accurately handles "Sole Property" vs "Additional Property" scenarios, including First Time Buyer (FTB) relief calculations where applicable.
-- **Flexible Rules**: Users can choose to split specific line items (like Council Tax or Groceries) either by the income ratio or exactly 50/50.
-- **Local Persistence**: Saves your progress automatically to `localStorage` so you can return to your calculation at any time.
-- **Export to CSV**: Allows you to download your full "Fair Share" report for easy reference.
-- **PWA Ready**: Works offline via a service worker and can be installed on your home screen.
+- **Real-World Data Integration**: Fetches estimated market values via the UK Land Registry SPARQL endpoint.
+- **Regional Utilities**: Adjusts estimates based on postcode prefixes and property size.
+- **Night Mode**: Fully WCAG 2.1 AA compliant dark theme support.
+- **Local Persistence**: Saves progress automatically to `localStorage`.
+- **Export to CSV**: Download full reports for joint account setup.
+- **PWA Ready**: Works offline and is installable.
 
-## Technical Architecture
+## 🛠️ Tech Stack
 
 This application adheres to a "naked" but highly polished architectural philosophy:
 
-- **Vanilla JS**: No frameworks (React/Vue/Angular) to ensure maximum speed and zero dependencies.
-- **Modern CSS**: Uses CSS variables and Flexbox/Grid for a responsive, accessible UI without a CSS framework.
-- **Progressive Enhancement**: Built as a PWA with a focus on core web vitals and accessibility (WCAG 2.1 compliance).
-- **Automated Testing**: Comprehensive integration tests using Cypress.
+- **Engine**: Vanilla JavaScript (ES6+) - Zero dependencies for maximum performance.
+- **Styling**: Modern CSS (Variables, Flexbox, Grid) with BEM naming convention.
+- **Icons**: Custom SVG icons using the `mask-image` pattern for dynamic coloring.
+- **Storage**: `localStorage` for session persistence.
+- **Testing**: Node.js (JSDOM) for unit tests and Cypress for E2E integration tests.
 
-## How to Use
+## 🚀 Installation
 
-1. **Enter Salaries**: Input your and your partner's pre-tax annual income.
-2. **Property Details**: Provide the postcode and size of your new home.
-3. **Mortgage & Equity**: Configure your deposit and interest rates.
-4. **Utilities & Spending**: Review and refine the estimated monthly costs.
-5. **Results**: View your custom Fair Share report and download the CSV breakdown.
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v16 or higher recommended)
+- npm (comes with Node.js)
+
+### Setup
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/DrizzlyOwl/FairShare.git
+   cd FairShare
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+
+## 📖 Usage
+
+### Running Locally
+To start a local development server:
+```sh
+npm start
+```
+The application will be available at `http://localhost:8080`.
+
+### Workflow
+1. **Income**: Input annual pre-tax salaries to set the base ratio.
+2. **Property**: Enter postcode and size; use "Estimate" for market data.
+3. **Mortgage**: Set deposit % and interest rates to calculate repayments and SDLT.
+4. **Utilities**: Review regional estimates for Council Tax, Energy, and Water.
+5. **Committed**: Add shared lifestyle costs (Groceries, Childcare, etc.).
+6. **Results**: Review the breakdown and download the CSV report.
+
+### Running Tests
+- **Unit Tests**: `npm run test:unit`
+- **E2E Tests (Headless)**: `npm run test:cypress`
+- **Cypress UI**: `npm run cypress:open`
+
+## 🤝 Contribution
+
+Contributions are welcome! Please follow these guidelines:
+1. Ensure all changes adhere to the **BEM** naming convention for CSS.
+2. Maintain **WCAG 2.1 AA** compliance for any UI changes.
+3. Update or add unit/integration tests for new features.
+4. Keep the "naked" architecture by avoiding external frameworks or heavy libraries.
+
+## 📜 License
+
+This project is licensed under the **Apache License, Version 2.0**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
