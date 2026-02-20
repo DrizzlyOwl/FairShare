@@ -1,56 +1,60 @@
 // Mocking the DOM and other dependencies for testing
-const appData = {
-  salaryP1: 0,
-  salaryP2: 0,
-  ratioP1: 0.5,
-  ratioP2: 0.5,
-  propertyPrice: 0,
-  depositPercentage: 0,
-  depositSplitProportional: true,
-  totalEquity: 0,
-  mortgageRequired: 0,
-  equityP1: 0,
-  equityP2: 0,
-  waterBill: 0,
-  broadbandCost: 0,
-  groceriesCost: 0,
-  childcareCost: 0,
-  insuranceCost: 0,
-  otherSharedCosts: 0,
-  mortgageInterestRate: 0,
-  mortgageTerm: 0,
-  monthlyMortgagePayment: 0,
-  postcode: '',
-  isNorth: false,
-  regionCode: 'EN', // EN, SC, WA, NI
-  band: '',
-  beds: 0,
-  baths: 0,
-  homeType: 'first',
-  isFTB: false, // First Time Buyer
-  // Individual split preferences
-  splitTypes: {
-    councilTax: 'yes',
-    energy: 'yes',
-    water: 'yes',
-    broadband: 'yes',
-    groceries: 'yes',
-    childcare: 'yes',
-    insurance: 'yes',
-    otherShared: 'yes',
-  },
-};
+if (typeof appData === 'undefined') {
+  globalThis.appData = {
+    salaryP1: 0,
+    salaryP2: 0,
+    ratioP1: 0.5,
+    ratioP2: 0.5,
+    propertyPrice: 0,
+    depositPercentage: 0,
+    depositSplitProportional: true,
+    totalEquity: 0,
+    mortgageRequired: 0,
+    equityP1: 0,
+    equityP2: 0,
+    waterBill: 0,
+    broadbandCost: 0,
+    groceriesCost: 0,
+    childcareCost: 0,
+    insuranceCost: 0,
+    otherSharedCosts: 0,
+    mortgageInterestRate: 0,
+    mortgageTerm: 0,
+    monthlyMortgagePayment: 0,
+    postcode: '',
+    isNorth: false,
+    regionCode: 'EN', // EN, SC, WA, NI
+    band: '',
+    beds: 0,
+    baths: 0,
+    homeType: 'first',
+    isFTB: false, // First Time Buyer
+    // Individual split preferences
+    splitTypes: {
+      councilTax: 'yes',
+      energy: 'yes',
+      water: 'yes',
+      broadband: 'yes',
+      groceries: 'yes',
+      childcare: 'yes',
+      insurance: 'yes',
+      otherShared: 'yes',
+    },
+  };
+}
 
-const elements = {
-  propertyPrice: { value: '' },
-  depositPercentage: { value: '' },
-  sdltEstimate: { value: '' },
-  legalFeesEstimate: { value: '' },
-  totalEquityDisplay: { innerText: '' },
-  mortgageRequiredDisplay: { innerText: '' },
-  equityP1Display: { innerText: '' },
-  equityP2Display: { innerText: '' },
-};
+if (typeof elements === 'undefined') {
+  globalThis.elements = {
+    propertyPrice: { value: '' },
+    depositPercentage: { value: '' },
+    sdltEstimate: { value: '' },
+    legalFeesEstimate: { value: '' },
+    totalEquityDisplay: { innerText: '' },
+    mortgageRequiredDisplay: { innerText: '' },
+    equityP1Display: { innerText: '' },
+    equityP2Display: { innerText: '' },
+  };
+}
 
 // Helper function to run tests and log results
 function runTest(testName, testFunction) {
@@ -143,7 +147,7 @@ runTest('createAlertHTML should generate correct HTML structure', () => {
   
   const textDiv = alertDiv.querySelector('.alert__text');
   console.assert(textDiv !== null, 'Text div should exist');
-  console.assert(textDiv.innerText === 'Test Message', 'Text content should be correct');
+  console.assert(textDiv.textContent === 'Test Message', 'Text content should be correct');
 });
 
 // -- END: Unit Tests --
