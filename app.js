@@ -219,11 +219,22 @@ window.calculateTieredTax = (price, brackets) => {
     }
     return tax;
 };
+const currencyFormatter = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+});
+
+const currencyFormatterDecimals = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+});
+
 window.formatCurrency = (num, decimals = 0) => {
-    return '£' + num.toLocaleString('en-GB', {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals
-    });
+    return decimals === 0 ? currencyFormatter.format(num) : currencyFormatterDecimals.format(num);
 };
 window.updateOnlineStatus = () => {
     const offlineIndicator = document.getElementById('offline-indicator');
@@ -235,6 +246,19 @@ window.updateOnlineStatus = () => {
         }
     }
 };
+
+window.debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
+
 window.saveToCache = () => {
     const inputs = {};
     FORM_FIELDS.forEach(field => {
@@ -579,16 +603,16 @@ window.updatePagination = (screenId) => {
     if (!config) return;
     if (config.back) {
         backButton.onclick = config.back;
-        backButton.style.display = 'block';
+        backButton.removeAttribute('hidden');
     } else {
-        backButton.style.display = 'none';
+        backButton.setAttribute('hidden', '');
     }
     if (config.next) {
         nextButton.onclick = config.next;
         nextButton.innerText = config.nextText || 'Next';
-        nextButton.style.display = 'block';
+        nextButton.removeAttribute('hidden');
     } else {
-        nextButton.style.display = 'none';
+        nextButton.setAttribute('hidden', '');
     }
 };
 window.switchScreen = (id) => {
@@ -631,7 +655,7 @@ window.switchScreen = (id) => {
     }
     if (id === SCREENS.PROPERTY) hideWarning(3);
     if (id === SCREENS.UTILITIES || id === SCREENS.RESULTS) updateRatioBar();
-    const logo = elements.headerBrand.querySelector('img');
+    const logo = elements.headerBrand.querySelector('.header-brand__logo');
     if (id === SCREENS.LANDING) {
         logo.removeAttribute('hidden');
         elements.headerBrand.style.marginBottom = '2rem';
@@ -1002,8 +1026,7 @@ document.addEventListener('DOMContentLoaded', () => {
     FORM_FIELDS.forEach(field => {
         const el = elements[field.id];
         if (!el) return;
-        el.addEventListener('input', () => {
-            if (field.id === 'postcode') formatPostcode(el);
+        const debouncedInput = debounce(() => {
             let val = el.value;
             if (field.type === 'number') val = parseFloat(val) || 0;
             appData[field.key || field.id] = val;
@@ -1011,6 +1034,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (field.id === 'depositPercentage') calculateEquityDetails();
             if (field.id === 'mortgageInterestRate' || field.id === 'mortgageTerm') calculateMonthlyMortgage();
             saveToCache();
+        }, 300);
+
+        el.addEventListener('input', () => {
+            if (field.id === 'postcode') formatPostcode(el);
+            debouncedInput();
         });
     });
 
