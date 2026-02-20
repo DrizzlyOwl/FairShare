@@ -30,6 +30,15 @@
     --color-error-border: #FEE2E2;
     --color-error-icon: #EF4444;
 
+    /* Interface Accents & Utility Colors */
+    --color-bg-alt: #f1f2f6;
+    --color-bg-hover: #e8eaed;
+    --color-bg-card: #f8fafc;
+    --color-bg-track: #e2e8f0;
+    --color-bg-track-light: #e9ecef;
+    --color-progress: #B2D8D0;
+    --color-workings-bg: #F9FAFB;
+
     --color-alert-bg: var(--color-info-bg);
     --color-alert-text: var(--color-info-text);
 
@@ -121,14 +130,14 @@ body {
     margin-bottom: 2rem;
 }
 
-.header-brand img {
+.header-brand__logo {
     width: 100%;
     height: auto;
     border-radius: 0.5rem;
     display: block;
 }
 
-.header-brand button {
+.header-brand__reset-btn {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
@@ -147,14 +156,14 @@ body {
 }
 
 @media (min-width: 768px) {
-    .header-brand button {
+    .header-brand__reset-btn {
         top: 0.75rem;
         right: 0.75rem;
         font-size: 1rem;
     }
 }
 
-.header-brand button:hover {
+.header-brand__reset-btn:hover {
     background-color: white;
     border-color: var(--color-primary);
 }
@@ -309,7 +318,7 @@ input[type=number] {
     display: flex;
     align-items: center;
     padding: 0 0.75rem;
-    background-color: #f1f2f6;
+    background-color: var(--color-bg-alt);
     color: var(--color-text-light);
     font-weight: 700;
     border-right: 1px solid var(--color-border);
@@ -362,7 +371,7 @@ input[type=number] {
     font-weight: 700;
     font-size: 1rem;
     color: var(--color-text-light);
-    background-color: #f1f2f6;
+    background-color: var(--color-bg-alt);
     border: 2px solid transparent;
     border-radius: 0.5rem;
     transition: all 0.2s ease-in-out;
@@ -389,8 +398,8 @@ input[type=number] {
 
 /* Hover State */
 .segmented-control__label:hover {
-    background-color: #e8eaed;
-    border-color: #dcdde1;
+    background-color: var(--color-bg-hover);
+    border-color: var(--color-border);
 }
 
 /* Checked/Active State */
@@ -411,7 +420,7 @@ input[type=number] {
 /* Toggle Controls (Switches) */
 .toggle {
     display: flex;
-    background-color: #f1f2f6;
+    background-color: var(--color-bg-alt);
     padding: 4px;
     border-radius: 2rem;
     position: relative;
@@ -783,7 +792,7 @@ button, .btn {
 .result-ratio-bar {
     margin: 2rem 0;
     padding: 1.5rem;
-    background-color: #f8fafc;
+    background-color: var(--color-bg-card);
     border-radius: 1rem;
     border: 1px solid var(--color-border);
 }
@@ -794,7 +803,7 @@ button, .btn {
     border-radius: 1.25rem;
     overflow: hidden;
     margin: 1rem 0;
-    background-color: #e2e8f0;
+    background-color: var(--color-bg-track);
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -962,7 +971,7 @@ button, .btn {
     .data-table th, .data-table td { padding: 0.6rem 1rem; }
 }
 
-.table-total-row { font-weight: 800; background-color: #f1f2f6; }
+.table-total-row { font-weight: 800; background-color: var(--color-bg-alt); }
 
 /* Progress Indicator */
 .progress {
@@ -983,7 +992,7 @@ button, .btn {
 
 .progress__track {
     height: 1.25rem;
-    background-color: #e9ecef;
+    background-color: var(--color-bg-track-light);
     border-radius: 2rem;
     overflow: hidden;
     position: relative;
@@ -998,7 +1007,7 @@ button, .btn {
 .progress__bar {
     height: 100%;
     width: 0%;
-    background-color: #B2D8D0;
+    background-color: var(--color-progress);
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     z-index: 1;
@@ -1107,7 +1116,7 @@ footer a svg {
 .workings {
     margin-top: 2rem;
     padding: 1.5rem;
-    background-color: #F9FAFB;
+    background-color: var(--color-workings-bg);
     border: 1px solid var(--color-border);
     border-radius: 1rem;
 }
