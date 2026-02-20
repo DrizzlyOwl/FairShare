@@ -17,6 +17,17 @@ describe('FairShare App', () => {
       }
     });
 
+    // Stub Land Registry API
+    cy.intercept('GET', '**/landregistry/query*', {
+      body: {
+        results: {
+          bindings: [
+            { amount: { value: '250000' } }
+          ]
+        }
+      }
+    }).as('landRegistry');
+
     cy.visit('index.html');
   });
 
@@ -32,7 +43,8 @@ describe('FairShare App', () => {
   const fillStep2 = (postcode) => {
     cy.get('[data-cy="postcode-input"]').clear().type(postcode);
     cy.get('[data-cy="postcode-input"]').blur();
-    cy.get('[data-cy="taxBand-fieldset"]').contains('C').click();
+    // Use a more specific selector for the tax band label to avoid matching other text
+    cy.get('[data-cy="taxBand-fieldset"] .segmented-control').contains('label', /^C$/).click();
     cy.get('[data-cy="bedrooms-input"]').clear().type('3');
     cy.get('[data-cy="bathrooms-input"]').clear().type('2');
     cy.get('[data-cy="next-button"]').click();
