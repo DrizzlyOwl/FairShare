@@ -36,7 +36,10 @@ jobs:
       - name: Run ESLint
         run: npm run lint
       - name: Run Cypress tests
-        run: npm test
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: 'http://localhost:8080'
 
   # Single deploy job since we're just deploying
   deploy:

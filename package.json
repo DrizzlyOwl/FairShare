@@ -4,6 +4,7 @@
   "description": "Fair bill splitting calculator for couples based on salary proportions.",
   "main": "app.js",
   "scripts": {
+    "start": "http-server . -p 8080",
     "test": "cypress run",
     "cypress:open": "cypress open",
     "lint": "eslint app.js"
@@ -19,6 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "cypress": "^12.0.0",
-    "eslint": "^10.0.0"
+    "eslint": "^10.0.0",
+    "http-server": "^14.1.1"
   }
 }
