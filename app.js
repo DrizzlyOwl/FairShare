@@ -203,6 +203,9 @@ window.calculateRatio = () => {
     if (typeof updateRatioBar === 'function') updateRatioBar();
 };
 
+/**
+ * Generates and downloads a CSV report of the calculation results.
+ */
 window.downloadCSV = () => {
     const table = document.getElementById('results-table');
     if (!table) return;
@@ -299,6 +302,9 @@ window.SCREENS = SCREENS;
 
 // --- Theme Logic ---
 
+/**
+ * Initializes the application theme from localStorage or system preference.
+ */
 window.initTheme = () => {
     const savedTheme = localStorage.getItem(THEME_KEY);
     if (savedTheme) {
@@ -312,6 +318,10 @@ window.initTheme = () => {
     }
 };
 
+/**
+ * Updates the brand logo based on the current theme.
+ * @param {string} theme - 'light' or 'dark'.
+ */
 const updateLogoForTheme = (theme) => {
     const logoImg = document.querySelector('.header-brand__logo');
     if (!logoImg) return;
@@ -328,6 +338,10 @@ const updateLogoForTheme = (theme) => {
     }
 };
 
+/**
+ * Updates the body background image based on the active screen.
+ * @param {string} screenId - The active screen ID.
+ */
 const updateBackgroundImage = (screenId) => {
     const screenToImageMap = {
         [SCREENS.LANDING]: 'bg-landing.svg',
@@ -345,6 +359,9 @@ const updateBackgroundImage = (screenId) => {
     }
 };
 
+/**
+ * Toggles the application theme between light and dark.
+ */
 window.toggleTheme = () => {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const isDark = currentTheme === 'dark' || (!currentTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -410,6 +427,15 @@ window.REGIONS = REGIONS;
 
 // --- Core Functions ---
 
+/**
+ * Programmatically generates an alert component.
+ * @param {string} variant - 'info', 'warning', or 'error'.
+ * @param {string} iconName - SVG filename in /icons.
+ * @param {string} text - Message text.
+ * @param {string} [id] - Optional element ID.
+ * @param {boolean} [hidden] - Whether to start hidden.
+ * @returns {string} HTML string for the component.
+ */
 window.createAlertHTML = (variant, iconName, text, id = '', hidden = false) => {
     const idAttr = id ? `id="${id}"` : '';
     const hiddenAttr = hidden ? 'hidden' : '';
@@ -421,12 +447,32 @@ window.createAlertHTML = (variant, iconName, text, id = '', hidden = false) => {
     `;
 };
 
+/**
+ * Retrieves a numeric value from a cached DOM element.
+ * @param {string} id - The ID of the element.
+ * @returns {number} The parsed float value or 0 if invalid.
+ */
 window.getVal = (id) => parseFloat(elements[id]?.value) || 0;
+
+/**
+ * Updates a row in the results breakdown table.
+ * @param {string} key - The data key for the row (e.g., 'Mortgage').
+ * @param {number} total - The total monthly cost.
+ * @param {number} p1 - Partner 1's share.
+ * @param {number} p2 - Partner 2's share.
+ */
 window.updateBreakdownRow = (key, total, p1, p2) => {
     if (elements[`bd${key}Total`]) elements[`bd${key}Total`].innerText = formatCurrency(total, 2);
     if (elements[`bd${key}P1`]) elements[`bd${key}P1`].innerText = formatCurrency(p1, 2);
     if (elements[`bd${key}P2`]) elements[`bd${key}P2`].innerText = formatCurrency(p2, 2);
 };
+
+/**
+ * Calculates tax based on tiered brackets.
+ * @param {number} price - The value to be taxed.
+ * @param {Array<Object>} brackets - Array of bracket objects {upto, rate}.
+ * @returns {number} The total calculated tax.
+ */
 window.calculateTieredTax = (price, brackets) => {
     let tax = 0;
     let prevLimit = 0;
@@ -441,6 +487,13 @@ window.calculateTieredTax = (price, brackets) => {
     }
     return tax;
 };
+
+/**
+ * Formats a number as GBP currency.
+ * @param {number} num - The number to format.
+ * @param {number} decimals - Number of decimal places (0 or 2).
+ * @returns {string} Formatted currency string.
+ */
 const currencyFormatter = new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'GBP',
@@ -458,6 +511,10 @@ const currencyFormatterDecimals = new Intl.NumberFormat('en-GB', {
 window.formatCurrency = (num, decimals = 0) => {
     return decimals === 0 ? currencyFormatter.format(num) : currencyFormatterDecimals.format(num);
 };
+
+/**
+ * Updates the online/offline status indicator.
+ */
 window.updateOnlineStatus = () => {
     const offlineIndicator = document.getElementById('offline-indicator');
     if (offlineIndicator) {
@@ -469,6 +526,12 @@ window.updateOnlineStatus = () => {
     }
 };
 
+/**
+ * Debounces a function call.
+ * @param {Function} func - The function to debounce.
+ * @param {number} wait - Wait time in milliseconds.
+ * @returns {Function} The debounced function.
+ */
 window.debounce = (func, wait) => {
     let timeout;
     return function executedFunction(...args) {
@@ -481,6 +544,9 @@ window.debounce = (func, wait) => {
     };
 };
 
+/**
+ * Saves current form inputs to localStorage.
+ */
 window.saveToCache = () => {
     const inputs = {};
     FORM_FIELDS.forEach(field => {
@@ -510,6 +576,10 @@ window.saveToCache = () => {
 
     localStorage.setItem(CACHE_KEY, JSON.stringify(inputs));
 };
+
+/**
+ * Loads form inputs from localStorage and syncs appData.
+ */
 window.loadFromCache = () => {
     // 1. Sync appData with whatever is currently in the DOM (defaults from HTML)
     FORM_FIELDS.forEach(field => {
@@ -591,6 +661,12 @@ window.loadFromCache = () => {
     calculateEquityDetails();
     calculateMonthlyMortgage();
 };
+
+/**
+ * Bulk sets split types for a group of fields.
+ * @param {string} screen - 'utilities' or 'committed'.
+ * @param {string} type - 'yes' (ratio) or 'no' (50/50).
+ */
 window.setAllSplitTypes = (screen, type) => {
     const groups = screen === 'utilities'
         ? ['councilTax', 'energy', 'water', 'broadband']
@@ -601,262 +677,352 @@ window.setAllSplitTypes = (screen, type) => {
         if (radio) radio.checked = true;
         appData.splitTypes[group] = type;
     });
-    saveToCache();
-};
-window.formatPostcode = (input) => {
-    const value = input.value.replace(/\s+/g, '').toUpperCase();
-    if (value.length > 3) {
-        const incode = value.slice(-3);
-        const outcode = value.slice(0, -3);
-        input.value = outcode + ' ' + incode;
-    } else {
-        input.value = value;
-    }
-};
-window.updatePropertyPriceDisplay = (price, isEstimated) => {
-    const display = elements.propertyPriceDisplay;
-    if (!display) return;
-    if (price > 0) {
-        const labelText = isEstimated ? 'Using estimated market price: ' : 'Using manual market price: ';
-        display.innerHTML = `${labelText}<span id="estimatedPriceValue">${formatCurrency(price)}</span>`;
-        display.removeAttribute('hidden');
-    } else {
-        display.setAttribute('hidden', '');
-    }
-};
-window.isValidPostcode = (postcode) => {
-    const postcodeRegEx = /^[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}$/i;
-    return postcodeRegEx.test(postcode);
-};
-window.getRegionFromPostcode = (postcode) => {
-    const pc = postcode.trim().toUpperCase();
-    if (!pc) return null;
-    const areaMatch = pc.match(/^[A-Z]+/);
-    if (!areaMatch) return null;
-    const area = areaMatch[0];
-    for (const regionKey in REGIONS) {
-        if (REGIONS[regionKey].prefixes.includes(area)) {
-            return regionKey;
-        }
-    }
-    return null;
-};
-window.checkRegion = () => {
-    const postcodeInput = elements.postcode;
-    formatPostcode(postcodeInput);
-    const pc = postcodeInput.value.trim().toUpperCase();
-    if (pc.length > 0 && !isValidPostcode(pc)) {
-        elements.postcodeError.removeAttribute('hidden');
-        return;
-    } else {
-        elements.postcodeError.setAttribute('hidden', '');
-    }
-    appData.postcode = pc;
-    const regionKey = getRegionFromPostcode(pc);
-    const northernRegions = ['NORTH', 'MIDLANDS', 'WALES', 'SCOTLAND'];
-    const announceDiv = elements.regionAnnouncement;
-    const announceText = announceDiv?.querySelector('.alert__text');
-    if (regionKey) {
-        const regionName = REGIONS[regionKey].name;
-        appData.regionCode = REGIONS[regionKey].code;
-        announceDiv.removeAttribute('hidden');
-        if (northernRegions.includes(regionKey)) {
-            appData.isNorth = true;
-            if (announceText) announceText.innerText = `${regionName} region detected. Heating estimates adjusted.`;
+        saveToCache();
+    };
+    
+    /**
+     * Formats a postcode input by removing spaces and adding a standard UK space.
+     * @param {HTMLInputElement} input - The postcode input element.
+     */
+    window.formatPostcode = (input) => {
+        const value = input.value.replace(/\s+/g, '').toUpperCase();
+        if (value.length > 3) {
+            const incode = value.slice(-3);
+            const outcode = value.slice(0, -3);
+            input.value = outcode + ' ' + incode;
         } else {
+            input.value = value;
+        }
+    };
+    
+    /**
+     * Updates the property price display element.
+     * @param {number} price - The property price.
+     * @param {boolean} isEstimated - Whether the price was programmatically estimated.
+     */
+    window.updatePropertyPriceDisplay = (price, isEstimated) => {
+        const display = elements.propertyPriceDisplay;
+        if (!display) return;
+        if (price > 0) {
+            const labelText = isEstimated ? 'Using estimated market price: ' : 'Using manual market price: ';
+            display.innerHTML = `${labelText}<span id="estimatedPriceValue">${formatCurrency(price)}</span>`;
+            display.removeAttribute('hidden');
+        } else {
+            display.setAttribute('hidden', '');
+        }
+    };
+    
+    /**
+     * Validates a UK postcode format.
+     * @param {string} postcode - The postcode string to validate.
+     * @returns {boolean} True if valid.
+     */
+    window.isValidPostcode = (postcode) => {
+        const postcodeRegEx = /^[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}$/i;
+        return postcodeRegEx.test(postcode);
+    };
+    
+    /**
+     * Maps a postcode prefix to a UK region.
+     * @param {string} postcode - The full postcode.
+     * @returns {string|null} The REGIONS key or null.
+     */
+    window.getRegionFromPostcode = (postcode) => {
+        const pc = postcode.trim().toUpperCase();
+        if (!pc) return null;
+        const areaMatch = pc.match(/^[A-Z]+/);
+        if (!areaMatch) return null;
+        const area = areaMatch[0];
+        for (const regionKey in REGIONS) {
+            if (REGIONS[regionKey].prefixes.includes(area)) {
+                return regionKey;
+            }
+        }
+        return null;
+    };
+    
+    /**
+     * Detects the region from the postcode field and updates application state.
+     */
+    window.checkRegion = () => {
+        const postcodeInput = elements.postcode;
+        formatPostcode(postcodeInput);
+        const pc = postcodeInput.value.trim().toUpperCase();
+        if (pc.length > 0 && !isValidPostcode(pc)) {
+            elements.postcodeError.removeAttribute('hidden');
+            return;
+        } else {
+            elements.postcodeError.setAttribute('hidden', '');
+        }
+        appData.postcode = pc;
+        const regionKey = getRegionFromPostcode(pc);
+        const northernRegions = ['NORTH', 'MIDLANDS', 'WALES', 'SCOTLAND'];
+        const announceDiv = elements.regionAnnouncement;
+        const announceText = announceDiv?.querySelector('.alert__text');
+        if (regionKey) {
+            const regionName = REGIONS[regionKey].name;
+            appData.regionCode = REGIONS[regionKey].code;
+            announceDiv.removeAttribute('hidden');
+            if (northernRegions.includes(regionKey)) {
+                appData.isNorth = true;
+                if (announceText) announceText.innerText = `${regionName} region detected. Heating estimates adjusted.`;
+            } else {
+                appData.isNorth = false;
+                if (announceText) announceText.innerText = `${regionName} region detected.`;
+            }
+        } else if (pc.length > 0) {
             appData.isNorth = false;
-            if (announceText) announceText.innerText = `${regionName} region detected.`;
+            appData.regionCode = 'EN'; // Default
+            announceDiv.removeAttribute('hidden');
+            if (announceText) announceText.innerText = "Region could not be determined.";
+        } else {
+            announceDiv.setAttribute('hidden', '');
+            if (announceText) announceText.innerText = "";
         }
-    } else if (pc.length > 0) {
-        appData.isNorth = false;
-        appData.regionCode = 'EN'; // Default
-        announceDiv.removeAttribute('hidden');
-        if (announceText) announceText.innerText = "Region could not be determined.";
-    } else {
-        announceDiv.setAttribute('hidden', '');
-        if (announceText) announceText.innerText = "";
-    }
-};
-window.getEstimatedPropertyPrice = async (postcode) => {
-    const sparqlQuery = `
-        PREFIX lrppi: <http://landregistry.data.gov.uk/def/ppi/>
-        PREFIX lrcommon: <http://landregistry.data.gov.uk/def/common/>
-        SELECT ?amount WHERE {
-            ?addr lrcommon:postcode "${postcode}" .
-            ?transx lrppi:propertyAddress ?addr ;
-                    lrppi:pricePaid ?amount .
-        } LIMIT 10
-    `;
-    const endpointUrl = 'https://landregistry.data.gov.uk/landregistry/query';
-    const url = `${endpointUrl}?query=${encodeURIComponent(sparqlQuery)}`;
-    hideWarning(3);
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: { 'Accept': 'application/sparql-results+json' }
-        });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        const bindings = data.results.bindings;
-        if (bindings.length === 0) throw new Error("No data found");
-        const total = bindings.reduce((acc, curr) => acc + parseInt(curr.amount.value), 0);
-        const average = total / bindings.length;
-        return Math.round(average / 1000) * 1000;
-    } catch (error) {
-        showWarning(3, "We couldn't fetch live market data, so we've provided a local estimate.");
-        const postcodePrefix = postcode.charAt(0);
-        const beds = parseInt(elements.bedrooms.value) || 2;
-        let basePrice = 250000;
-        if (['L', 'M', 'B', 'S', 'N', 'G'].includes(postcodePrefix)) basePrice = 180000;
-        else if (['W', 'E'].includes(postcodePrefix) || postcode.startsWith('SW') || postcode.startsWith('SE')) basePrice = 450000;
-        basePrice += ((beds - 2) * 35000);
-        return Math.max(50000, Math.round(basePrice / 1000) * 1000);
-    }
-};
-window.calculateStampDuty = (price, region, homeType, isFTB) => {
-    if (price <= 0) return 0;
-    const regionBrackets = TAX_BRACKETS[region] || TAX_BRACKETS.EN;
-    const isAdditional = homeType === 'second';
-    let tax = 0;
-    if (isFTB && !isAdditional) {
-        if (region === 'EN' && price <= 500000) {
-            return calculateTieredTax(price, regionBrackets.ftb);
+    };
+    
+    /**
+     * Fetches an estimated property price using UK Land Registry data.
+     * @param {string} postcode - The target postcode.
+     * @returns {Promise<number>} The estimated price.
+     */
+    window.getEstimatedPropertyPrice = async (postcode) => {
+        const sparqlQuery = `
+            PREFIX lrppi: <http://landregistry.data.gov.uk/def/ppi/>
+            PREFIX lrcommon: <http://landregistry.data.gov.uk/def/common/>
+            SELECT ?amount WHERE {
+                ?addr lrcommon:postcode "${postcode}" .
+                ?transx lrppi:propertyAddress ?addr ;
+                        lrppi:pricePaid ?amount .
+            } LIMIT 10
+        `;
+        const endpointUrl = 'https://landregistry.data.gov.uk/landregistry/query';
+        const url = `${endpointUrl}?query=${encodeURIComponent(sparqlQuery)}`;
+        hideWarning(3);
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: { 'Accept': 'application/sparql-results+json' }
+            });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            const bindings = data.results.bindings;
+            if (bindings.length === 0) throw new Error("No data found");
+            const total = bindings.reduce((acc, curr) => acc + parseInt(curr.amount.value), 0);
+            const average = total / bindings.length;
+            return Math.round(average / 1000) * 1000;
+        } catch (error) {
+            showWarning(3, "We couldn't fetch live market data, so we've provided a local estimate.");
+            const postcodePrefix = postcode.charAt(0);
+            const beds = parseInt(elements.bedrooms.value) || 2;
+            let basePrice = 250000;
+            if (['L', 'M', 'B', 'S', 'N', 'G'].includes(postcodePrefix)) basePrice = 180000;
+            else if (['W', 'E'].includes(postcodePrefix) || postcode.startsWith('SW') || postcode.startsWith('SE')) basePrice = 450000;
+            basePrice += ((beds - 2) * 35000);
+            return Math.max(50000, Math.round(basePrice / 1000) * 1000);
         }
-        if (region === 'SC') {
-            const standardTax = calculateTieredTax(price, regionBrackets.standard);
-            return Math.max(0, standardTax - regionBrackets.ftbRelief);
+    };
+    
+    /**
+     * Calculates Stamp Duty (SDLT/LBTT/LTT) based on region and buyer status.
+     * @param {number} price - Property value.
+     * @param {string} region - Region code (EN, SC, WA, NI).
+     * @param {string} homeType - 'first' or 'second'.
+     * @param {boolean} isFTB - First Time Buyer status.
+     * @returns {number} Calculated tax.
+     */
+    window.calculateStampDuty = (price, region, homeType, isFTB) => {
+        if (price <= 0) return 0;
+        const regionBrackets = TAX_BRACKETS[region] || TAX_BRACKETS.EN;
+        const isAdditional = homeType === 'second';
+        let tax = 0;
+        if (isFTB && !isAdditional) {
+            if (region === 'EN' && price <= 500000) {
+                return calculateTieredTax(price, regionBrackets.ftb);
+            }
+            if (region === 'SC') {
+                const standardTax = calculateTieredTax(price, regionBrackets.standard);
+                return Math.max(0, standardTax - regionBrackets.ftbRelief);
+            }
         }
-    }
-    tax = calculateTieredTax(price, regionBrackets.standard);
-    if (isAdditional && price >= 40000) {
-        tax += price * regionBrackets.additionalSurcharge;
-    }
-    return Math.floor(tax);
-};
-window.calculateEquityDetails = () => {
-    const propertyPrice = appData.propertyPrice;
-    if (isNaN(propertyPrice) || propertyPrice <= 0) return;
-
-    if (appData.depositType === 'percentage') {
-        let depositPercentage = appData.depositPercentage;
-        if (depositPercentage > 100) {
-            depositPercentage = 100;
-            appData.depositPercentage = 100;
-            elements.depositPercentage.value = 100;
-        } else if (depositPercentage < 0) {
-            depositPercentage = 0;
-            appData.depositPercentage = 0;
-            elements.depositPercentage.value = 0;
+        tax = calculateTieredTax(price, regionBrackets.standard);
+        if (isAdditional && price >= 40000) {
+            tax += price * regionBrackets.additionalSurcharge;
         }
-        appData.totalEquity = propertyPrice * (depositPercentage / 100);
-        appData.depositAmount = appData.totalEquity;
-        if (elements.depositAmount) elements.depositAmount.value = Math.round(appData.totalEquity);
-    } else {
-        const depositAmount = getVal('depositAmount');
-        appData.depositAmount = depositAmount;
-        appData.totalEquity = depositAmount;
-        appData.depositPercentage = (depositAmount / propertyPrice) * 100;
-        if (elements.depositPercentage) elements.depositPercentage.value = appData.depositPercentage.toFixed(1);
-    }
-
-    appData.mortgageRequired = propertyPrice - appData.totalEquity;
-    appData.mortgageFees = getVal('mortgageFees');
-    const sdlt = calculateStampDuty(propertyPrice, appData.regionCode, appData.homeType, appData.isFTB);
-    let legalFees = 1200;
-    if (propertyPrice > 500000) legalFees = 1800;
-    if (propertyPrice > 1000000) legalFees = 2500;
-        const sdltEl = elements.sdltEstimate;
-        const legalEl = elements.legalFeesEstimate;
-        if (sdltEl) sdltEl.value = sdlt.toLocaleString();
-        if (legalEl) legalEl.value = legalFees.toLocaleString();
-        if (elements.sdltDisplay) elements.sdltDisplay.innerText = formatCurrency(sdlt);
-        if (elements.legalFeesDisplay) elements.legalFeesDisplay.innerText = formatCurrency(legalFees);
-        if (elements.mortgageFeesDisplay) elements.mortgageFeesDisplay.innerText = formatCurrency(appData.mortgageFees);
-        
-        if (appData.depositSplitProportional) {
-        appData.equityP1 = appData.totalEquity * appData.ratioP1;
-        appData.equityP2 = appData.totalEquity * appData.ratioP2;
-    } else {
-        appData.equityP1 = appData.totalEquity * 0.5;
-        appData.equityP2 = appData.totalEquity * 0.5;
-    }
-    if (elements.totalEquityDisplay) elements.totalEquityDisplay.innerText = formatCurrency(appData.totalEquity);
-    const totalUpfront = appData.totalEquity + sdlt + legalFees + appData.mortgageFees;
-    if (elements.totalUpfrontDisplay) elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
-    if (elements.mortgageRequiredDisplay) elements.mortgageRequiredDisplay.innerText = formatCurrency(appData.mortgageRequired);
-    if (elements.equityP1Display) elements.equityP1Display.innerText = formatCurrency(appData.equityP1);
-    if (elements.equityP2Display) elements.equityP2Display.innerText = formatCurrency(appData.equityP2);
-    calculateMonthlyMortgage();
-};
-window.calculateMonthlyMortgage = () => {
-    const principal = appData.mortgageRequired;
-    const annualRate = appData.mortgageInterestRate;
-    const termYears = appData.mortgageTerm;
-    if (isNaN(principal) || principal <= 0 || isNaN(annualRate) || annualRate <= 0 || isNaN(termYears) || termYears <= 0) {
-        appData.monthlyMortgagePayment = 0;
-        appData.totalRepayment = 0;
-        if (elements.monthlyMortgageDisplay) elements.monthlyMortgageDisplay.innerText = formatCurrency(0);
-        if (elements.totalRepaymentDisplay) elements.totalRepaymentDisplay.innerText = formatCurrency(0);
-        return;
-    }
-    const monthlyRate = (annualRate / 100) / 12;
-    const numberOfPayments = termYears * 12;
-    const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-    appData.monthlyMortgagePayment = monthlyPayment;
-    appData.totalRepayment = monthlyPayment * numberOfPayments;
-
-    if (elements.monthlyMortgageDisplay) elements.monthlyMortgageDisplay.innerText = formatCurrency(monthlyPayment);
-    if (elements.totalRepaymentDisplay) elements.totalRepaymentDisplay.innerText = formatCurrency(appData.totalRepayment);
-};
-
-window.updatePricePreview = (band) => {
-    appData.band = band;
-    const cost = bandPrices[band];
-    const display = elements.bandPriceDisplay;
-    if (display) {
-        display.outerHTML = createAlertHTML('info', 'icon-info.svg', `Band ${band} selected. Estimated cost: ${formatCurrency(cost)} per month.`, 'band-price-display');
-        // Re-cache element after outerHTML replacement
-        elements.bandPriceDisplay = document.getElementById('band-price-display');
-    }
-};
-window.updateRatioBar = () => {
-    const p1P = Math.round(appData.ratioP1 * 100);
-    const p2P = Math.round(appData.ratioP2 * 100);
-    elements.barP1.style.width = p1P + '%';
-    elements.barP1.innerText = p1P + '%';
-    elements.barP2.style.width = p2P + '%';
-    elements.barP2.innerText = p2P + '%';
-    elements.ratioTextDesc.innerText = `Income ratio is ${p1P}% You and ${p2P}% Your Partner.`;
-};
-window.estimateWaterCost = (postcode, bathrooms) => {
-    const regionKey = getRegionFromPostcode(postcode);
-    let baseCost = 50;
-    if (regionKey && REGIONS[regionKey]) {
-        baseCost = REGIONS[regionKey].cost;
-    }
-    return baseCost + (Math.max(0, bathrooms - 1) * 5);
-};
-window.populateEstimates = () => {
-    elements.councilTaxCost.value = bandPrices[appData.band];
-    let energy = 40 + (appData.beds * 25) + (appData.baths * 15);
-    if (appData.isNorth) energy *= 1.1;
-    if (['E','F','G','H'].includes(appData.band)) energy *= 1.15;
-    elements.energyCost.value = Math.round(energy);
-    elements.waterBill.value = Math.round(estimateWaterCost(appData.postcode, appData.baths));
-    appData.waterBill = getVal('waterBill');
-    appData.mortgageInterestRate = getVal('mortgageInterestRate');
-    appData.mortgageTerm = getVal('mortgageTerm');
-    calculateMonthlyMortgage();
-};
-window.hideWarning = (screenNum) => {
-    const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
-    if (warnDiv) warnDiv.setAttribute('hidden', '');
-};
+        return Math.floor(tax);
+    };
+    
+    /**
+     * Calculates equity requirements, upfront costs, and individual shares.
+     */
+    window.calculateEquityDetails = () => {
+        const propertyPrice = appData.propertyPrice;
+        if (isNaN(propertyPrice) || propertyPrice <= 0) return;
+    
+        if (appData.depositType === 'percentage') {
+            let depositPercentage = appData.depositPercentage;
+            if (depositPercentage > 100) {
+                depositPercentage = 100;
+                appData.depositPercentage = 100;
+                elements.depositPercentage.value = 100;
+            } else if (depositPercentage < 0) {
+                depositPercentage = 0;
+                appData.depositPercentage = 0;
+                elements.depositPercentage.value = 0;
+            }
+            appData.totalEquity = propertyPrice * (depositPercentage / 100);
+            appData.depositAmount = appData.totalEquity;
+            if (elements.depositAmount) elements.depositAmount.value = Math.round(appData.totalEquity);
+        } else {
+            const depositAmount = getVal('depositAmount');
+            appData.depositAmount = depositAmount;
+            appData.totalEquity = depositAmount;
+            appData.depositPercentage = (depositAmount / propertyPrice) * 100;
+            if (elements.depositPercentage) elements.depositPercentage.value = appData.depositPercentage.toFixed(1);
+        }
+    
+        appData.mortgageRequired = propertyPrice - appData.totalEquity;
+        appData.mortgageFees = getVal('mortgageFees');
+        const sdlt = calculateStampDuty(propertyPrice, appData.regionCode, appData.homeType, appData.isFTB);
+        let legalFees = 1200;
+        if (propertyPrice > 500000) legalFees = 1800;
+        if (propertyPrice > 1000000) legalFees = 2500;
+            const sdltEl = elements.sdltEstimate;
+            const legalEl = elements.legalFeesEstimate;
+            if (sdltEl) sdltEl.value = sdlt.toLocaleString();
+            if (legalEl) legalEl.value = legalFees.toLocaleString();
+            if (elements.sdltDisplay) elements.sdltDisplay.innerText = formatCurrency(sdlt);
+            if (elements.legalFeesDisplay) elements.legalFeesDisplay.innerText = formatCurrency(legalFees);
+            if (elements.mortgageFeesDisplay) elements.mortgageFeesDisplay.innerText = formatCurrency(appData.mortgageFees);
+            
+            if (appData.depositSplitProportional) {
+            appData.equityP1 = appData.totalEquity * appData.ratioP1;
+            appData.equityP2 = appData.totalEquity * appData.ratioP2;
+        } else {
+            appData.equityP1 = appData.totalEquity * 0.5;
+            appData.equityP2 = appData.totalEquity * 0.5;
+        }
+        if (elements.totalEquityDisplay) elements.totalEquityDisplay.innerText = formatCurrency(appData.totalEquity);
+        const totalUpfront = appData.totalEquity + sdlt + legalFees + appData.mortgageFees;
+        if (elements.totalUpfrontDisplay) elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
+        if (elements.mortgageRequiredDisplay) elements.mortgageRequiredDisplay.innerText = formatCurrency(appData.mortgageRequired);
+        if (elements.equityP1Display) elements.equityP1Display.innerText = formatCurrency(appData.equityP1);
+        if (elements.equityP2Display) elements.equityP2Display.innerText = formatCurrency(appData.equityP2);
+        calculateMonthlyMortgage();
+    };
+    
+    /**
+     * Calculates the monthly mortgage repayment using standard amortization.
+     */
+    window.calculateMonthlyMortgage = () => {
+        const principal = appData.mortgageRequired;
+        const annualRate = appData.mortgageInterestRate;
+        const termYears = appData.mortgageTerm;
+        if (isNaN(principal) || principal <= 0 || isNaN(annualRate) || annualRate <= 0 || isNaN(termYears) || termYears <= 0) {
+            appData.monthlyMortgagePayment = 0;
+            appData.totalRepayment = 0;
+            if (elements.monthlyMortgageDisplay) elements.monthlyMortgageDisplay.innerText = formatCurrency(0);
+            if (elements.totalRepaymentDisplay) elements.totalRepaymentDisplay.innerText = formatCurrency(0);
+            return;
+        }
+        const monthlyRate = (annualRate / 100) / 12;
+        const numberOfPayments = termYears * 12;
+        const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+        appData.monthlyMortgagePayment = monthlyPayment;
+        appData.totalRepayment = monthlyPayment * numberOfPayments;
+    
+        if (elements.monthlyMortgageDisplay) elements.monthlyMortgageDisplay.innerText = formatCurrency(monthlyPayment);
+        if (elements.totalRepaymentDisplay) elements.totalRepaymentDisplay.innerText = formatCurrency(appData.totalRepayment);
+    };
+    
+    /**
+     * Updates the Council Tax cost preview based on selected band.
+     * @param {string} band - The tax band letter (A-H).
+     */
+    window.updatePricePreview = (band) => {
+        appData.band = band;
+        const cost = bandPrices[band];
+        const display = elements.bandPriceDisplay;
+        if (display) {
+            display.outerHTML = createAlertHTML('info', 'icon-info.svg', `Band ${band} selected. Estimated cost: ${formatCurrency(cost)} per month.`, 'band-price-display');
+            // Re-cache element after outerHTML replacement
+            elements.bandPriceDisplay = document.getElementById('band-price-display');
+        }
+    };
+    
+    /**
+     * Updates the visual ratio bar and supporting description.
+     */
+    window.updateRatioBar = () => {
+        const p1P = Math.round(appData.ratioP1 * 100);
+        const p2P = Math.round(appData.ratioP2 * 100);
+        elements.barP1.style.width = p1P + '%';
+        elements.barP1.innerText = p1P + '%';
+        elements.barP2.style.width = p2P + '%';
+        elements.barP2.innerText = p2P + '%';
+        elements.ratioTextDesc.innerText = `Income ratio is ${p1P}% You and ${p2P}% Your Partner.`;
+    };
+    
+    /**
+     * Estimates monthly water cost based on region and number of bathrooms.
+     * @param {string} postcode - Property postcode.
+     * @param {number} bathrooms - Number of bathrooms.
+     * @returns {number} Monthly cost estimate.
+     */
+    window.estimateWaterCost = (postcode, bathrooms) => {
+        const regionKey = getRegionFromPostcode(postcode);
+        let baseCost = 50;
+        if (regionKey && REGIONS[regionKey]) {
+            baseCost = REGIONS[regionKey].cost;
+        }
+        return baseCost + (Math.max(0, bathrooms - 1) * 5);
+    };
+    
+    /**
+     * Populates regional estimates into the utility cost inputs.
+     */
+    window.populateEstimates = () => {
+        elements.councilTaxCost.value = bandPrices[appData.band];
+        let energy = 40 + (appData.beds * 25) + (appData.baths * 15);
+        if (appData.isNorth) energy *= 1.1;
+        if (['E','F','G','H'].includes(appData.band)) energy *= 1.15;
+        elements.energyCost.value = Math.round(energy);
+        elements.waterBill.value = Math.round(estimateWaterCost(appData.postcode, appData.baths));
+        appData.waterBill = getVal('waterBill');
+        appData.mortgageInterestRate = getVal('mortgageInterestRate');
+        appData.mortgageTerm = getVal('mortgageTerm');
+        calculateMonthlyMortgage();
+    };
+    
+    /**
+     * Hides a specific screen warning.
+     * @param {number} screenNum - The screen number identifier.
+     */
+    window.hideWarning = (screenNum) => {
+        const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
+        if (warnDiv) warnDiv.setAttribute('hidden', '');
+    };
+    
+    /**
+     * Displays a warning alert on a specific screen.
+     * @param {number} screenNum - The screen identifier.
+     * @param {string} msg - The warning message.
+     */
+    /**
+ * Displays a warning alert on a specific screen.
+ * @param {number} screenNum - The screen identifier.
+ * @param {string} msg - The warning message.
+ */
 window.showWarning = (screenNum, msg) => {
     const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
     if (!warnDiv) return;
     warnDiv.outerHTML = createAlertHTML('warning', 'icon-error.svg', msg, `warning-screen-${screenNum}`);
 };
+
+/**
+ * Updates the visibility and labels of navigation buttons.
+ * @param {string} screenId - The active screen ID.
+ */
 window.updatePagination = (screenId) => {
     const backButton = elements.backButton;
     const nextButton = elements.nextButton;
@@ -885,6 +1051,11 @@ window.updatePagination = (screenId) => {
         nextButton.setAttribute('hidden', '');
     }
 };
+/**
+ * Transitions the UI to a new screen.
+ * @param {string} id - The target screen ID.
+ * @param {boolean} [isInitialLoad] - Whether this is the first screen load.
+ */
 window.switchScreen = (id, isInitialLoad = false) => {
     saveToCache();
     const target = document.getElementById(id);
@@ -956,6 +1127,10 @@ window.switchScreen = (id, isInitialLoad = false) => {
     }
     updatePagination(id);
 };
+
+/**
+ * Resets application state, clears localStorage, and redirects to home.
+ */
 window.clearCacheAndReload = () => {
     console.log("Clearing all application data...");
     localStorage.clear();
@@ -963,6 +1138,9 @@ window.clearCacheAndReload = () => {
     const baseUrl = window.location.origin + window.location.pathname;
     window.location.replace(baseUrl);
 };
+/**
+ * Calculates final bill splitting results and populates the results screen.
+ */
 window.calculateFinalSplit = () => {
     // Upfront Costs Logic
     const propertyPrice = appData.propertyPrice;
@@ -1168,6 +1346,10 @@ const VALIDATION_CONFIG = {
     }
 };
 window.VALIDATION_CONFIG = VALIDATION_CONFIG;
+/**
+ * Validates the current screen and transitions to the next if successful.
+ * @param {string} screenId - The ID of the current screen.
+ */
 window.validateAndNext = async (screenId) => {
     const config = VALIDATION_CONFIG[screenId];
     if (!config) return;
