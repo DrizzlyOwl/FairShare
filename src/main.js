@@ -725,47 +725,108 @@ const app = {
     },
 
     /**
+     * Performs field-level validation for a specific screen.
+     * Highlights invalid fields and toggles error messages.
+     * @param {string} screenId - Target screen ID.
+     * @returns {boolean} Whether the screen data is valid.
+     */
+    validateScreen(screenId) {
+        const state = this.store.data;
+        let isValid = true;
+
+        const setFieldState = (fieldId, fieldValid) => {
+            const el = document.getElementById(fieldId);
+            const errorEl = document.getElementById(`${fieldId}-error`) || document.getElementById(fieldId.replace('Cost', '') + '-error');
+            const group = el?.closest('.input-group');
+
+            if (!fieldValid) {
+                isValid = false;
+                errorEl?.removeAttribute('hidden');
+                group?.classList.add('input-group--error');
+            } else {
+                errorEl?.setAttribute('hidden', '');
+                group?.classList.remove('input-group--error');
+            }
+        };
+
+        if (screenId === this.ui.SCREENS.INCOME) {
+            const totalSalary = state.salaryP1 + state.salaryP2;
+            setFieldState('salaryP1', totalSalary > 0 || state.salaryP1 > 0);
+            setFieldState('salaryP2', totalSalary > 0 || state.salaryP2 > 0);
+            if (totalSalary <= 0) isValid = false;
+        }
+
+        if (screenId === this.ui.SCREENS.PROPERTY) {
+            setFieldState('postcode', !!state.postcode);
+            setFieldState('propertyPrice', state.propertyPrice > 0);
+            
+            const bandError = document.getElementById('taxBand-error');
+            if (!state.band) {
+                isValid = false;
+                bandError?.removeAttribute('hidden');
+            } else {
+                bandError?.setAttribute('hidden', '');
+            }
+        }
+
+        if (screenId === this.ui.SCREENS.MORTGAGE) {
+            if (state.depositType === 'percentage') {
+                setFieldState('depositPercentage', state.depositPercentage >= 0 && state.depositPercentage <= 100);
+            } else {
+                setFieldState('depositAmount', state.depositAmount >= 0);
+            }
+            setFieldState('mortgageInterestRate', state.mortgageInterestRate >= 0);
+            setFieldState('mortgageTerm', state.mortgageTerm > 0);
+        }
+
+        if (screenId === this.ui.SCREENS.UTILITIES) {
+            ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'].forEach(id => {
+                setFieldState(id, document.getElementById(id).value !== '');
+            });
+        }
+
+        if (screenId === this.ui.SCREENS.COMMITTED) {
+            ['groceriesCost', 'childcareCost', 'insuranceCost', 'otherSharedCosts'].forEach(id => {
+                setFieldState(id, document.getElementById(id).value !== '');
+            });
+        }
+
+        return isValid;
+    },
+
+    /**
      * Validates current screen data and transitions to the next screen if successful.
      * @param {string} screenId - Source screen ID.
      */
     async validateAndNext(screenId) {
-        const state = this.store.data;
+        const _state = this.store.data;
+        const isScreenValid = this.validateScreen(screenId);
         
-        // Define inline validation rules
-        const rules = {
-            [this.ui.SCREENS.INCOME]: {
-                isValid: () => (state.salaryP1 + state.salaryP2) > 0,
-                onSuccess: () => this.calculateRatio(),
-                next: this.ui.SCREENS.PROPERTY
-            },
-            [this.ui.SCREENS.PROPERTY]: {
-                isValid: () => state.propertyPrice > 0 && !!state.band && !!state.postcode,
-                onSuccess: () => this.populateEstimates(),
-                next: this.ui.SCREENS.MORTGAGE
-            },
-            [this.ui.SCREENS.MORTGAGE]: {
-                isValid: () => state.mortgageInterestRate >= 0 && state.mortgageTerm > 0,
-                onSuccess: () => this.calculateMonthlyMortgage(),
-                next: this.ui.SCREENS.UTILITIES
-            },
-            [this.ui.SCREENS.UTILITIES]: {
-                isValid: () => true,
-                next: this.ui.SCREENS.COMMITTED
-            },
-            [this.ui.SCREENS.COMMITTED]: {
-                isValid: () => true,
-                onSuccess: () => this.calculateFinalSplit(),
-                next: this.ui.SCREENS.RESULTS
-            }
+        if (!isScreenValid) {
+            this.ui.showWarning(parseInt(screenId.split('-')[1]), "Please ensure all required fields are valid.");
+            return;
+        }
+
+        this.ui.hideWarning(parseInt(screenId.split('-')[1]));
+
+        // Screen-specific success actions
+        const successActions = {
+            [this.ui.SCREENS.INCOME]: () => this.calculateRatio(),
+            [this.ui.SCREENS.PROPERTY]: () => this.populateEstimates(),
+            [this.ui.SCREENS.MORTGAGE]: () => this.calculateMonthlyMortgage(),
+            [this.ui.SCREENS.COMMITTED]: () => this.calculateFinalSplit()
         };
 
-        const config = rules[screenId];
-        if (config && config.isValid()) {
-            if (config.onSuccess) config.onSuccess();
-            this.ui.switchScreen(config.next);
-        } else {
-            this.ui.showWarning(parseInt(screenId.split('-')[1]), "Please ensure all required fields are valid.");
-        }
+        const nextScreens = {
+            [this.ui.SCREENS.INCOME]: this.ui.SCREENS.PROPERTY,
+            [this.ui.SCREENS.PROPERTY]: this.ui.SCREENS.MORTGAGE,
+            [this.ui.SCREENS.MORTGAGE]: this.ui.SCREENS.UTILITIES,
+            [this.ui.SCREENS.UTILITIES]: this.ui.SCREENS.COMMITTED,
+            [this.ui.SCREENS.COMMITTED]: this.ui.SCREENS.RESULTS
+        };
+
+        if (successActions[screenId]) successActions[screenId]();
+        this.ui.switchScreen(nextScreens[screenId]);
     },
 
     /**

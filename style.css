@@ -533,6 +533,11 @@ input[type=number] {
     box-shadow: 0 0 0 4px rgba(61, 82, 127, 0.1);
 }
 
+.input-group--error {
+    border-color: var(--color-error-icon);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
 .input-group__addon {
     display: flex;
     align-items: center;
