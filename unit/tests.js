@@ -269,4 +269,67 @@ runTest('calculateEquityDetails should include mortgage fees in total upfront ca
   console.assert(window.elements.totalUpfrontDisplay.innerText.includes('£22,199'), `Expected £22,199 total upfront, but got ${window.elements.totalUpfrontDisplay.innerText}`);
 });
 
+runTest('calculateFinalSplit should correctly split upfront costs', () => {
+  // Setup data
+  appData.propertyPrice = 300000;
+  appData.depositPercentage = 10; 
+  appData.totalEquity = 30000;
+  appData.mortgageFees = 1000;
+  appData.regionCode = 'EN';
+  appData.homeType = 'first';
+  appData.isFTB = false;
+  appData.ratioP1 = 0.6;
+  appData.ratioP2 = 0.4;
+  appData.depositSplitProportional = true;
+  
+  // SDLT for 300k Standard in EN = (125k * 0) + (125k * 0.02) + (50k * 0.05) = 0 + 2500 + 2500 = 5000
+  // Legal fees for 300k = 1200
+  // Total Upfront = 30000 + 5000 + 1200 + 1000 = 37200
+  // P1 Share (60%) = 22320
+  // P2 Share (40%) = 14880
+  
+  // Mock elements
+  const mockElements = {
+    totalUpfrontDisplay: { innerText: '' },
+    equityP1Display: { innerText: '' },
+    equityP2Display: { innerText: '' },
+    resultP1: { innerText: '' },
+    resultP2: { innerText: '' },
+    totalBillDisplay: { innerText: '' },
+    resultSummary: { querySelector: () => ({ innerText: '' }), removeAttribute: () => {} },
+    wkSalaryP1: { innerText: '' },
+    wkSalaryP2: { innerText: '' },
+    wkTotalSalary: { innerText: '' },
+    wkP1Perc: { innerText: '' },
+    wkP2Perc: { innerText: '' }
+  };
+
+  // Mock global functions
+  const originalSwitchScreen = window.switchScreen;
+  window.switchScreen = () => {};
+  window.updateRatioBar = () => {};
+  window.saveToCache = () => {};
+  window.updateBreakdownRow = () => {};
+  
+  // Update window elements
+  Object.assign(window.elements, mockElements);
+  
+  // Mock document.querySelector for SplitType
+  const originalQuerySelector = document.querySelector;
+  document.querySelector = (selector) => {
+    if (selector.includes('SplitType')) return { checked: true, value: 'yes' };
+    return null;
+  };
+  
+  calculateFinalSplit();
+  
+  console.assert(elements.totalUpfrontDisplay.innerText.includes('£37,200'), `Expected £37,200 total, but got ${elements.totalUpfrontDisplay.innerText}`);
+  console.assert(elements.equityP1Display.innerText.includes('£22,320'), `Expected £22,320 for P1, but got ${elements.equityP1Display.innerText}`);
+  console.assert(elements.equityP2Display.innerText.includes('£14,880'), `Expected £14,880 for P2, but got ${elements.equityP2Display.innerText}`);
+  
+  // Restore
+  document.querySelector = originalQuerySelector;
+  window.switchScreen = originalSwitchScreen;
+});
+
 // -- END: Unit Tests --

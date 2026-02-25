@@ -371,32 +371,6 @@
                 </div>
                 <div id="displayPropertyPrice-help" class="help-text">As specified in the property details section.</div>
             </div>
-
-            <div id="equity-mortgage-summary" class="alert alert--info" aria-live="polite">
-                <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
-                <div class="alert__text">
-                    Total Equity Required: <span id="totalEquityDisplay" class="fw-bold">£0</span><br>
-                    Est. Stamp Duty (SDLT): <span id="sdltDisplay" class="fw-bold">£0</span><br>
-                    Mortgage Required: <span id="mortgageRequiredDisplay" class="fw-bold">£0</span><br>
-                    Est. Monthly Mortgage: <span id="monthlyMortgageDisplay" class="fw-bold">£0</span><br>
-                    Total Repayment (inc. Interest): <span id="totalRepaymentDisplay" class="fw-bold">£0</span><br>
-                    <hr class="summary-hr">
-                    <strong>Est. Total Upfront Cash: <span id="totalUpfrontDisplay" class="fw-bold">£0</span></strong>
-                </div>
-            </div>
-
-            <div class="card-grid" id="deposit-share-summary">
-                <div class="card card--share-p1">
-                    <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
-                    <p class="card__label">Your Deposit Share</p>
-                    <p id="equityP1Display" class="card__value" aria-live="polite">£0</p>
-                </div>
-                <div class="card card--share-p2">
-                    <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
-                    <p class="card__label">Partner's Deposit Share</p>
-                    <p id="equityP2Display" class="card__value" aria-live="polite">£0</p>
-                </div>
-            </div>
         </section>
 
         <section class="screen" id="screen-5" aria-labelledby="heading-utilities" tabindex="-1" hidden>
@@ -630,47 +604,78 @@
                 Detailed Analysis
             </h2>
 
-            <p>Review your proportionate household budget below.</p>
             <p class="screen-summary">
-                This detailed analysis provides a comprehensive roadmap for your joint contributions. By applying your specific split rules to each line item, we've created a balanced financial plan that respects your individual earning power. Use this breakdown to set up joint account standing orders with absolute confidence.
+                This comprehensive roadmap provides a full breakdown of both your initial upfront cash requirements and your ongoing monthly commitments. Use these figures to plan your initial property purchase and set up joint account standing orders with absolute confidence.
             </p>
 
-            <div class="result-ratio-bar" id="result-ratio-bar">
-                <p class="text-center fw-bold">Your Fair Share Split</p>
-                <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent You and 50 percent Your Partner">
-                    <div class="bar-p1" id="bar-p1" aria-hidden="true" data-cy="ratio-bar-p1">50%</div>
-                    <div class="bar-p2" id="bar-p2" aria-hidden="true" data-cy="ratio-bar-p2">50%</div>
+            <div class="result-section">
+                <h3 class="result-section__title">1. Initial Upfront Costs</h3>
+                <p>The total cash required to complete the purchase, split by your chosen rule.</p>
+                
+                <div id="equity-mortgage-summary" class="alert alert--info" aria-live="polite">
+                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
+                    <div class="alert__text">
+                        Total Equity (Deposit): <span id="totalEquityDisplay" class="fw-bold">£0</span><br>
+                        Est. Stamp Duty (SDLT): <span id="sdltDisplay" class="fw-bold">£0</span><br>
+                        Legal Fees: <span id="legalFeesDisplay" class="fw-bold">£0</span><br>
+                        Mortgage Product Fees: <span id="mortgageFeesDisplay" class="fw-bold">£0</span><br>
+                        <hr class="summary-hr">
+                        <strong>Est. Total Upfront Cash: <span id="totalUpfrontDisplay" class="fw-bold">£0</span></strong>
+                    </div>
                 </div>
-                <p class="sr-only" id="ratio-text-desc">Ratio is 50 percent You and 50 percent Your Partner.</p>
+
+                <div class="card-grid" id="upfront-share-summary">
+                    <div class="card card--result card--share-p1">
+                        <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
+                        <p class="card__label">Your Upfront Share</p>
+                        <p id="equityP1Display" class="card__value" aria-live="polite">£0</p>
+                    </div>
+                    <div class="card card--result card--share-p2">
+                        <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
+                        <p class="card__label">Partner's Upfront Share</p>
+                        <p id="equityP2Display" class="card__value" aria-live="polite">£0</p>
+                    </div>
+                </div>
             </div>
 
-            <h3 class="text-center">Your Monthly Shares</h3>
-            <div class="card-grid" id="monthly-shares-summary">
-                <div class="card card--result card--share-p1" id="result-share-p1">
-                    <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
-                    <p class="card__label">You Pay</p>
-                    <p class="card__value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1">£0</p>
+            <div class="result-section">
+                <h3 class="result-section__title">2. Ongoing Monthly Shares</h3>
+                <div class="result-ratio-bar" id="result-ratio-bar">
+                    <p class="text-center fw-bold">Monthly Fair Share Ratio</p>
+                    <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent You and 50 percent Your Partner">
+                        <div class="bar-p1" id="bar-p1" aria-hidden="true" data-cy="ratio-bar-p1">50%</div>
+                        <div class="bar-p2" id="bar-p2" aria-hidden="true" data-cy="ratio-bar-p2">50%</div>
+                    </div>
+                    <p class="sr-only" id="ratio-text-desc">Ratio is 50 percent You and 50 percent Your Partner.</p>
                 </div>
-                <div class="card card--result card--share-p2" id="result-share-p2">
-                    <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
-                    <p class="card__label">Your Partner Pays</p>
-                    <p class="card__value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2">£0</p>
+
+                <div class="card-grid" id="monthly-shares-summary">
+                    <div class="card card--result card--share-p1" id="result-share-p1">
+                        <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
+                        <p class="card__label">You Pay Monthly</p>
+                        <p class="card__value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1">£0</p>
+                    </div>
+                    <div class="card card--result card--share-p2" id="result-share-p2">
+                        <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
+                        <p class="card__label">Partner Pays Monthly</p>
+                        <p class="card__value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2">£0</p>
+                    </div>
                 </div>
-            </div>
-            <p class="text-center total-bill-row" id="total-bill-row">
-                Total Monthly Bill: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display">£0</span>
-            </p>
-            <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden>
-                <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
-                <div class="alert__text"></div>
+                <p class="text-center total-bill-row" id="total-bill-row">
+                    Total Shared Monthly Bill: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display">£0</span>
+                </p>
+                <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden>
+                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
+                    <div class="alert__text"></div>
+                </div>
             </div>
 
             <div class="workings">
-                <h4 class="workings__title">Calculation Workings</h4>
+                <h4 class="workings__title">Calculation Details</h4>
                 <div class="workings__content" id="calculation-workings">
                     <div class="workings__sections">
                         <div class="workings__section">
-                            <h5 class="workings__subtitle" id="wk-income-subtitle">1. Combined Annual Income & Ratio</h5>
+                            <h5 class="workings__subtitle" id="wk-income-subtitle">Income & Ratio Workings</h5>
                             <p><span id="wk-salary-p1">£0</span> + <span id="wk-salary-p2">£0</span> = <strong id="wk-total-salary">£0</strong></p>
                             <ul class="workings__list">
                                 <li>You: <strong id="wk-p1-perc">0%</strong> share</li>
@@ -679,19 +684,19 @@
                         </div>
 
                         <div class="workings__section">
-                            <h5 class="workings__subtitle">2. Mortgage & Equity Summary</h5>
+                            <h5 class="workings__subtitle">Mortgage & Terms</h5>
                             <p>Property Value: <strong id="wk-property-price">£0</strong></p>
                             <ul class="workings__list">
                                 <li>Deposit: <strong id="wk-deposit-perc">0%</strong> (<span id="wk-total-equity">£0</span>) split by <strong id="wk-deposit-split-type">Income Ratio</strong></li>
                                 <li>Mortgage Required: <strong id="wk-mortgage-required">£0</strong></li>
                                 <li>Terms: <strong id="wk-interest-rate">0%</strong> over <strong id="wk-mortgage-term">0</strong> years</li>
-                                <li>Monthly Payment: <strong id="wk-monthly-payment">£0</strong></li>
-                                <li>Total Repayment: <strong id="wk-total-repayment">£0</strong> (interest inclusive)</li>
+                                <li>Monthly Repayment: <strong id="wk-monthly-payment">£0</strong></li>
+                                <li>Total Repayment: <strong id="wk-total-repayment">£0</strong></li>
                             </ul>
                         </div>
 
                         <div class="workings__section">
-                            <h5 class="workings__subtitle">3. Calculation Application</h5>
+                            <h5 class="workings__subtitle">Calculation Logic</h5>
                             <p>Each monthly line item was split using either your <strong>Income Ratio</strong> or <strong>50/50</strong> based on your specific rule choices throughout the form. The mortgage payment is always split by your Income Ratio to ensure long-term fairness.</p>
                         </div>
                     </div>

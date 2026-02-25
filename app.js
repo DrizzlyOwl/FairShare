@@ -697,6 +697,8 @@ window.calculateEquityDetails = () => {
         if (sdltEl) sdltEl.value = sdlt.toLocaleString();
         if (legalEl) legalEl.value = legalFees.toLocaleString();
         if (elements.sdltDisplay) elements.sdltDisplay.innerText = formatCurrency(sdlt);
+        if (elements.legalFeesDisplay) elements.legalFeesDisplay.innerText = formatCurrency(legalFees);
+        if (elements.mortgageFeesDisplay) elements.mortgageFeesDisplay.innerText = formatCurrency(appData.mortgageFees);
         
         if (appData.depositSplitProportional) {
         appData.equityP1 = appData.totalEquity * appData.ratioP1;
@@ -705,12 +707,12 @@ window.calculateEquityDetails = () => {
         appData.equityP1 = appData.totalEquity * 0.5;
         appData.equityP2 = appData.totalEquity * 0.5;
     }
-    elements.totalEquityDisplay.innerText = formatCurrency(appData.totalEquity);
+    if (elements.totalEquityDisplay) elements.totalEquityDisplay.innerText = formatCurrency(appData.totalEquity);
     const totalUpfront = appData.totalEquity + sdlt + legalFees + appData.mortgageFees;
     if (elements.totalUpfrontDisplay) elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
-    elements.mortgageRequiredDisplay.innerText = formatCurrency(appData.mortgageRequired);
-    elements.equityP1Display.innerText = formatCurrency(appData.equityP1);
-    elements.equityP2Display.innerText = formatCurrency(appData.equityP2);
+    if (elements.mortgageRequiredDisplay) elements.mortgageRequiredDisplay.innerText = formatCurrency(appData.mortgageRequired);
+    if (elements.equityP1Display) elements.equityP1Display.innerText = formatCurrency(appData.equityP1);
+    if (elements.equityP2Display) elements.equityP2Display.innerText = formatCurrency(appData.equityP2);
     calculateMonthlyMortgage();
 };
 window.calculateMonthlyMortgage = () => {
@@ -882,6 +884,25 @@ window.clearCacheAndReload = () => {
     location.reload();
 };
 window.calculateFinalSplit = () => {
+    // Upfront Costs Logic
+    const propertyPrice = appData.propertyPrice;
+    const sdlt = calculateStampDuty(propertyPrice, appData.regionCode, appData.homeType, appData.isFTB);
+    let legalFees = 1200;
+    if (propertyPrice > 500000) legalFees = 1800;
+    if (propertyPrice > 1000000) legalFees = 2500;
+    
+    const totalUpfront = appData.totalEquity + sdlt + legalFees + appData.mortgageFees;
+    
+    // Split upfront by chosen rule (proportional or 50/50)
+    const upfrontRatio = appData.depositSplitProportional ? appData.ratioP1 : 0.5;
+    const upfrontP1 = totalUpfront * upfrontRatio;
+    const upfrontP2 = totalUpfront * (1 - upfrontRatio);
+
+    if (elements.totalUpfrontDisplay) elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
+    if (elements.equityP1Display) elements.equityP1Display.innerText = formatCurrency(upfrontP1);
+    if (elements.equityP2Display) elements.equityP2Display.innerText = formatCurrency(upfrontP2);
+
+    // Monthly Costs Logic
     const taxVal = getVal('councilTaxCost');
     const enVal = getVal('energyCost');
     const wtVal = getVal('waterBill');
@@ -1168,6 +1189,8 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.regionAnnouncement = document.getElementById('region-announcement');
     elements.sdltEstimate = document.getElementById('sdlt-estimate');
     elements.sdltDisplay = document.getElementById('sdltDisplay');
+    elements.legalFeesDisplay = document.getElementById('legalFeesDisplay');
+    elements.mortgageFeesDisplay = document.getElementById('mortgageFeesDisplay');
     elements.legalFeesEstimate = document.getElementById('legal-fees-estimate');
     elements.totalEquityDisplay = document.getElementById('totalEquityDisplay');
     elements.totalUpfrontDisplay = document.getElementById('totalUpfrontDisplay');
