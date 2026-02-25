@@ -82,13 +82,7 @@ window.updateSalaryType = (type) => {
         updateTaxEstimate('P2');
     }
 
-    // Update ratio calculation if values exist
-    const total = appData.salaryP1 + appData.salaryP2;
-    if (total > 0) {
-        appData.ratioP1 = appData.salaryP1 / total;
-        appData.ratioP2 = appData.salaryP2 / total;
-        if (typeof updateRatioBar === 'function') updateRatioBar();
-    }
+    calculateRatio();
     
     if (typeof saveToCache === 'function') saveToCache();
 };
@@ -180,6 +174,33 @@ window.updateDepositType = (type) => {
     
     calculateEquityDetails();
     if (typeof saveToCache === 'function') saveToCache();
+};
+
+/**
+ * Calculates the contribution ratio based on income.
+ * If salaryType is 'gross', it uses estimated net monthly take-home for the ratio.
+ */
+window.calculateRatio = () => {
+    let p1Basis = appData.salaryP1;
+    let p2Basis = appData.salaryP2;
+
+    if (appData.salaryType === 'gross') {
+        const p1Net = calculateTakeHome(appData.salaryP1, appData.regionCode).monthlyNet;
+        const p2Net = calculateTakeHome(appData.salaryP2, appData.regionCode).monthlyNet;
+        p1Basis = p1Net;
+        p2Basis = p2Net;
+    }
+
+    const total = p1Basis + p2Basis;
+    if (total > 0) {
+        appData.ratioP1 = p1Basis / total;
+        appData.ratioP2 = p2Basis / total;
+    } else {
+        appData.ratioP1 = 0.5;
+        appData.ratioP2 = 0.5;
+    }
+    
+    if (typeof updateRatioBar === 'function') updateRatioBar();
 };
 
 window.downloadCSV = () => {
@@ -1071,11 +1092,7 @@ const VALIDATION_CONFIG = {
             return true;
         },
         onSuccess: () => {
-            const total = appData.salaryP1 + appData.salaryP2;
-            if (total > 0) {
-                appData.ratioP1 = appData.salaryP1 / total;
-                appData.ratioP2 = appData.salaryP2 / total;
-            }
+            calculateRatio();
         }
     },
     [SCREENS.PROPERTY]: {
@@ -1357,8 +1374,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         el.addEventListener('input', () => {
             if (field.id === 'postcode') formatPostcode(el);
-            if (field.id === 'salaryP1') updateTaxEstimate('P1');
-            if (field.id === 'salaryP2') updateTaxEstimate('P2');
+            if (field.id === 'salaryP1' || field.id === 'salaryP2') {
+                updateTaxEstimate(field.id === 'salaryP1' ? 'P1' : 'P2');
+                calculateRatio();
+            }
             debouncedInput();
         });
 

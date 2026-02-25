@@ -373,6 +373,25 @@ runTest('calculateTakeHome should handle Additional Rate and tapered PA', () => 
   console.assert(Math.round(result.monthlyNet) === 8026, `Expected approx £8,026, but got ${Math.round(result.monthlyNet)}`);
 });
 
+runTest('calculateRatio should use estimated net monthly pay for Annual Gross mode', () => {
+  // Setup: £100k vs £20k Gross
+  appData.salaryP1 = 100000;
+  appData.salaryP2 = 20000;
+  appData.salaryType = 'gross';
+  appData.regionCode = 'EN';
+  
+  // 100k Net: ~5500/mo, 20k Net: ~1500/mo
+  // Expected ratio roughly 78% / 22%
+  
+  calculateRatio();
+  
+  const p1Perc = appData.ratioP1 * 100;
+  const p2Perc = appData.ratioP2 * 100;
+  
+  console.assert(p1Perc < 83.3, `Expected ratio based on NET to be lower than gross ratio (83.3%), got ${p1Perc.toFixed(1)}%`);
+  console.assert(p1Perc > 75, `Expected P1 ratio to be around 78%, got ${p1Perc.toFixed(1)}%`);
+});
+
 runTest('clearCacheAndReload should clear data and log it', () => {
   let logCalled = false;
   const originalLog = console.log;
