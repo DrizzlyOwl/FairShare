@@ -22,6 +22,7 @@ A high-performance, framework-less web utility for proportionate bill splitting 
   - `var(--color-p1)` and `var(--color-p2)` for participant-specific UI.
 - **Visibility:** Toggle visibility using the HTML `hidden` attribute (`element.setAttribute('hidden', '')` / `removeAttribute('hidden')`) rather than `style.display`.
 - **Breakpoints:** Standardized at `768px` (Tablet) and `1024px` (Desktop).
+- **Typography:** Minimum font size is `1rem` (16px) across all elements to ensure readability and WCAG compliance.
 - **Component Geometry:** 
   - **Toggles:** Use the `.toggle` class for binary switches (e.g., Gross/Net, Ratio/Equal). Preferred for long labels.
   - **Segmented Controls:** Use `.segmented-control` for multi-option selections (e.g., Tax Bands) with shorter labels.
