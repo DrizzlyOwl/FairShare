@@ -12,6 +12,7 @@ const appData = {
     mortgageRequired: 0,
     equityP1: 0,
     equityP2: 0,
+    mortgageFees: 0,
     waterBill: 0,
     broadbandCost: 0,
     groceriesCost: 0,
@@ -73,6 +74,12 @@ window.updateSalaryType = (type) => {
         if (elements.wkIncomeSubtitle) elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
     }
 
+    // Refresh tax estimates
+    if (typeof updateTaxEstimate === 'function') {
+        updateTaxEstimate('P1');
+        updateTaxEstimate('P2');
+    }
+
     // Update ratio calculation if values exist
     const total = appData.salaryP1 + appData.salaryP2;
     if (total > 0) {
@@ -82,6 +89,63 @@ window.updateSalaryType = (type) => {
     }
     
     if (typeof saveToCache === 'function') saveToCache();
+};
+
+/**
+ * Estimates income tax band and monthly take-home pay.
+ * @param {string} p - 'P1' or 'P2'
+ */
+window.updateTaxEstimate = (p) => {
+    const input = elements[`salary${p}`];
+    const badge = document.getElementById(`salary${p}-tax-badge`);
+    
+    if (!input || !badge) return;
+    
+    // Only show for gross annual salary
+    if (appData.salaryType !== 'gross' || input.value === '' || parseFloat(input.value) <= 0) {
+        badge.setAttribute('hidden', '');
+        return;
+    }
+
+    const salary = parseFloat(input.value);
+    let tax = 0;
+    let bandName = 'Personal Allowance';
+    
+    // 2025/26 England/Wales/NI Standard Bands
+    const personalAllowance = 12570;
+    const basicLimit = 50270;
+    const higherLimit = 125140;
+    
+    // Tapered personal allowance for income > 100k
+    let actualAllowance = personalAllowance;
+    if (salary > 100000) {
+        actualAllowance = Math.max(0, personalAllowance - ((salary - 100000) / 2));
+    }
+
+    if (salary > higherLimit) {
+        bandName = 'Additional Rate';
+        tax = ((basicLimit - personalAllowance) * 0.2) + ((higherLimit - basicLimit) * 0.4) + ((salary - higherLimit) * 0.45);
+    } else if (salary > basicLimit) {
+        bandName = 'Higher Rate';
+        tax = ((basicLimit - personalAllowance) * 0.2) + ((salary - basicLimit) * 0.4);
+    } else if (salary > actualAllowance) {
+        bandName = 'Basic Rate';
+        tax = (salary - actualAllowance) * 0.2;
+    }
+
+    // Very rough NI estimate (2025/26 Employee Class 1: 8% on £12,570 - £50,270, 2% above)
+    let ni = 0;
+    if (salary > 50270) {
+        ni = ((50270 - 12570) * 0.08) + ((salary - 50270) * 0.02);
+    } else if (salary > 12570) {
+        ni = (salary - 12570) * 0.08;
+    }
+
+    const annualNet = salary - tax - ni;
+    const monthlyNet = annualNet / 12;
+
+    badge.innerText = `${bandName} • Est. £${Math.round(monthlyNet).toLocaleString()}/mo take-home`;
+    badge.removeAttribute('hidden');
 };
 
 window.downloadCSV = () => {
@@ -154,7 +218,8 @@ const FORM_FIELDS = [
     { id: 'otherSharedCosts', type: 'number' },
     { id: 'depositPercentage', type: 'number' },
     { id: 'mortgageInterestRate', type: 'number' },
-    { id: 'mortgageTerm', type: 'number' }
+    { id: 'mortgageTerm', type: 'number' },
+    { id: 'mortgageFees', type: 'number' }
 ];
 window.FORM_FIELDS = FORM_FIELDS;
 
@@ -622,6 +687,7 @@ window.calculateEquityDetails = () => {
     if (isNaN(propertyPrice) || propertyPrice <= 0) return;
     appData.totalEquity = propertyPrice * (depositPercentage / 100);
     appData.mortgageRequired = propertyPrice - appData.totalEquity;
+    appData.mortgageFees = getVal('mortgageFees');
     const sdlt = calculateStampDuty(propertyPrice, appData.regionCode, appData.homeType, appData.isFTB);
     let legalFees = 1200;
     if (propertyPrice > 500000) legalFees = 1800;
@@ -640,6 +706,8 @@ window.calculateEquityDetails = () => {
         appData.equityP2 = appData.totalEquity * 0.5;
     }
     elements.totalEquityDisplay.innerText = formatCurrency(appData.totalEquity);
+    const totalUpfront = appData.totalEquity + sdlt + legalFees + appData.mortgageFees;
+    if (elements.totalUpfrontDisplay) elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
     elements.mortgageRequiredDisplay.innerText = formatCurrency(appData.mortgageRequired);
     elements.equityP1Display.innerText = formatCurrency(appData.equityP1);
     elements.equityP2Display.innerText = formatCurrency(appData.equityP2);
@@ -1088,6 +1156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.depositPercentage = document.getElementById('depositPercentage');
     elements.mortgageInterestRate = document.getElementById('mortgageInterestRate');
     elements.mortgageTerm = document.getElementById('mortgageTerm');
+    elements.mortgageFees = document.getElementById('mortgageFees');
     elements.estimatePriceBtn = document.getElementById('estimatePriceBtn');
     elements.backButton = document.getElementById('back-button');
     elements.nextButton = document.getElementById('next-button');
@@ -1101,6 +1170,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.sdltDisplay = document.getElementById('sdltDisplay');
     elements.legalFeesEstimate = document.getElementById('legal-fees-estimate');
     elements.totalEquityDisplay = document.getElementById('totalEquityDisplay');
+    elements.totalUpfrontDisplay = document.getElementById('totalUpfrontDisplay');
     elements.mortgageRequiredDisplay = document.getElementById('mortgageRequiredDisplay');
     elements.monthlyMortgageDisplay = document.getElementById('monthlyMortgageDisplay');
     elements.totalRepaymentDisplay = document.getElementById('totalRepaymentDisplay');

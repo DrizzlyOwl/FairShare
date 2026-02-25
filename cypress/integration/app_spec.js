@@ -210,4 +210,28 @@ describe('FairShare App', () => {
     cy.get('#wk-income-subtitle').should('contain.text', 'Annual');
     cy.get('#wk-p1-perc').should('contain.text', '50.0%');
   });
+
+  it('should include optional mortgage fees in upfront cash calculation', () => {
+    fillStep1();
+    fillStep2('SW1A 0AA'); // London
+    
+    // On Mortgage screen (Step 4)
+    cy.get('#screen-4').should('be.visible');
+    
+    // Default upfront cash (10% of 250k = 20k, plus SDLT/Legal)
+    // Intercepted price is 250k.
+    // 10% deposit = 25k.
+    // SDLT for 250k Standard in EN = (125k * 0) + (125k * 0.02) = 2500.
+    // Legal fees for 250k = 1200.
+    // Total = 25000 + 2500 + 1200 = 28700.
+    
+    cy.get('#totalUpfrontDisplay').should('contain.text', '£28,700');
+    
+    // Add mortgage fees
+    cy.get('summary.details-box__summary').click();
+    cy.get('[data-cy="mortgageFees-input"]').type('999');
+    
+    // New total = 28700 + 999 = 29699
+    cy.get('#totalUpfrontDisplay').should('contain.text', '£29,699');
+  });
 });

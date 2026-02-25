@@ -13,6 +13,7 @@ if (typeof appData === 'undefined') {
     mortgageRequired: 0,
     equityP1: 0,
     equityP2: 0,
+    mortgageFees: 0,
     waterBill: 0,
     broadbandCost: 0,
     groceriesCost: 0,
@@ -49,8 +50,11 @@ if (typeof elements === 'undefined') {
     propertyPrice: { value: '' },
     depositPercentage: { value: '' },
     sdltEstimate: { value: '' },
+    sdltDisplay: { innerText: '' },
     legalFeesEstimate: { value: '' },
     totalEquityDisplay: { innerText: '' },
+    totalUpfrontDisplay: { innerText: '' },
+    mortgageFees: { value: '' },
     mortgageRequiredDisplay: { innerText: '' },
     equityP1Display: { innerText: '' },
     equityP2Display: { innerText: '' },
@@ -198,6 +202,71 @@ runTest('updateSalaryType should handle zero salary and calculate 100/0 ratio', 
   console.assert(appData.ratioP1 === 1, 'Ratio P1 should be 1.0 (100%)');
   console.assert(appData.ratioP2 === 0, 'Ratio P2 should be 0.0 (0%)');
   console.assert(ratioBarCalled === true, 'updateRatioBar should have been called');
+});
+
+runTest('updateTaxEstimate should estimate Basic Rate for £30k', () => {
+  const badge = document.createElement('div');
+  badge.id = 'salaryP1-tax-badge';
+  document.body.appendChild(badge);
+  
+  window.elements.salaryP1 = { value: '30000' };
+  window.appData.salaryType = 'gross';
+  
+  updateTaxEstimate('P1');
+  
+  console.assert(badge.innerText.includes('Basic Rate'), `Expected Basic Rate but got: ${badge.innerText}`);
+  console.assert(badge.innerText.includes('£2,093'), `Expected approx £2,093 but got: ${badge.innerText}`);
+  
+  document.body.removeChild(badge);
+});
+
+runTest('updateTaxEstimate should estimate Higher Rate for £60k', () => {
+  const badge = document.createElement('div');
+  badge.id = 'salaryP2-tax-badge';
+  document.body.appendChild(badge);
+  
+  window.elements.salaryP2 = { value: '60000' };
+  window.appData.salaryType = 'gross';
+  
+  updateTaxEstimate('P2');
+  
+  console.assert(badge.innerText.includes('Higher Rate'), `Expected Higher Rate but got: ${badge.innerText}`);
+  console.assert(badge.innerText.includes('£3,780'), `Expected approx £3,780 but got: ${badge.innerText}`);
+  
+  document.body.removeChild(badge);
+});
+
+runTest('calculateEquityDetails should include mortgage fees in total upfront cash', () => {
+  // Setup data
+  appData.propertyPrice = 200000;
+  appData.depositPercentage = 10; // £20,000
+  appData.regionCode = 'EN';
+  appData.homeType = 'first';
+  appData.isFTB = true;
+  
+  // Mock elements
+  const mockElements = {
+    mortgageFees: { value: '999' },
+    depositPercentage: { value: '10' },
+    totalEquityDisplay: { innerText: '' },
+    totalUpfrontDisplay: { innerText: '' },
+    mortgageRequiredDisplay: { innerText: '' },
+    equityP1Display: { innerText: '' },
+    equityP2Display: { innerText: '' },
+    sdltEstimate: { value: '' },
+    sdltDisplay: { innerText: '' },
+    legalFeesEstimate: { value: '' }
+  };
+  Object.assign(window.elements, mockElements);
+  
+  calculateEquityDetails();
+  
+  // SDLT for £200k FTB in EN is 0
+  // Legal fees for £200k is 1200
+  // Total = 20000 (deposit) + 0 (sdlt) + 1200 (legal) + 999 (fees) = 22199
+  
+  console.assert(appData.mortgageFees === 999, `Expected 999 fees, but got ${appData.mortgageFees}`);
+  console.assert(window.elements.totalUpfrontDisplay.innerText.includes('£22,199'), `Expected £22,199 total upfront, but got ${window.elements.totalUpfrontDisplay.innerText}`);
 });
 
 // -- END: Unit Tests --
