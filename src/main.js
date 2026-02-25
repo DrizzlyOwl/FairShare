@@ -147,7 +147,10 @@ const app = {
             }, 300);
 
             el.addEventListener('input', () => {
-                if (field.id === 'postcode') this.formatPostcode(el);
+                if (field.id === 'postcode') {
+                    this.formatPostcode(el);
+                    this.handlePostcodeChange(el.value);
+                }
                 if (field.id === 'salaryP1' || field.id === 'salaryP2') {
                     this.updateTaxEstimate(field.id === 'salaryP1' ? 'P1' : 'P2');
                     this.calculateRatio();
@@ -484,6 +487,32 @@ const app = {
     },
 
     /**
+     * Handles postcode input changes to detect region and update announcements.
+     * @param {string} postcode - The UK postcode.
+     */
+    handlePostcodeChange(postcode) {
+        const region = ApiService.getRegionFromPostcode(postcode);
+        const announce = this.elements.regionAnnouncement;
+        if (!announce) return;
+
+        if (region) {
+            this.store.update({
+                regionCode: region.code,
+                isNorth: region.key === 'NORTH'
+            });
+
+            const text = region.key === 'NORTH'
+                ? `${region.name} region detected. Heating estimates adjusted.`
+                : `${region.name} region detected.`;
+
+            announce.querySelector('.alert__text').innerText = text;
+            announce.removeAttribute('hidden');
+        } else {
+            announce.setAttribute('hidden', '');
+        }
+    },
+
+    /**
      * Updates visibility of First Time Buyer specific options.
      */
     updateFTBVisibility() {
@@ -504,11 +533,19 @@ const app = {
         const display = this.elements.propertyPriceEstimateDisplay;
         if (!display) return;
         if (price > 0) {
+            const formatted = formatCurrency(price);
             const labelText = isEstimated ? 'Using estimated market price: ' : 'Using manual market price: ';
-            display.innerHTML = `${labelText}<span>${formatCurrency(price)}</span>`;
+            display.innerHTML = `${labelText}<span>${formatted}</span>`;
             display.removeAttribute('hidden');
+            if (this.elements.displayPropertyPrice) {
+                // Remove £ symbol as it's provided by .input-group__addon
+                this.elements.displayPropertyPrice.value = price.toLocaleString('en-GB');
+            }
         } else {
             display.setAttribute('hidden', '');
+            if (this.elements.displayPropertyPrice) {
+                this.elements.displayPropertyPrice.value = '';
+            }
         }
     },
 

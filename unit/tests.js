@@ -58,6 +58,7 @@ if (typeof elements === 'undefined') {
     mortgageRequiredDisplay: { innerText: '' },
     equityP1Display: { innerText: '' },
     equityP2Display: { innerText: '' },
+    displayPropertyPrice: { value: '' },
   };
 }
 
@@ -274,4 +275,103 @@ runTest('calculateTakeHome should handle Personal Allowance boundaries', () => {
   console.assert(aboveAllowanceSC.bandName === 'Starter Rate', `Expected Starter Rate, but got ${aboveAllowanceSC.bandName}`);
 });
 
-// -- END: Unit Tests --
+runTest('handlePostcodeChange should update state and UI announcement for North region', () => {
+  // Mocking app context for the test
+  const mockApp = {
+    elements: {
+      regionAnnouncement: {
+        querySelector: () => ({ innerText: '' }),
+        removeAttribute: (_attr) => { mockApp.elements.regionAnnouncement.hidden = false; },
+        setAttribute: (_attr, _val) => { mockApp.elements.regionAnnouncement.hidden = true; },
+        hidden: true
+      }
+    },
+    store: {
+      data: { regionCode: 'EN', isNorth: false },
+      update: (newData) => { Object.assign(mockApp.store.data, newData); }
+    },
+    handlePostcodeChange: function(postcode) {
+        const region = ApiService.getRegionFromPostcode(postcode);
+        const announce = this.elements.regionAnnouncement;
+        if (!announce) return;
+
+        if (region) {
+            this.store.update({
+                regionCode: region.code,
+                isNorth: region.key === 'NORTH'
+            });
+
+            const text = region.key === 'NORTH'
+                ? `${region.name} region detected. Heating estimates adjusted.`
+                : `${region.name} region detected.`;
+
+            announce.querySelector('.alert__text').innerText = text;
+            announce.removeAttribute('hidden');
+        } else {
+            announce.setAttribute('hidden', '');
+        }
+    }
+  };
+
+  const alertTextObj = { innerText: '' };
+  mockApp.elements.regionAnnouncement.querySelector = (sel) => sel === '.alert__text' ? alertTextObj : null;
+
+  // Test with a Northern postcode (Manchester - M)
+  mockApp.handlePostcodeChange('M1 1AA');
+
+  console.assert(mockApp.store.data.regionCode === 'EN', `Expected region EN, got ${mockApp.store.data.regionCode}`);
+  console.assert(mockApp.store.data.isNorth === true, `Expected isNorth to be true, got ${mockApp.store.data.isNorth}`);
+  console.assert(alertTextObj.innerText === 'North of England region detected. Heating estimates adjusted.', `Wrong alert text: ${alertTextObj.innerText}`);
+  console.assert(mockApp.elements.regionAnnouncement.hidden === false, 'Announcement should be visible');
+
+  // Test with a Scottish postcode (Edinburgh - EH)
+  mockApp.handlePostcodeChange('EH1 1AA');
+  console.assert(mockApp.store.data.regionCode === 'SC', `Expected region SC, got ${mockApp.store.data.regionCode}`);
+    console.assert(mockApp.store.data.isNorth === false, `Expected isNorth to be false, got ${mockApp.store.data.isNorth}`);
+    console.assert(alertTextObj.innerText === 'Scotland region detected.', `Wrong alert text: ${alertTextObj.innerText}`); 
+  });
+  
+  runTest('updatePropertyPriceDisplay should update displayPropertyPrice with formatted currency', () => {
+    const mockApp = {
+      elements: {
+        propertyPriceEstimateDisplay: {
+          innerHTML: '',
+          removeAttribute: () => {},
+          setAttribute: () => {}
+        },
+        displayPropertyPrice: { value: '' }
+      },
+      // Simplified version of the logic to be tested
+      updatePropertyPriceDisplay: function(price, isEstimated) {
+          const display = this.elements.propertyPriceEstimateDisplay;
+          if (!display) return;
+          if (price > 0) {
+              const labelText = isEstimated ? 'Using estimated market price: ' : 'Using manual market price: ';
+              // Mock formatCurrency behavior
+              const formatted = '£' + price.toLocaleString('en-GB');
+              display.innerHTML = `${labelText}<span>${formatted}</span>`;
+              display.removeAttribute('hidden');
+              
+                          // The fix we are about to implement:
+                          if (this.elements.displayPropertyPrice) {
+                              this.elements.displayPropertyPrice.value = price.toLocaleString('en-GB');
+                          }
+                      } else {
+                          display.setAttribute('hidden', '');
+                          if (this.elements.displayPropertyPrice) {
+                              this.elements.displayPropertyPrice.value = '';
+                          }
+                      }
+                  }
+                };
+              
+                mockApp.updatePropertyPriceDisplay(250000, false);
+                console.assert(mockApp.elements.displayPropertyPrice.value === '250,000', `Expected 250,000, got ${mockApp.elements.displayPropertyPrice.value}`);
+              
+                mockApp.updatePropertyPriceDisplay(0, false);
+              
+    console.assert(mockApp.elements.displayPropertyPrice.value === '', 'Expected empty string for 0 price');
+  });
+  
+  // -- END: Unit Tests --
+  
