@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A bill-splitting calculator that helps couples and housemates divide expenses fairly based on their income.">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1740478176">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1740478177">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="logo.svg?v=1740478176" as="image">
+    <link rel="preload" href="logo.svg?v=1740478177" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
 </head>
@@ -29,7 +29,7 @@
 <main id="main-content">
     <div class="app-container">
         <header class="header-brand" id="header-brand">
-            <img src="logo.svg?v=1740478176" alt="FairShare - Salary Proportion Calculator" width="280" height="70" class="header-brand__logo">
+            <img src="logo.svg?v=1740478177" alt="FairShare - Salary Proportion Calculator" width="280" height="70" class="header-brand__logo">
             <div class="header-brand__controls">
                 <button id="theme-toggle" class="header-brand__theme-toggle" aria-label="Toggle Night Mode">
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-lightning.svg'); mask-image: url('icons/icon-lightning.svg');" aria-hidden="true"></span>
@@ -77,13 +77,13 @@
                 <span class="heading-icon" style="mask-image: url('icons/icon-money.svg'); -webkit-mask-image: url('icons/icon-money.svg');" aria-hidden="true"></span>
                 Your Income
             </h2>
-            <p>Establish your base contribution ratio.</p>
+            <p>Calculate your contribution ratio based on earnings.</p>
             <p class="screen-summary">
-                Provide your income details to calculate your unique contribution percentage. This ensures all shared bills are split proportionately to each partner's individual earning power.
+                Your combined income determines your individual percentage of the household bills. This ensures shared costs are split fairly relative to each partner's earning power.
             </p>
 
             <div class="form-group">
-                <label class="form-label">Salary Type</label>
+                <label class="form-label">How do you want to enter your income?</label>
                 <div class="toggle">
                     <input type="radio" name="salaryType" id="stGross" value="gross" checked class="toggle__input" onchange="updateSalaryType('gross')">
                     <label for="stGross" class="toggle__label">Annual Gross</label>
@@ -100,13 +100,12 @@
                 <div id="salaryP1-tax-badge" class="badge badge--info" hidden></div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-help salaryP1-error" data-cy="salaryP1-input">
+                    <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-error" data-cy="salaryP1-input">
                 </div>
                 <div id="salaryP1-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text" id="salaryP1ErrorText">Please enter a valid salary (0 or more).</div>
                 </div>
-                <div id="salaryP1-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
             </div>
 
             <div class="form-group">
@@ -116,13 +115,12 @@
                 <div id="salaryP2-tax-badge" class="badge badge--info" hidden></div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-help salaryP2-error" data-cy="salaryP2-input">
+                    <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-error" data-cy="salaryP2-input">
                 </div>
                 <div id="salaryP2-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text" id="salaryP2ErrorText">Please enter a valid salary for your partner (0 or more).</div>
                 </div>
-                <div id="salaryP2-help" class="help-text">Your combined income determines your individual percentage of the household bills.</div>
             </div>
         </section>
 
@@ -131,9 +129,9 @@
                 <span class="heading-icon" style="mask-image: url('icons/icon-building.svg'); -webkit-mask-image: url('icons/icon-building.svg');" aria-hidden="true"></span>
                 Property Details
             </h2>
-            <p>Define your home to automate cost estimates.</p>
+            <p>Define your home to estimate running costs.</p>
             <p class="screen-summary">
-                Enter your postcode and property size. We use regional data to automate accurate estimates for Council Tax and local utility rates based on your specific location.
+                We use your postcode and property size to estimate regional costs for Council Tax and utilities. You can manually override these estimates later.
             </p>
 
             <div class="form-group">
@@ -145,7 +143,7 @@
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text">Please enter a valid UK postcode.</div>
                 </div>
-                <div id="postcode-help" class="help-text">Used to estimate local market prices and regional utility variations.</div>
+                <div id="postcode-help" class="help-text">Used to detect your local region and estimate market values.</div>
                 <div id="region-announcement" class="alert alert--info" aria-live="polite" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
                     <div class="alert__text"></div>
@@ -153,7 +151,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="propertyPrice">Current Market Value (£)</label>
+                <label class="form-label" for="propertyPrice">Estimated Property Value</label>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
                     <input type="number" id="propertyPrice" class="input-group__control" placeholder="e.g. 250000" aria-describedby="propertyPrice-error" data-cy="propertyPrice-input">
@@ -161,7 +159,7 @@
                 </div>
                 <div id="propertyPrice-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter a property value or use a postcode to estimate.</div>
+                    <div class="alert__text">Please enter a value or use your postcode to estimate.</div>
                 </div>
                 <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden>
                     Using estimated market price: <span id="estimatedPriceValue" class="fw-bold"></span>
@@ -169,10 +167,10 @@
             </div>
 
             <fieldset class="form-group" data-cy="taxBand-fieldset">
-                <legend class="form-label">Select Valuation Band</legend>
-                <p class="help-text">Council Tax is determined by the property's assigned valuation band.</p>
+                <legend class="form-label">Council Tax Valuation Band</legend>
+                <p class="help-text">Find your band using the link below if you're unsure.</p>
                 <a href="https://www.gov.uk/council-tax-bands" target="_blank" rel="nofollow" class="btn btn-external">
-                    Find your Council Tax Band
+                    Find my Council Tax Band
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-external-link.svg'); mask-image: url('icons/icon-external-link.svg');" aria-hidden="true"></span>
                 </a>
                 <div class="segmented-control">
@@ -202,7 +200,7 @@
                 </div>
                 <div id="taxBand-error" class="alert alert--error" aria-live="assertive" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please select a valuation band to continue.</div>
+                    <div class="alert__text">Please select a band to continue.</div>
                 </div>
             </fieldset>
 
@@ -246,14 +244,14 @@
                 Mortgage & Equity
             </h2>
 
-            <p>Finalize home ownership and financing details.</p>
+            <p>Define your financing and upfront costs.</p>
             <p class="screen-summary">
-                Set your deposit and interest rates. We calculate monthly repayments and individual equity shares to ensure your largest joint commitment is split fairly and transparently.
+                Enter your deposit and mortgage details to calculate monthly repayments. We've also included space for one-off purchase costs to help you plan your initial cash requirements.
             </p>
 
             <!-- 1. Context: Loan & Deposit -->
             <div class="form-group">
-                <label class="form-label" for="depositPercentage">Total Deposit Percentage (%)</label>
+                <label class="form-label" for="depositPercentage">Total Cash Deposit (%)</label>
                 <div class="input-group">
                     <input type="number" id="depositPercentage" class="input-group__control" value="10" min="0" max="100" required aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input">
                     <span class="input-group__addon">%</span>
@@ -262,19 +260,19 @@
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text">Please enter a deposit percentage (0-100).</div>
                 </div>
-                <div id="depositPercentage-help" class="help-text">The total cash deposit you are both putting down combined.</div>
+                <div id="depositPercentage-help" class="help-text">The total percentage of the property value you're paying upfront.</div>
             </div>
 
             <fieldset class="form-group">
-                <legend class="form-label">Split Deposit Proportionally?</legend>
+                <legend class="form-label">How should the initial cash be split?</legend>
                 <div class="toggle">
                     <input type="radio" name="depositSplitType" id="splitPropYes" value="yes" checked class="toggle__input">
-                    <label for="splitPropYes" class="toggle__label">Income Ratio</label>
+                    <label for="splitPropYes" class="toggle__label">By Income Ratio</label>
                     <input type="radio" name="depositSplitType" id="splitPropNo" value="no" class="toggle__input">
                     <label for="splitPropNo" class="toggle__label">Equal (50/50)</label>
                     <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
-                <div id="deposit-split-help" class="help-text">Choose whether the initial cash deposit should match your salary ratio or be equal.</div>
+                <div id="deposit-split-help" class="help-text">Choose whether the deposit, fees, and tax should match your salary ratio or be split equally.</div>
             </fieldset>
 
             <div class="form-row">
@@ -286,22 +284,21 @@
                     </div>
                     <div id="mortgageInterestRate-error" class="alert alert--error" hidden>
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                        <div class="alert__text">Invalid.</div>
+                        <div class="alert__text">Invalid interest rate.</div>
                     </div>
                 </div>
 
                 <div class="form-group col">
-                    <label class="form-label" for="mortgageTerm">Term (Years)</label>
+                    <label class="form-label" for="mortgageTerm">Repayment Term (Years)</label>
                     <div class="input-group">
                         <input type="number" id="mortgageTerm" class="input-group__control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error" data-cy="mortgageTerm-input">
                     </div>
                     <div id="mortgageTerm-error" class="alert alert--error" hidden>
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                        <div class="alert__text">Please enter a term between 1 and 50 years.</div>
+                        <div class="alert__text">Please enter a term (1-50 years).</div>
                     </div>
                 </div>
             </div>
-            <div id="mortgageTerm-help" class="help-text" style="margin-top: -1rem; margin-bottom: 1.5rem;">The duration of your mortgage repayment plan.</div>
 
             <!-- 2. Context: Purchase Costs -->
             <fieldset class="form-group">
@@ -310,7 +307,7 @@
                     <input type="radio" name="homeType" id="homeFirst" value="first" checked class="toggle__input">
                     <label for="homeFirst" class="toggle__label">Sole Property</label>
                     <input type="radio" name="homeType" id="homeSecond" value="second" class="toggle__input">
-                    <label for="homeSecond" class="toggle__label">Additional Property</label>
+                    <label for="homeSecond" class="toggle__label">Buy-to-let / Second</label>
                     <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
                 <div id="home-type-help" class="help-text">Determines the Stamp Duty (SDLT) rate applied to this purchase.</div>
@@ -325,38 +322,38 @@
                     <label for="buyerFTB" class="toggle__label">First Time Buyer</label>
                     <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
-                <div id="buyer-status-help" class="help-text">Eligible for First Time Buyer relief in applicable regions.</div>
+                <div id="buyer-status-help" class="help-text">Eligible for First Time Buyer tax relief in applicable regions.</div>
             </fieldset>
 
             <div class="purchase-costs-box" aria-live="polite">
                 <h4>Estimated Purchase Costs</h4>
                 <div class="form-group">
-                    <label class="form-label">Estimated Stamp Duty (SDLT)</label>
+                    <label class="form-label">Stamp Duty (SDLT) Estimate</label>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
                         <input type="text" id="sdlt-estimate" class="input-group__control" readonly>
                     </div>
-                    <p class="help-text">Standard residential rate estimate.</p>
+                    <p class="help-text">Standard residential rate estimate for your region.</p>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Estimated Legal Fees</label>
+                    <label class="form-label">Legal Fees Estimate</label>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
                         <input type="text" id="legal-fees-estimate" class="input-group__control" readonly>
                     </div>
-                    <p class="help-text">Includes conveyancing, searches, and bank transfer fees.</p>
+                    <p class="help-text">Includes conveyancing, searches, and bank fees.</p>
                 </div>
 
                 <details class="details-box">
                     <summary class="details-box__summary">Add Mortgage Product Fees (Optional)</summary>
                     <div class="details-box__content">
                         <div class="form-group">
-                            <label class="form-label" for="mortgageFees">Product Fees (£)</label>
+                            <label class="form-label" for="mortgageFees">Upfront Product Fees (£)</label>
                             <div class="input-group">
                                 <span class="input-group__addon">£</span>
-                                <input type="number" id="mortgageFees" class="input-group__control" placeholder="e.g. 999" oninput="calculateEquityDetails()" data-cy="mortgageFees-input">
+                                <input type="number" id="mortgageFees" class="input-group__control" placeholder="e.g. 999" data-cy="mortgageFees-input">
                             </div>
-                            <p class="help-text">Any arrangement or booking fees for your selected mortgage product.</p>
+                            <p class="help-text">Any arrangement or booking fees paid at completion.</p>
                         </div>
                     </div>
                 </details>
@@ -364,12 +361,12 @@
 
             <!-- 3. Context: Summary -->
             <div class="form-group">
-                <label class="form-label" for="displayPropertyPrice">Current Market Value</label>
+                <label class="form-label" for="displayPropertyPrice">Property Market Value</label>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
                     <input type="text" id="displayPropertyPrice" class="input-group__control" readonly aria-describedby="displayPropertyPrice-help">
                 </div>
-                <div id="displayPropertyPrice-help" class="help-text">As specified in the property details section.</div>
+                <div id="displayPropertyPrice-help" class="help-text">The value specified in the Property Details section.</div>
             </div>
         </section>
 
@@ -379,14 +376,14 @@
                 Monthly Utilities
             </h2>
 
-            <p>Review baseline household costs.</p>
+            <p>Establish rules for baseline running costs.</p>
             <p class="screen-summary">
-                We've provided regional estimates for your essential utilities. Adjust these figures to match your actual monthly commitments for more precise results.
+                We've provided regional estimates for your essential bills. Adjust these figures to match your actual commitments, and choose a split rule for each item.
             </p>
 
             <div class="master-toggle">
                 <div class="master-toggle-inner">
-                    <span class="master-toggle-label">Set All Rules:</span>
+                    <span class="master-toggle-label">Set all utilities to:</span>
                     <div class="toggle" style="margin-bottom: 0; max-width: 18rem;">
                         <input type="radio" name="masterUtilities" id="muRatio" value="yes" checked onchange="setAllSplitTypes('utilities', 'yes')" class="toggle__input">
                         <label for="muRatio" class="toggle__label">Ratio</label>
@@ -416,12 +413,12 @@
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text">Please enter the monthly council tax.</div>
                 </div>
-                <div id="councilTaxCost-help" class="help-text">Estimated based on your selected valuation band.</div>
+                <div id="councilTaxCost-help" class="help-text">Estimated based on your selected tax band.</div>
             </div>
 
             <div class="form-group">
                 <div class="field-header">
-                    <label class="form-label" for="energyCost">Monthly Energy Estimate (£)</label>
+                    <label class="form-label" for="energyCost">Monthly Energy (Gas/Elec) (£)</label>
                     <div class="toggle toggle--mini">
                         <input type="radio" name="energySplitType" id="enPropYes" value="yes" checked class="toggle__input">
                         <label for="enPropYes" class="toggle__label">Ratio</label>
@@ -438,7 +435,7 @@
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text">Please enter an energy estimate.</div>
                 </div>
-                <div id="energy-explainer" class="help-text">Estimated gas and electricity usage for this property size and region.</div>
+                <div id="energy-explainer" class="help-text">Regional average for this property size.</div>
             </div>
 
             <div class="form-group">
@@ -460,7 +457,7 @@
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text">Please enter a water bill amount.</div>
                 </div>
-                <div id="waterBill-help" class="help-text">Estimated regional average based on bathrooms and postcode.</div>
+                <div id="waterBill-help" class="help-text">Regional average based on bathrooms and location.</div>
             </div>
 
             <div class="form-group">
@@ -476,7 +473,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="broadbandCost" class="input-group__control" placeholder="e.g. 30" aria-describedby="broadband-help broadband-error" data-cy="broadbandCost-input">
+                    <input type="number" id="broadbandCost" class="input-group__control" placeholder="e.g. 35" aria-describedby="broadband-help broadband-error" data-cy="broadbandCost-input">
                 </div>
                 <div id="broadband-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -491,14 +488,14 @@
                 <span class="heading-icon" style="mask-image: url('icons/icon-receipt.svg'); -webkit-mask-image: url('icons/icon-receipt.svg');" aria-hidden="true"></span>
                 Committed Spending
             </h2>
-            <p>Add optional shared monthly expenses.</p>
+            <p>Add optional shared lifestyle expenses.</p>
             <p class="screen-summary">
-                Defining shared lifestyle costs like food and childcare now ensures full transparency in your joint budget, preventing friction over variable expenses later.
+                List any other regular costs you plan to share, such as food or childcare. This ensures your joint budget covers all aspects of your daily life.
             </p>
 
             <div class="master-toggle">
                 <div class="master-toggle-inner">
-                    <span class="master-toggle-label">Set All Rules:</span>
+                    <span class="master-toggle-label">Set all lifestyle costs to:</span>
                     <div class="toggle" style="margin-bottom: 0; max-width: 18rem;">
                         <input type="radio" name="masterCommitted" id="mcRatio" value="yes" checked onchange="setAllSplitTypes('committed', 'yes')" class="toggle__input">
                         <label for="mcRatio" class="toggle__label">Ratio</label>
@@ -526,7 +523,7 @@
                 </div>
                 <div id="groceries-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter a valid amount.</div>
+                    <div class="alert__text">Please enter an amount.</div>
                 </div>
                 <div id="groceries-help" class="help-text">Food, household supplies, and shared toiletries.</div>
             </div>
@@ -548,9 +545,9 @@
                 </div>
                 <div id="childcare-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter a valid amount.</div>
+                    <div class="alert__text">Please enter an amount.</div>
                 </div>
-                <div id="childcare-help" class="help-text">Nursery, childminders, or other care costs.</div>
+                <div id="childcare-help" class="help-text">Nursery, childminders, or other regular care costs.</div>
             </div>
 
             <div class="form-group">
@@ -570,14 +567,14 @@
                 </div>
                 <div id="insurance-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter a valid amount.</div>
+                    <div class="alert__text">Please enter an amount.</div>
                 </div>
-                <div id="insurance-help" class="help-text">Combined life, health, or pet insurance.</div>
+                <div id="insurance-help" class="help-text">Combined life, health, or pet insurance payments.</div>
             </div>
 
             <div class="form-group">
                 <div class="field-header">
-                    <label class="form-label" for="otherSharedCosts">Other Shared Monthly Costs (£)</label>
+                    <label class="form-label" for="otherSharedCosts">Other Shared Costs (£)</label>
                     <div class="toggle toggle--mini">
                         <input type="radio" name="otherSharedSplitType" id="osPropYes" value="yes" checked class="toggle__input">
                         <label for="osPropYes" class="toggle__label">Ratio</label>
@@ -592,9 +589,9 @@
                 </div>
                 <div id="other-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter a valid amount.</div>
+                    <div class="alert__text">Please enter an amount.</div>
                 </div>
-                <div id="other-help" class="help-text">Gym memberships, streaming services, or car payments.</div>
+                <div id="other-help" class="help-text">Gym, streaming services, or other joint subscriptions.</div>
             </div>
         </section>
 
@@ -605,7 +602,7 @@
             </h2>
 
             <p class="screen-summary">
-                This comprehensive roadmap provides a full breakdown of both your initial upfront cash requirements and your ongoing monthly commitments. Use these figures to plan your initial property purchase and set up joint account standing orders with absolute confidence.
+                This report provides a clear roadmap for your joint finances. Use these figures to plan your property purchase and set up joint account payments with confidence.
             </p>
 
             <div class="result-section">
@@ -641,7 +638,7 @@
             <div class="result-section">
                 <h3 class="result-section__title">2. Ongoing Monthly Shares</h3>
                 <div class="result-ratio-bar" id="result-ratio-bar">
-                    <p class="text-center fw-bold">Monthly Fair Share Ratio</p>
+                    <p class="text-center fw-bold">Calculated Contribution Ratio</p>
                     <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent You and 50 percent Your Partner">
                         <div class="bar-p1" id="bar-p1" aria-hidden="true" data-cy="ratio-bar-p1">50%</div>
                         <div class="bar-p2" id="bar-p2" aria-hidden="true" data-cy="ratio-bar-p2">50%</div>
@@ -652,17 +649,17 @@
                 <div class="card-grid" id="monthly-shares-summary">
                     <div class="card card--result card--share-p1" id="result-share-p1">
                         <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
-                        <p class="card__label">You Pay Monthly</p>
+                        <p class="card__label">Your Monthly Total</p>
                         <p class="card__value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1">£0</p>
                     </div>
                     <div class="card card--result card--share-p2" id="result-share-p2">
                         <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
-                        <p class="card__label">Partner Pays Monthly</p>
+                        <p class="card__label">Partner's Monthly Total</p>
                         <p class="card__value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2">£0</p>
                     </div>
                 </div>
                 <p class="text-center total-bill-row" id="total-bill-row">
-                    Total Shared Monthly Bill: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display">£0</span>
+                    Total Shared Monthly Budget: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display">£0</span>
                 </p>
                 <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
@@ -800,8 +797,8 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="style.css?v=1740478176">
-<script src="app.js?v=1740478176"></script>
+<link rel="stylesheet" href="style.css?v=1740478177">
+<script src="app.js?v=1740478177"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
