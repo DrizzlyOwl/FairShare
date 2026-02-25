@@ -35,22 +35,15 @@ jobs:
         run: npm install
       - name: Run ESLint
         run: npm run lint
-      - name: Run Unit Tests
-        run: npm run test:unit
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
-        with:
-          start: npm start
-          wait-on: 'http://localhost:8080'
-          command: npm run test:cypress
-
-      - name: Run Accessibility tests
-        uses: cypress-io/github-action@v6
-        with:
-          install: false
-          start: npm start
-          wait-on: 'http://localhost:8080'
-          command: npm run test:a11y
+            - name: Run Unit Tests
+              run: npm run test:unit
+      
+            - name: Run Cypress and Accessibility tests
+              uses: cypress-io/github-action@v6
+              with:
+                start: npm start
+                wait-on: 'http://localhost:8080'
+                command: npm run test:cypress && npm run test:a11y
 
   # Single deploy job since we're just deploying
   deploy:
