@@ -368,10 +368,49 @@ runTest('handlePostcodeChange should update state and UI announcement for North 
                 mockApp.updatePropertyPriceDisplay(250000, false);
                 console.assert(mockApp.elements.displayPropertyPrice.value === '250,000', `Expected 250,000, got ${mockApp.elements.displayPropertyPrice.value}`);
               
-                mockApp.updatePropertyPriceDisplay(0, false);
-              
-    console.assert(mockApp.elements.displayPropertyPrice.value === '', 'Expected empty string for 0 price');
-  });
-  
-  // -- END: Unit Tests --
+                  mockApp.updatePropertyPriceDisplay(0, false);
+                  console.assert(mockApp.elements.displayPropertyPrice.value === '', 'Expected empty string for 0 price');
+                });
+                
+                runTest('updateSalaryTypeLabels should update labels and descriptions based on income mode', () => {
+                  const mockApp = {
+                    elements: {
+                      salaryP1Label: { innerText: '' },
+                      salaryP2Label: { innerText: '' },
+                      salaryP1: { placeholder: '' },
+                      salaryP2: { placeholder: '' },
+                      salaryP1Desc: { innerText: '' },
+                      salaryP2Desc: { innerText: '' },
+                      wkIncomeSubtitle: { innerText: '' },
+                      salaryP1Error: { setAttribute: () => {} },
+                      salaryP2Error: { setAttribute: () => {} }
+                    },
+                    updateSalaryTypeLabels: function(type) {
+                        if (type === 'gross') {
+                            this.elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax) *';
+                            this.elements.salaryP1.placeholder = 'e.g. 35000';
+                            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your total yearly income before any deductions.';
+                            this.elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
+                        } else {
+                            this.elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay *';
+                            this.elements.salaryP1.placeholder = 'e.g. 2500';
+                            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your average monthly income after all taxes and deductions.';
+                            this.elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
+                        }
+                    }
+                  };
+                
+                  // Test Gross mode
+                  mockApp.updateSalaryTypeLabels('gross');
+                  console.assert(mockApp.elements.salaryP1Label.innerText.includes('Annual Salary'), 'Label should include Annual Salary in gross mode');
+                  console.assert(mockApp.elements.salaryP1Desc.innerText === 'Enter your total yearly income before any deductions.', 'Description should match gross mode');
+                
+                  // Test Net mode
+                  mockApp.updateSalaryTypeLabels('net');
+                  console.assert(mockApp.elements.salaryP1Label.innerText.includes('Monthly Take-home'), 'Label should include Monthly Take-home in net mode');
+                  console.assert(mockApp.elements.salaryP1Desc.innerText === 'Enter your average monthly income after all taxes and deductions.', 'Description should match net mode');
+                });
+                
+                // -- END: Unit Tests --
+                
   

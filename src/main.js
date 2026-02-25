@@ -100,6 +100,7 @@ const app = {
             'councilTaxCost-error', 'energyCost-error', 'waterBill-error', 'broadband-error',
             'groceries-error', 'childcare-error', 'insurance-error', 'other-error',
             'depositPercContainer', 'depositAmtContainer', 'depositAmount',
+            'salaryP1-desc', 'salaryP2-desc',
             'result-p1', 'result-p2', 'total-bill-display', 'result-summary', 'calculation-workings',
             'breakdown-summary', 'bd-mortgage-total', 'bd-mortgage-p1', 'bd-mortgage-p2',
             'bd-tax-total', 'bd-tax-p1', 'bd-tax-p2', 'bd-energy-total', 'bd-energy-p1', 'bd-energy-p2',
@@ -251,16 +252,20 @@ const app = {
         if (this.elements.salaryP2Error) this.elements.salaryP2Error.setAttribute('hidden', '');
 
         if (type === 'gross') {
-            this.elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax)';
-            this.elements.salaryP2Label.innerText = "Your Partner's Annual Salary (Pre-tax)";
+            this.elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax) *';
+            this.elements.salaryP2Label.innerText = "Your Partner's Annual Salary (Pre-tax) *";
             this.elements.salaryP1.placeholder = 'e.g. 35000';
             this.elements.salaryP2.placeholder = 'e.g. 45000';
+            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your total yearly income before any deductions.';
+            if (this.elements.salaryP2Desc) this.elements.salaryP2Desc.innerText = "Enter your partner's total yearly income before any deductions.";
             this.elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
         } else {
-            this.elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay';
-            this.elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay";
+            this.elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay *';
+            this.elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay *";
             this.elements.salaryP1.placeholder = 'e.g. 2500';
             this.elements.salaryP2.placeholder = 'e.g. 3200';
+            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your average monthly income after all taxes and deductions.';
+            if (this.elements.salaryP2Desc) this.elements.salaryP2Desc.innerText = "Enter your partner's average monthly income after all taxes and deductions.";
             this.elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
         }
     },
