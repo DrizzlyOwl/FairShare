@@ -148,6 +148,7 @@ const app = {
             }, 300);
 
             el.addEventListener('input', () => {
+                this.clearFieldError(field.id);
                 if (field.id === 'postcode') {
                     this.formatPostcode(el);
                     this.handlePostcodeChange(el.value);
@@ -722,6 +723,25 @@ const app = {
         if (this.elements.councilTaxCost) this.elements.councilTaxCost.value = councilTax;
         if (this.elements.energyCost) this.elements.energyCost.value = Math.round(energy);
         if (this.elements.waterBill) this.elements.waterBill.value = Math.round(water);
+    },
+
+    /**
+     * Clears the error state for a specific field.
+     * @param {string} fieldId - ID of the field to clear.
+     */
+    clearFieldError(fieldId) {
+        const el = document.getElementById(fieldId);
+        const errorEl = document.getElementById(`${fieldId}-error`) || document.getElementById(fieldId.replace('Cost', '') + '-error');
+        const group = el?.closest('.input-group');
+
+        errorEl?.setAttribute('hidden', '');
+        group?.classList.remove('input-group--error');
+        
+        // Also clear screen-level warnings if any field is being fixed
+        const screenId = el?.closest('section.screen')?.id;
+        if (screenId) {
+            this.ui.hideWarning(parseInt(screenId.split('-')[1]));
+        }
     },
 
     /**
