@@ -40,11 +40,25 @@ console.error = (...args) => {
   originalError(...args);
 };
 
-// 3. Load app.js (it will attach functions to window)
-const appJsCode = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
-const appScript = document.createElement('script');
-appScript.textContent = appJsCode;
-document.body.appendChild(appScript);
+// 3. Load Core Modules (Simulating ES6 imports for JSDOM)
+const modules = [
+    { path: 'src/core/FinanceEngine.js', global: 'FinanceEngine', type: 'class' },
+    { path: 'src/ui/Components.js', type: 'functional' },
+    { path: 'src/services/ApiService.js', global: 'ApiService', type: 'class' }
+];
+
+modules.forEach(mod => {
+    let code = fs.readFileSync(path.join(__dirname, mod.path), 'utf8');
+    if (mod.type === 'class') {
+        code = code.replace(/export default class/g, `window.${mod.global} = class`);
+        code = code.replace(/export const/g, 'window.');
+    } else if (mod.type === 'functional') {
+        code = code.replace(/export const (\w+) =/g, 'window.$1 =');
+    }
+    const script = document.createElement('script');
+    script.textContent = code;
+    document.body.appendChild(script);
+});
 
 // 4. Load and run unit/tests.js
 const testsJsCode = fs.readFileSync(path.join(__dirname, 'unit', 'tests.js'), 'utf8');
