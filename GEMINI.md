@@ -11,6 +11,7 @@ A high-performance, framework-less web utility for proportionate bill splitting 
     - **`/src/core`**: Business logic (`FinanceEngine.js`) and State management (`State.js`).
     - **`/src/ui`**: View orchestration (`UIManager.js`) and Components.
     - **`/src/services`**: External APIs (`ApiService.js`) and regional lookups.
+- **Documentation:** ALL additional JavaScript classes or methods must have accompanying documentation using **DocBlock** style.
 - **Styling:** Modern CSS using Variables, Flexbox, and Grid. No CSS frameworks.
 - **Persistence:** Managed by `State.js` with automatic `localStorage` sync via JS Proxy.
 

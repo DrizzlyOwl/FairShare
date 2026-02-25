@@ -34,6 +34,9 @@ const FORM_FIELDS = [
 const BAND_PRICES = { 'A': 110, 'B': 128, 'C': 146, 'D': 165, 'E': 201, 'F': 238, 'G': 275, 'H': 330 };
 
 const app = {
+    /**
+     * Initializes the application, caches elements, and sets up state/UI managers.
+     */
     init() {
         this.cacheElements();
         this.ui = new UIManager(this.elements, BAND_PRICES);
@@ -48,6 +51,10 @@ const app = {
         this.ui.switchScreen(this.findScreenByHeadingId(initialScreen) || this.ui.SCREENS.LANDING, true);
     },
 
+    /**
+     * Scans the DOM for required elements and populates the local cache.
+     * Maps hyphenated IDs to camelCase for internal consistency.
+     */
     cacheElements() {
         this.elements = {};
         const ids = [
@@ -92,6 +99,9 @@ const app = {
         this.elements.nextButton = this.elements.nextButton; // mapped above
     },
 
+    /**
+     * Binds DOM event listeners to application logic.
+     */
     bindEvents() {
         // Form field event binding
         FORM_FIELDS.forEach(field => {
@@ -154,6 +164,9 @@ const app = {
         document.addEventListener('keydown', (e) => this.handleGlobalKeydown(e));
     },
 
+    /**
+     * Synchronizes complex UI elements (radios, visibility) with current application state.
+     */
     syncUIWithState() {
         const state = this.store.data;
         // Sync radio groups
@@ -179,6 +192,9 @@ const app = {
 
     // --- Logic Wrappers (Bridging Engine/Store/UI) ---
 
+    /**
+     * Orchestrates the income ratio calculation between the engine and store.
+     */
     calculateRatio() {
         const state = this.store.data;
         let p1Basis = state.salaryP1;
@@ -197,6 +213,9 @@ const app = {
         }
     },
 
+    /**
+     * Orchestrates property equity and deposit calculations.
+     */
     calculateEquityDetails() {
         const state = this.store.data;
         if (state.propertyPrice <= 0) return;
@@ -232,6 +251,11 @@ const app = {
         this.calculateMonthlyMortgage();
     },
 
+    /**
+     * Renders upfront cash requirement details to the UI.
+     * @param {number} sdlt - Calculated Stamp Duty.
+     * @param {number} legalFees - Estimated legal fees.
+     */
     renderUpfrontWorkings(sdlt, legalFees) {
         const state = this.store.data;
         const totalUpfront = state.totalEquity + sdlt + legalFees + state.mortgageFees;
@@ -244,6 +268,9 @@ const app = {
         if (this.elements.totalUpfrontDisplay) this.elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
     },
 
+    /**
+     * Orchestrates monthly mortgage payment calculation.
+     */
     calculateMonthlyMortgage() {
         const state = this.store.data;
         const result = FinanceEngine.calculateMortgage(state.mortgageRequired, state.mortgageInterestRate, state.mortgageTerm);
@@ -257,6 +284,9 @@ const app = {
         if (this.elements.totalRepaymentDisplay) this.elements.totalRepaymentDisplay.innerText = formatCurrency(result.totalRepayment);
     },
 
+    /**
+     * Handles async property price estimation via ApiService.
+     */
     async handlePriceEstimation() {
         const postcode = this.elements.postcode.value.trim();
         const bedrooms = parseInt(this.elements.bedrooms.value) || 2;
@@ -274,6 +304,12 @@ const app = {
 
     // --- Helper Methods ---
 
+    /**
+     * Simple debounce implementation for input handling.
+     * @param {Function} func - Function to debounce.
+     * @param {number} wait - Wait time in ms.
+     * @returns {Function}
+     */
     debounce(func, wait) {
         let timeout;
         return (...args) => {
@@ -282,6 +318,10 @@ const app = {
         };
     },
 
+    /**
+     * Formats postcode input according to UK standards.
+     * @param {HTMLInputElement} input - The input element.
+     */
     formatPostcode(input) {
         const val = input.value.replace(/\s+/g, '').toUpperCase();
         if (val.length > 3) {
@@ -289,6 +329,9 @@ const app = {
         }
     },
 
+    /**
+     * Updates visibility of First Time Buyer specific options.
+     */
     updateFTBVisibility() {
         const state = this.store.data;
         const ftbContainer = document.getElementById('ftb-container');
@@ -298,6 +341,11 @@ const app = {
         }
     },
 
+    /**
+     * Updates the UI display for estimated or manual property prices.
+     * @param {number} price - Property value.
+     * @param {boolean} isEstimated - Whether the price is from market data.
+     */
     updatePropertyPriceDisplay(price, isEstimated) {
         const display = this.elements.propertyPriceEstimateDisplay;
         if (!display) return;
@@ -310,6 +358,10 @@ const app = {
         }
     },
 
+    /**
+     * Estimates UK tax band and take-home pay based on annual salary.
+     * @param {string} p - Partner identifier ('P1' or 'P2').
+     */
     updateTaxEstimate(p) {
         const val = parseFloat(this.elements[`salary${p}`].value) || 0;
         const badge = document.getElementById(`salary${p}-tax-badge`);
@@ -325,6 +377,11 @@ const app = {
         badge.removeAttribute('hidden');
     },
 
+    /**
+     * Bulk sets split type preferences for a specific screen.
+     * @param {string} screen - Target screen identifier.
+     * @param {string} type - 'yes' (proportional) or 'no' (equal).
+     */
     setAllSplitTypes(screen, type) {
         const groups = screen === 'utilities'
             ? ['councilTax', 'energy', 'water', 'broadband']
@@ -339,6 +396,9 @@ const app = {
         this.store.update({ splitTypes });
     },
 
+    /**
+     * Calculates the final bill splitting breakdown and transitions to results.
+     */
     calculateFinalSplit() {
         const state = this.store.data;
         const upfrontRatio = state.depositSplitProportional ? state.ratioP1 : 0.5;
@@ -400,6 +460,13 @@ const app = {
         this.ui.switchScreen('screen-7');
     },
 
+    /**
+     * Renders text summaries of the results to the results screen.
+     * @param {number} p1 - Partner 1 monthly total.
+     * @param {number} p2 - Partner 2 monthly total.
+     * @param {number} total - Overall monthly total.
+     * @param {number} committedTotal - Total committed/lifestyle costs.
+     */
     renderResultsSummary(p1, p2, total, committedTotal) {
         const diff = Math.abs(p1 - p2);
         const summaryText = this.elements.resultSummary?.querySelector('.alert__text');
@@ -418,6 +485,9 @@ const app = {
         }
     },
 
+    /**
+     * Renders detailed calculation workings to the hidden workings panel.
+     */
     renderCalculationWorkings() {
         const state = this.store.data;
         const wk = this.elements;
@@ -432,6 +502,9 @@ const app = {
         if (wk.wkMonthlyPayment) wk.wkMonthlyPayment.innerText = formatCurrency(state.monthlyMortgagePayment, 2);
     },
 
+    /**
+     * Populates regional utility and tax estimates into the UI and state.
+     */
     populateEstimates() {
         const state = this.store.data;
         const councilTax = BAND_PRICES[state.band] || 0;
@@ -452,6 +525,10 @@ const app = {
         if (this.elements.waterBill) this.elements.waterBill.value = Math.round(water);
     },
 
+    /**
+     * Validates current screen data and transitions to the next screen if successful.
+     * @param {string} screenId - Source screen ID.
+     */
     async validateAndNext(screenId) {
         const state = this.store.data;
         
@@ -492,11 +569,20 @@ const app = {
         }
     },
 
+    /**
+     * Attempts to resolve a screen ID from a section heading ID.
+     * @param {string} id - Hash fragment or heading ID.
+     * @returns {string|undefined} Section ID.
+     */
     findScreenByHeadingId(id) {
         const heading = document.getElementById(id);
         return heading?.closest('section')?.id;
     },
 
+    /**
+     * Updates navigation button configuration for the current screen.
+     * @param {string} screenId - Active screen identifier.
+     */
     updatePagination(screenId) {
         const back = this.elements.backButton;
         const next = this.elements.nextButton;
@@ -524,11 +610,18 @@ const app = {
         next.innerText = screen.text || 'Next';
     },
 
+    /**
+     * Clears application state and performs a clean reload.
+     */
     clearCache() {
         this.store.clear();
         window.location.replace(window.location.origin + window.location.pathname);
     },
 
+    /**
+     * Intercepts global keyboard events for accessibility navigation.
+     * @param {KeyboardEvent} e 
+     */
     handleGlobalKeydown(e) {
         const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
         if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && isInput) return;

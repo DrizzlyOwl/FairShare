@@ -83,6 +83,7 @@ export default class State {
 
     /**
      * Replaces multiple state properties at once.
+     * @param {Object} newData - Key-value pairs to merge into state.
      */
     update(newData) {
         Object.assign(this.#data, newData);
@@ -97,6 +98,7 @@ export default class State {
 
     /**
      * Hydrates state from localStorage if available.
+     * @returns {Object} The current state after hydration.
      */
     hydrate() {
         const cached = localStorage.getItem(this.#CACHE_KEY);
@@ -112,13 +114,17 @@ export default class State {
     }
 
     /**
-     * Clears local storage and resets state.
+     * Clears local storage and resets state to INITIAL_STATE.
      */
     clear() {
         localStorage.removeItem(this.#CACHE_KEY);
         this.update(INITIAL_STATE);
     }
 
+    /**
+     * Accessor for current application data.
+     * @returns {Object}
+     */
     get data() {
         return this.#data;
     }

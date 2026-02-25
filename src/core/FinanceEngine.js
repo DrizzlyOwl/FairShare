@@ -107,7 +107,12 @@ export default class FinanceEngine {
     }
 
     /**
-     * Calculates Stamp Duty (SDLT/LBTT/LTT).
+     * Calculates Stamp Duty (SDLT in England/NI, LBTT in Scotland, LTT in Wales).
+     * @param {number} price - Property purchase price.
+     * @param {string} region - Region code ('EN', 'SC', 'WA').
+     * @param {string} homeType - 'first' or 'second' home.
+     * @param {boolean} isFTB - Whether the buyer is a First Time Buyer.
+     * @returns {number} Calculated tax amount in GBP.
      */
     static calculateStampDuty(price, region, homeType, isFTB) {
         if (price <= 0) return 0;
@@ -132,7 +137,10 @@ export default class FinanceEngine {
     }
 
     /**
-     * Calculates monthly mortgage repayment.
+     * Calculates monthly mortgage repayment using standard amortization formula.
+     * @param {number} principal - Loan amount.
+     * @param {number} annualRate - Annual interest rate (e.g. 4.5).
+     * @param {number} termYears - Mortgage term in years.
      * @returns {Object} { monthlyPayment, totalRepayment }
      */
     static calculateMortgage(principal, annualRate, termYears) {

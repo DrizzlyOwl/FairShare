@@ -19,6 +19,8 @@ export const REGIONS = {
 export default class ApiService {
     /**
      * Maps a postcode prefix to a UK region.
+     * @param {string} postcode - The UK postcode to analyze.
+     * @returns {Object|null} Regional data object or null if not found.
      */
     static getRegionFromPostcode(postcode) {
         const pc = postcode.trim().toUpperCase();
@@ -36,6 +38,9 @@ export default class ApiService {
 
     /**
      * Estimates monthly water cost based on region and number of bathrooms.
+     * @param {string} postcode - The property postcode.
+     * @param {number} bathrooms - Number of bathrooms in the property.
+     * @returns {number} Estimated monthly water cost in GBP.
      */
     static estimateWaterCost(postcode, bathrooms) {
         const region = this.getRegionFromPostcode(postcode);
@@ -45,6 +50,10 @@ export default class ApiService {
 
     /**
      * Fetches estimated market values via the UK Land Registry SPARQL endpoint.
+     * Falls back to a heuristic estimate if the API call fails or returns no results.
+     * @param {string} postcode - The target UK postcode.
+     * @param {number} bedrooms - Number of bedrooms for fallback estimation.
+     * @returns {Promise<number|Object>} Estimated price or object with price and isEstimated flag.
      */
     static async getEstimatedPropertyPrice(postcode, bedrooms) {
         const sparqlQuery = `

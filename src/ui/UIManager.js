@@ -27,6 +27,8 @@ export default class UIManager {
 
     /**
      * Transitions to a new screen.
+     * @param {string} id - The ID of the screen to switch to.
+     * @param {boolean} [isInitialLoad=false] - Whether this is the first screen load.
      */
     switchScreen(id, isInitialLoad = false) {
         const target = document.getElementById(id);
@@ -53,6 +55,7 @@ export default class UIManager {
 
     /**
      * Updates progress bar and text label.
+     * @param {string} id - Current screen ID.
      */
     updateProgress(id) {
         const progressMap = {
@@ -76,6 +79,10 @@ export default class UIManager {
         }
     }
 
+    /**
+     * Toggles visibility of the brand logo based on the screen.
+     * @param {string} id - Current screen ID.
+     */
     updateLogoVisibility(id) {
         const logo = this.elements.headerBrand?.querySelector('.header-brand__logo');
         if (!logo) return;
@@ -91,6 +98,8 @@ export default class UIManager {
 
     /**
      * Updates the visual ratio bar.
+     * @param {number} ratioP1 - Partner 1 share (0-1).
+     * @param {number} ratioP2 - Partner 2 share (0-1).
      */
     updateRatioBar(ratioP1, ratioP2) {
         const p1P = Math.round(ratioP1 * 100);
@@ -110,6 +119,10 @@ export default class UIManager {
 
     /**
      * Renders a breakdown row in the results table.
+     * @param {string} key - Row identifier (e.g. 'Mortgage').
+     * @param {number} total - Total monthly amount.
+     * @param {number} p1 - Partner 1 share.
+     * @param {number} p2 - Partner 2 share.
      */
     updateBreakdownRow(key, total, p1, p2) {
         if (this.elements[`bd${key}Total`]) this.elements[`bd${key}Total`].innerText = formatCurrency(total, 2);
@@ -119,6 +132,8 @@ export default class UIManager {
 
     /**
      * Displays a warning alert on a specific screen.
+     * @param {number} screenNum - Screen number identifier.
+     * @param {string} msg - The message to display.
      */
     showWarning(screenNum, msg) {
         const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
@@ -126,6 +141,10 @@ export default class UIManager {
         warnDiv.outerHTML = createAlertHTML('warning', 'icon-error.svg', msg, `warning-screen-${screenNum}`);
     }
 
+    /**
+     * Hides a warning alert on a specific screen.
+     * @param {number} screenNum - Screen number identifier.
+     */
     hideWarning(screenNum) {
         const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
         if (warnDiv) warnDiv.setAttribute('hidden', '');
@@ -133,6 +152,7 @@ export default class UIManager {
 
     /**
      * Full UI refresh based on application state.
+     * @param {Object} state - The current application state.
      */
     render(state) {
         this.updateRatioBar(state.ratioP1, state.ratioP2);
