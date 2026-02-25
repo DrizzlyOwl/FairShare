@@ -48,12 +48,17 @@ const modules = [
 
 modules.forEach(mod => {
     let code = fs.readFileSync(path.join(__dirname, mod.path), 'utf8');
-    if (mod.type === 'class') {
-        code = code.replace(/export default class/g, `window.${mod.global} = class`);
-        code = code.replace(/export const/g, 'window.');
-    } else if (mod.type === 'functional') {
-        code = code.replace(/export const (\w+) =/g, 'window.$1 =');
-    }
+    
+    // Remove all exports but keep the declarations and expose to window
+    code = code.replace(/export const (\w+) =/g, 'const $1 = window.$1 =');
+    code = code.replace(/export default class (\w+)/g, 'const $1 = window.$1 = class $1');
+    
+    // Fallback for when we just have "export default class" without a name
+    code = code.replace(/export default class/g, `const ${mod.global} = window.${mod.global} = class`);
+    
+    // Final cleanup: just remove "export " if any remain
+    code = code.replace(/export /g, '');
+
     const script = document.createElement('script');
     script.textContent = code;
     document.body.appendChild(script);

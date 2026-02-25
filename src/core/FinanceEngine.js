@@ -4,6 +4,34 @@
  * Zero DOM dependencies.
  */
 
+/**
+ * Income Tax Configuration for 2025/26 tax year.
+ * Thresholds are total annual income levels.
+ */
+export const INCOME_TAX_CONFIG = {
+    EN: {
+        personalAllowance: 12570,
+        taperThreshold: 100000,
+        bands: [
+            { upto: 50270, rate: 0.20, name: 'Basic Rate' },
+            { upto: 125140, rate: 0.40, name: 'Higher Rate' },
+            { upto: Infinity, rate: 0.45, name: 'Additional Rate' }
+        ]
+    },
+    SC: {
+        personalAllowance: 12570,
+        taperThreshold: 100000,
+        bands: [
+            { upto: 14876, rate: 0.19, name: 'Starter Rate' },
+            { upto: 26561, rate: 0.20, name: 'Basic Rate' },
+            { upto: 43662, rate: 0.21, name: 'Intermediate Rate' },
+            { upto: 75000, rate: 0.42, name: 'Higher Rate' },
+            { upto: 125140, rate: 0.45, name: 'Advanced Rate' },
+            { upto: Infinity, rate: 0.47, name: 'Top Rate' }
+        ]
+    }
+};
+
 export const TAX_BRACKETS = {
     EN: {
         standard: [
@@ -68,34 +96,46 @@ export default class FinanceEngine {
     /**
      * Estimates monthly take-home pay based on 2025/26 UK rules.
      * @param {number} salary - Annual gross salary.
-     * @param {string} _region - 'EN', 'SC', 'WA', 'NI'.
+     * @param {string} region - 'EN' (England/NI/Wales) or 'SC' (Scotland).
      * @returns {Object} { bandName, monthlyNet }
      */
-    static calculateTakeHome(salary, _region = 'EN') {
+    static calculateTakeHome(salary, region = 'EN') {
         if (salary <= 0) return { bandName: 'Personal Allowance', monthlyNet: 0 };
 
-        let tax = 0;
-        let bandName = 'Personal Allowance';
-        const pa = 12570;
-        const basicLimit = 50270;
-        const higherLimit = 125140;
+        const config = INCOME_TAX_CONFIG[region] || INCOME_TAX_CONFIG.EN;
         
-        let actualAllowance = pa;
-        if (salary > 100000) {
-            actualAllowance = Math.max(0, pa - ((salary - 100000) / 2));
+        // Calculate actual personal allowance (tapered for income > £100k)
+        let actualAllowance = config.personalAllowance;
+        if (salary > config.taperThreshold) {
+            actualAllowance = Math.max(0, config.personalAllowance - ((salary - config.taperThreshold) / 2));
         }
 
-        if (salary > higherLimit) {
-            bandName = 'Additional Rate';
-            tax = ((basicLimit - pa) * 0.2) + ((higherLimit - basicLimit) * 0.4) + ((salary - higherLimit) * 0.45);
-        } else if (salary > basicLimit) {
-            bandName = 'Higher Rate';
-            tax = ((basicLimit - pa) * 0.2) + ((salary - basicLimit) * 0.4);
-        } else if (salary > actualAllowance) {
-            bandName = 'Basic Rate';
-            tax = (salary - actualAllowance) * 0.2;
+        // Construct dynamic bands for this specific calculation
+        const dynamicBands = [
+            { upto: actualAllowance, rate: 0, name: 'Personal Allowance' },
+            ...config.bands
+        ];
+
+        let incomeTax = 0;
+        let prevLimit = 0;
+        let activeBandName = 'Personal Allowance';
+
+        for (const band of dynamicBands) {
+            const limit = band.upto ?? Infinity;
+            if (limit <= prevLimit) continue; // Handle zero-width bands (e.g. £0 allowance)
+
+            if (salary > prevLimit) {
+                const taxableInThisBand = Math.min(salary, limit) - prevLimit;
+                incomeTax += taxableInThisBand * band.rate;
+                if (salary <= limit) {
+                    activeBandName = band.name;
+                }
+            }
+            prevLimit = limit;
         }
 
+        // National Insurance (UK wide for 2025/26)
+        // 8% on £12,570 - £50,270, 2% above £50,270
         let ni = 0;
         if (salary > 50270) {
             ni = ((50270 - 12570) * 0.08) + ((salary - 50270) * 0.02);
@@ -103,7 +143,10 @@ export default class FinanceEngine {
             ni = (salary - 12570) * 0.08;
         }
 
-        return { bandName, monthlyNet: (salary - tax - ni) / 12 };
+        return {
+            bandName: activeBandName,
+            monthlyNet: (salary - incomeTax - ni) / 12
+        };
     }
 
     /**

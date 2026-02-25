@@ -173,7 +173,28 @@ runTest('calculateTakeHome should handle Additional Rate and tapered PA', () => 
   const result = engine.calculateTakeHome(salary, 'EN');
   
   console.assert(result.bandName === 'Additional Rate', `Expected Additional Rate, but got ${result.bandName}`);
-  console.assert(Math.round(result.monthlyNet) === 8026, `Expected approx £8,026, but got ${Math.round(result.monthlyNet)}`);
+  // Expected tax 51189, NI 5010. Total 56199. Net ~7817
+  console.assert(Math.round(result.monthlyNet) === 7817, `Expected approx £7,817, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Scottish Intermediate Rate for £30k', () => {
+  const engine = window.FinanceEngine;
+  const salary = 30000;
+  const result = engine.calculateTakeHome(salary, 'SC');
+  
+  console.assert(result.bandName === 'Intermediate Rate', `Expected Intermediate Rate, but got ${result.bandName}`);
+  // Expected tax ~3497, NI ~1394. Total deductions ~4891. Net ~2092
+  console.assert(Math.round(result.monthlyNet) === 2092, `Expected approx £2,092, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Scottish Higher Rate for £60k', () => {
+  const engine = window.FinanceEngine;
+  const salary = 60000;
+  const result = engine.calculateTakeHome(salary, 'SC');
+  
+  console.assert(result.bandName === 'Higher Rate', `Expected Higher Rate, but got ${result.bandName}`);
+  // Expected tax ~13228, NI ~3210. Total deductions ~16438. Net ~3630
+  console.assert(Math.round(result.monthlyNet) === 3630, `Expected approx £3,630, but got ${Math.round(result.monthlyNet)}`);
 });
 
 // -- END: Unit Tests --
