@@ -67,6 +67,7 @@ export default class State {
         const handler = {
             set: (target, prop, value) => {
                 if (target[prop] === value) return true;
+                console.debug(`State change [${prop}]:`, target[prop], '->', value);
                 target[prop] = value;
                 self.persist();
                 if (self.#onUpdate) self.#onUpdate(self.#data);
@@ -88,6 +89,7 @@ export default class State {
      * @param {Object} newData - Key-value pairs to merge into state.
      */
     update(newData) {
+        console.debug('Bulk state update:', newData);
         // Use the raw data target to avoid multiple Proxy set calls
         Object.assign(this.#data, newData);
         this.persist();
