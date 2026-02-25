@@ -3,14 +3,14 @@
 This document serves as the foundational mandate for Gemini CLI. All development must strictly adhere to these standards to maintain the project's architectural integrity and performance.
 
 ## 🎯 Project Goal
-A high-performance, framework-less web utility for proportionate bill splitting based on relative income. It prioritizes "naked" but polished tech (Vanilla JS/CSS) over heavy dependencies.
+A high-performance, framework-less web utility for proportionate bill splitting based on relative income (Gross Annual or Net Monthly). It prioritizes "naked" but polished tech (Vanilla JS/CSS) over heavy dependencies. Supports single-income households through zero-salary input validation.
 
 ## 🏗️ Technical Stack
 - **Engine:** Vanilla JavaScript (ES6+).
 - **Styling:** Modern CSS using Variables, Flexbox, and Grid. No CSS frameworks.
 - **Architecture:** BEM (Block, Element, Modifier) naming convention.
 - **Persistence:** `localStorage` for session state.
-- **Features:** PWA (Service Workers), Land Registry SPARQL integration, CSV Export.
+- **Features:** PWA (Service Workers), Land Registry SPARQL integration, CSV Export, Dynamic Income Type selection.
 
 ## 🎨 Styling & UI Conventions (CRITICAL)
 - **BEM Pattern:** ALL components must use BEM selectors (e.g., `.card`, `.card__label`, `.card--modifier`). Avoid context-dependent nested selectors (e.g., `.parent .child`).
@@ -23,12 +23,15 @@ A high-performance, framework-less web utility for proportionate bill splitting 
 - **Visibility:** Toggle visibility using the HTML `hidden` attribute (`element.setAttribute('hidden', '')` / `removeAttribute('hidden')`) rather than `style.display`.
 - **Breakpoints:** Standardized at `768px` (Tablet) and `1024px` (Desktop).
 - **Component Geometry:** 
-  - Segmented controls: `width: 40px` (mobile) / `48px` (tablet+).
-  - Alerts: Use `window.createAlertHTML` in `app.js` as the single source of truth for programmatic generation.
+  - **Toggles:** Use the `.toggle` class for binary switches (e.g., Gross/Net, Ratio/Equal). Preferred for long labels.
+  - **Segmented Controls:** Use `.segmented-control` for multi-option selections (e.g., Tax Bands) with shorter labels.
+  - **Dimensions:** `width: 40px` (mobile) / `48px` (tablet+) for segmented items.
+  - **Alerts:** Use `window.createAlertHTML` in `app.js` as the single source of truth for programmatic generation.
 
 ## 🧪 Testing & Validation
-- **Unit Tests:** `unit/tests.js` (runs in `unit/test-runner.html`).
-- **Integration Tests:** Cypress (maintained separately).
+- **Unit Tests:** `unit/tests.js` (runs in `unit/test-runner.html` or `npm run test:unit`).
+- **Integration Tests:** Cypress (`npm run test:cypress`).
+- **Accessibility Tests:** Cypress + Axe (`npm run test:a11y`). Target: WCAG 2.1 AA.
 - **Performance:** Maintain FCP < 1.0s. Use font preloading and non-blocking CSS.
 
 ## 🔄 Workflow

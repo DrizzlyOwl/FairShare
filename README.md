@@ -7,7 +7,8 @@
 FairShare automates household budgeting by establishing a contribution ratio based on relative income. It ensures both partners retain a fair share of disposable income, removing financial friction. The application guides users through a 7-step process to estimate property values, regional running costs, and shared lifestyle expenses, resulting in a detailed proportionate split report.
 
 ### Key Features
-- **Proportionate Splitting**: Calculates a fair contribution ratio based on individual pre-tax annual salaries.
+- **Flexible Income Input**: Calculates a fair contribution ratio based on individual annual gross salaries or monthly take-home pay (net).
+- **Zero-Income Support**: Supports households where one partner has zero income (as long as the total combined income is greater than zero).
 - **Real-World Data Integration**: Fetches estimated market values via the UK Land Registry SPARQL endpoint.
 - **Regional Utilities**: Adjusts estimates based on postcode prefixes and property size.
 - **Night Mode**: Fully WCAG 2.1 AA compliant dark theme support.
@@ -21,6 +22,7 @@ This application adheres to a "naked" but highly polished architectural philosop
 
 - **Engine**: Vanilla JavaScript (ES6+) - Zero dependencies for maximum performance.
 - **Styling**: Modern CSS (Variables, Flexbox, Grid) with BEM naming convention.
+- **Components**: Polished UI elements like toggles and segmented controls for complex state selection.
 - **Icons**: Custom SVG icons using the `mask-image` pattern for dynamic coloring.
 - **Storage**: `localStorage` for session persistence.
 - **Testing**: Node.js (JSDOM) for unit tests and Cypress for E2E integration tests.
@@ -52,7 +54,7 @@ npm start
 The application will be available at `http://localhost:8080`.
 
 ### Workflow
-1. **Income**: Input annual pre-tax salaries to set the base ratio.
+1. **Income**: Input annual gross or monthly net income to set the base ratio. Supports one zero-income partner.
 2. **Property**: Enter postcode and size; use "Estimate" for market data.
 3. **Mortgage**: Set deposit % and interest rates to calculate repayments and SDLT.
 4. **Utilities**: Review regional estimates for Council Tax, Energy, and Water.
