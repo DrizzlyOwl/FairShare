@@ -512,6 +512,9 @@ const app = {
 
             announce.querySelector('.alert__text').innerText = text;
             announce.removeAttribute('hidden');
+            
+            // Recalculate SDLT/Legal fees as they are region-dependent
+            this.calculateEquityDetails();
         } else {
             announce.setAttribute('hidden', '');
         }
@@ -736,7 +739,7 @@ const app = {
                 next: this.ui.SCREENS.PROPERTY
             },
             [this.ui.SCREENS.PROPERTY]: {
-                isValid: () => state.propertyPrice > 0 && !!state.band,
+                isValid: () => state.propertyPrice > 0 && !!state.band && !!state.postcode,
                 onSuccess: () => this.populateEstimates(),
                 next: this.ui.SCREENS.MORTGAGE
             },
