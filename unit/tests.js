@@ -452,60 +452,65 @@ runTest('showWarning should create a visible alert with correct message', () => 
     document.body.removeChild(tempContainer);
   });
   
-  runTest('validateScreen should identify invalid fields and toggle UI state', () => {
-    const mockApp = {
-      ui: { SCREENS: { INCOME: 'screen-2' } },
-      store: { data: { salaryP1: 0, salaryP2: 0 } },
-      validateScreen: function(screenId) {
-          let isValid = true;
-          const setFieldState = (fieldId, fieldValid) => {
-              const el = document.getElementById(fieldId);
-              const errorEl = document.getElementById(`${fieldId}-error`);
-              const group = el?.parentElement; // Mock parent
-  
-              if (!fieldValid) {
-                  isValid = false;
-                  errorEl?.removeAttribute('hidden');
-                  group?.classList.add('input-group--error');
-              } else {
-                  errorEl?.setAttribute('hidden', '');
-                  group?.classList.remove('input-group--error');
-              }
-          };
-  
-          if (screenId === this.ui.SCREENS.INCOME) {
-              const totalSalary = this.store.data.salaryP1 + this.store.data.salaryP2;
-              setFieldState('salaryP1', totalSalary > 0 || this.store.data.salaryP1 > 0);
-              if (totalSalary <= 0) isValid = false;
-          }
-          return isValid;
-      }
-    };
-  
-    const temp = document.createElement('div');
-    temp.innerHTML = `
-      <div class="input-group">
-          <input id="salaryP1">
-      </div>
-      <div id="salaryP1-error" hidden></div>
-    `;
-    document.body.appendChild(temp);
-  
-    // Should be invalid
-    const result = mockApp.validateScreen('screen-2');
-    console.assert(result === false, 'Screen should be invalid when salaries are 0');
-    console.assert(document.getElementById('salaryP1-error').hasAttribute('hidden') === false, 'Error message should be visible');
-    console.assert(document.getElementById('salaryP1').parentElement.classList.contains('input-group--error'), 'Field should have error class');
-  
-    // Should be valid
-    mockApp.store.data.salaryP1 = 30000;
-    const result2 = mockApp.validateScreen('screen-2');
-    console.assert(result2 === true, 'Screen should be valid when salary is provided');
-    console.assert(document.getElementById('salaryP1-error').hasAttribute('hidden') === true, 'Error message should be hidden');
-    console.assert(document.getElementById('salaryP1').parentElement.classList.contains('input-group--error') === false, 'Field should not have error class');
-  
-    document.body.removeChild(temp);
-  });
+runTest('validateScreen should identify invalid fields and toggle UI state', () => {
+  const mockApp = {
+    ui: { SCREENS: { INCOME: 'screen-2' } },
+    validateScreen: function(screenId) {
+        let isValid = true;
+        const setFieldState = (fieldId, fieldValid) => {
+            const el = document.getElementById(fieldId);
+            const errorEl = document.getElementById(`${fieldId}-error`);
+            const group = el?.parentElement; // Mock parent
+
+            if (!fieldValid) {
+                isValid = false;
+                errorEl?.removeAttribute('hidden');
+                group?.classList.add('input-group--error');
+            } else {
+                errorEl?.setAttribute('hidden', '');
+                group?.classList.remove('input-group--error');
+            }
+        };
+
+        if (screenId === this.ui.SCREENS.INCOME) {
+            const s1 = parseFloat(document.getElementById('salaryP1').value) || 0;
+            const s2 = parseFloat(document.getElementById('salaryP2').value) || 0;
+            const totalSalary = s1 + s2;
+            const incomeValid = totalSalary > 0;
+            setFieldState('salaryP1', incomeValid);
+            if (!incomeValid) isValid = false;
+        }
+        return isValid;
+    }
+  };
+
+  const temp = document.createElement('div');
+  temp.innerHTML = `
+    <div class="input-group">
+        <input id="salaryP1" value="0">
+    </div>
+    <div class="input-group">
+        <input id="salaryP2" value="0">
+    </div>
+    <div id="salaryP1-error" hidden></div>
+  `;
+  document.body.appendChild(temp);
+
+  // Should be invalid (0 salaries)
+  const result = mockApp.validateScreen('screen-2');
+  console.assert(result === false, 'Screen should be invalid when salaries are 0');
+  console.assert(document.getElementById('salaryP1-error').hasAttribute('hidden') === false, 'Error message should be visible');
+  console.assert(document.getElementById('salaryP1').parentElement.classList.contains('input-group--error'), 'Field should have error class');
+
+  // Should be valid (salary provided)
+  document.getElementById('salaryP1').value = '30000';
+  const result2 = mockApp.validateScreen('screen-2');
+  console.assert(result2 === true, 'Screen should be valid when salary is provided');
+  console.assert(document.getElementById('salaryP1-error').hasAttribute('hidden') === true, 'Error message should be hidden');
+  console.assert(document.getElementById('salaryP1').parentElement.classList.contains('input-group--error') === false, 'Field should not have error class');
+
+  document.body.removeChild(temp);
+});
   
   // -- END: Unit Tests --
   

@@ -731,7 +731,6 @@ const app = {
      * @returns {boolean} Whether the screen data is valid.
      */
     validateScreen(screenId) {
-        const state = this.store.data;
         let isValid = true;
 
         const setFieldState = (fieldId, fieldValid) => {
@@ -750,18 +749,27 @@ const app = {
         };
 
         if (screenId === this.ui.SCREENS.INCOME) {
-            const totalSalary = state.salaryP1 + state.salaryP2;
-            setFieldState('salaryP1', totalSalary > 0 || state.salaryP1 > 0);
-            setFieldState('salaryP2', totalSalary > 0 || state.salaryP2 > 0);
-            if (totalSalary <= 0) isValid = false;
+            const s1 = parseFloat(document.getElementById('salaryP1').value) || 0;
+            const s2 = parseFloat(document.getElementById('salaryP2').value) || 0;
+            const totalSalary = s1 + s2;
+            
+            // At least one salary must be > 0
+            const incomeValid = totalSalary > 0;
+            setFieldState('salaryP1', incomeValid);
+            setFieldState('salaryP2', incomeValid);
+            if (!incomeValid) isValid = false;
         }
 
         if (screenId === this.ui.SCREENS.PROPERTY) {
-            setFieldState('postcode', !!state.postcode);
-            setFieldState('propertyPrice', state.propertyPrice > 0);
+            const postcode = document.getElementById('postcode').value.trim();
+            const price = parseFloat(document.getElementById('propertyPrice').value) || 0;
+            
+            setFieldState('postcode', !!postcode);
+            setFieldState('propertyPrice', price > 0);
             
             const bandError = document.getElementById('taxBand-error');
-            if (!state.band) {
+            const selectedBand = document.querySelector('input[name="taxBand"]:checked');
+            if (!selectedBand) {
                 isValid = false;
                 bandError?.removeAttribute('hidden');
             } else {
@@ -770,24 +778,32 @@ const app = {
         }
 
         if (screenId === this.ui.SCREENS.MORTGAGE) {
-            if (state.depositType === 'percentage') {
-                setFieldState('depositPercentage', state.depositPercentage >= 0 && state.depositPercentage <= 100);
+            const depositType = document.querySelector('input[name="depositType"]:checked')?.value;
+            const interestRate = parseFloat(document.getElementById('mortgageInterestRate').value);
+            const term = parseFloat(document.getElementById('mortgageTerm').value);
+
+            if (depositType === 'percentage') {
+                const perc = parseFloat(document.getElementById('depositPercentage').value);
+                setFieldState('depositPercentage', !isNaN(perc) && perc >= 0 && perc <= 100);
             } else {
-                setFieldState('depositAmount', state.depositAmount >= 0);
+                const amt = parseFloat(document.getElementById('depositAmount').value);
+                setFieldState('depositAmount', !isNaN(amt) && amt >= 0);
             }
-            setFieldState('mortgageInterestRate', state.mortgageInterestRate >= 0);
-            setFieldState('mortgageTerm', state.mortgageTerm > 0);
+            setFieldState('mortgageInterestRate', !isNaN(interestRate) && interestRate >= 0);
+            setFieldState('mortgageTerm', !isNaN(term) && term > 0);
         }
 
         if (screenId === this.ui.SCREENS.UTILITIES) {
             ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'].forEach(id => {
-                setFieldState(id, document.getElementById(id).value !== '');
+                const val = document.getElementById(id).value;
+                setFieldState(id, val !== '' && !isNaN(parseFloat(val)));
             });
         }
 
         if (screenId === this.ui.SCREENS.COMMITTED) {
             ['groceriesCost', 'childcareCost', 'insuranceCost', 'otherSharedCosts'].forEach(id => {
-                setFieldState(id, document.getElementById(id).value !== '');
+                const val = document.getElementById(id).value;
+                setFieldState(id, val !== '' && !isNaN(parseFloat(val)));
             });
         }
 
