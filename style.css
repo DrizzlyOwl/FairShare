@@ -2,7 +2,7 @@
     /* Brand & Functional Colors */
     --color-primary: #2C3E63;
     --color-text: #2d3436;
-    --color-text-light: #50585C;
+    --color-text-light: #4b5563; /* Darkened for better WCAG AA contrast */
     --color-border: #dcdde1;
     --color-input-bg: #ffffff;
 
