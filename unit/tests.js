@@ -269,6 +269,38 @@ runTest('calculateEquityDetails should include mortgage fees in total upfront ca
   console.assert(window.elements.totalUpfrontDisplay.innerText.includes('£22,199'), `Expected £22,199 total upfront, but got ${window.elements.totalUpfrontDisplay.innerText}`);
 });
 
+runTest('calculateEquityDetails should handle fixed amount deposits', () => {
+  // Setup data
+  appData.propertyPrice = 300000;
+  appData.depositType = 'amount';
+  
+  // Mock elements
+  const mockElements = {
+    depositAmount: { value: '50000' },
+    depositPercentage: { value: '' },
+    totalEquityDisplay: { innerText: '' },
+    totalUpfrontDisplay: { innerText: '' },
+    mortgageRequiredDisplay: { innerText: '' },
+    equityP1Display: { innerText: '' },
+    equityP2Display: { innerText: '' },
+    sdltEstimate: { value: '' },
+    sdltDisplay: { innerText: '' },
+    legalFeesEstimate: { value: '' },
+    mortgageFees: { value: '0' }
+  };
+  Object.assign(window.elements, mockElements);
+  
+  calculateEquityDetails();
+  
+  // Property 300k, Deposit 50k
+  // Mortgage required should be 250k
+  // Percentage should be (50/300)*100 = 16.7%
+  
+  console.assert(appData.totalEquity === 50000, `Expected 50000 equity, but got ${appData.totalEquity}`);
+  console.assert(appData.mortgageRequired === 250000, `Expected 250000 mortgage, but got ${appData.mortgageRequired}`);
+  console.assert(Math.round(appData.depositPercentage * 10) / 10 === 16.7, `Expected 16.7% deposit, but got ${appData.depositPercentage}`);
+});
+
 runTest('calculateFinalSplit should correctly split upfront costs', () => {
   // Setup data
   appData.propertyPrice = 300000;

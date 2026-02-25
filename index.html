@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A bill-splitting calculator that helps couples and housemates divide expenses fairly based on their income.">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1740478177">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1740478178">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="logo.svg?v=1740478177" as="image">
+    <link rel="preload" href="logo.svg?v=1740478178" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
 </head>
@@ -29,7 +29,7 @@
 <main id="main-content">
     <div class="app-container">
         <header class="header-brand" id="header-brand">
-            <img src="logo.svg?v=1740478177" alt="FairShare - Salary Proportion Calculator" width="280" height="70" class="header-brand__logo">
+            <img src="logo.svg?v=1740478178" alt="FairShare - Salary Proportion Calculator" width="280" height="70" class="header-brand__logo">
             <div class="header-brand__controls">
                 <button id="theme-toggle" class="header-brand__theme-toggle" aria-label="Toggle Night Mode">
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-lightning.svg'); mask-image: url('icons/icon-lightning.svg');" aria-hidden="true"></span>
@@ -251,6 +251,17 @@
 
             <!-- 1. Context: Loan & Deposit -->
             <div class="form-group">
+                <label class="form-label">How do you want to set your deposit?</label>
+                <div class="toggle">
+                    <input type="radio" name="depositType" id="dtPerc" value="percentage" checked class="toggle__input" onchange="updateDepositType('percentage')">
+                    <label for="dtPerc" class="toggle__label">Percentage</label>
+                    <input type="radio" name="depositType" id="dtAmt" value="amount" class="toggle__input" onchange="updateDepositType('amount')">
+                    <label for="dtAmt" class="toggle__label">Fixed Amount</label>
+                    <span class="toggle__slider" aria-hidden="true"></span>
+                </div>
+            </div>
+
+            <div class="form-group" id="depositPercContainer">
                 <label class="form-label" for="depositPercentage">Total Cash Deposit (%)</label>
                 <div class="input-group">
                     <input type="number" id="depositPercentage" class="input-group__control" value="10" min="0" max="100" required aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input">
@@ -261,6 +272,19 @@
                     <div class="alert__text">Please enter a deposit percentage (0-100).</div>
                 </div>
                 <div id="depositPercentage-help" class="help-text">The total percentage of the property value you're paying upfront.</div>
+            </div>
+
+            <div class="form-group" id="depositAmtContainer" hidden>
+                <label class="form-label" for="depositAmount">Total Cash Deposit (£)</label>
+                <div class="input-group">
+                    <span class="input-group__addon">£</span>
+                    <input type="number" id="depositAmount" class="input-group__control" placeholder="e.g. 25000" aria-describedby="depositAmount-help depositAmount-error" data-cy="depositAmount-input">
+                </div>
+                <div id="depositAmount-error" class="alert alert--error" hidden>
+                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                    <div class="alert__text">Please enter a valid deposit amount.</div>
+                </div>
+                <div id="depositAmount-help" class="help-text">The exact cash amount you're putting down as a deposit.</div>
             </div>
 
             <fieldset class="form-group">
@@ -797,8 +821,8 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="style.css?v=1740478177">
-<script src="app.js?v=1740478177"></script>
+<link rel="stylesheet" href="style.css?v=1740478178">
+<script src="app.js?v=1740478178"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

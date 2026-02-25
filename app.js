@@ -6,7 +6,9 @@ const appData = {
     ratioP1: 0.5,
     ratioP2: 0.5,
     propertyPrice: 0,
-    depositPercentage: 0,
+    depositPercentage: 10,
+    depositAmount: 0,
+    depositType: 'percentage', // 'percentage' or 'amount'
     depositSplitProportional: true,
     totalEquity: 0,
     mortgageRequired: 0,
@@ -161,6 +163,25 @@ window.updateTaxEstimate = (p) => {
     badge.removeAttribute('hidden');
 };
 
+/**
+ * Updates the deposit entry type.
+ * @param {string} type - 'percentage' or 'amount'
+ */
+window.updateDepositType = (type) => {
+    appData.depositType = type;
+    
+    if (type === 'percentage') {
+        if (elements.depositPercContainer) elements.depositPercContainer.removeAttribute('hidden');
+        if (elements.depositAmtContainer) elements.depositAmtContainer.setAttribute('hidden', '');
+    } else {
+        if (elements.depositPercContainer) elements.depositPercContainer.setAttribute('hidden', '');
+        if (elements.depositAmtContainer) elements.depositAmtContainer.removeAttribute('hidden');
+    }
+    
+    calculateEquityDetails();
+    if (typeof saveToCache === 'function') saveToCache();
+};
+
 window.downloadCSV = () => {
     const table = document.getElementById('results-table');
     if (!table) return;
@@ -230,6 +251,7 @@ const FORM_FIELDS = [
     { id: 'insuranceCost', type: 'number' },
     { id: 'otherSharedCosts', type: 'number' },
     { id: 'depositPercentage', type: 'number' },
+    { id: 'depositAmount', type: 'number' },
     { id: 'mortgageInterestRate', type: 'number' },
     { id: 'mortgageTerm', type: 'number' },
     { id: 'mortgageFees', type: 'number' }
@@ -461,6 +483,10 @@ window.saveToCache = () => {
     if (buyerStatus) inputs.buyerStatus = buyerStatus.value;
     const depositSplit = document.querySelector('input[name="depositSplitType"]:checked');
     if (depositSplit) inputs.depositSplitType = depositSplit.value;
+
+    const depositType = document.querySelector('input[name="depositType"]:checked');
+    if (depositType) inputs.depositType = depositType.value;
+
     localStorage.setItem(CACHE_KEY, JSON.stringify(inputs));
 };
 window.loadFromCache = () => {
@@ -500,11 +526,12 @@ window.loadFromCache = () => {
                 if (appData.splitTypes.hasOwnProperty(dataKey)) {
                     appData.splitTypes[dataKey] = value;
                 }
-            } else if (id === 'taxBand' || id === 'homeType' || id === 'depositSplitType' || id === 'buyerStatus' || id === 'salaryType') {
+            } else if (id === 'taxBand' || id === 'homeType' || id === 'depositSplitType' || id === 'buyerStatus' || id === 'salaryType' || id === 'depositType') {
                 const radio = document.querySelector(`input[name="${id}"][value="${value}"]`);
                 if (radio) radio.checked = true;
                 if (id === 'taxBand') updatePricePreview(value);
                 if (id === 'salaryType') updateSalaryType(value);
+                if (id === 'depositType') updateDepositType(value);
             }
         }
     }
@@ -687,18 +714,30 @@ window.calculateStampDuty = (price, region, homeType, isFTB) => {
 };
 window.calculateEquityDetails = () => {
     const propertyPrice = appData.propertyPrice;
-    let depositPercentage = appData.depositPercentage;
-    if (depositPercentage > 100) {
-        depositPercentage = 100;
-        appData.depositPercentage = 100;
-        elements.depositPercentage.value = 100;
-    } else if (depositPercentage < 0) {
-        depositPercentage = 0;
-        appData.depositPercentage = 0;
-        elements.depositPercentage.value = 0;
-    }
     if (isNaN(propertyPrice) || propertyPrice <= 0) return;
-    appData.totalEquity = propertyPrice * (depositPercentage / 100);
+
+    if (appData.depositType === 'percentage') {
+        let depositPercentage = appData.depositPercentage;
+        if (depositPercentage > 100) {
+            depositPercentage = 100;
+            appData.depositPercentage = 100;
+            elements.depositPercentage.value = 100;
+        } else if (depositPercentage < 0) {
+            depositPercentage = 0;
+            appData.depositPercentage = 0;
+            elements.depositPercentage.value = 0;
+        }
+        appData.totalEquity = propertyPrice * (depositPercentage / 100);
+        appData.depositAmount = appData.totalEquity;
+        if (elements.depositAmount) elements.depositAmount.value = Math.round(appData.totalEquity);
+    } else {
+        const depositAmount = getVal('depositAmount');
+        appData.depositAmount = depositAmount;
+        appData.totalEquity = depositAmount;
+        appData.depositPercentage = (depositAmount / propertyPrice) * 100;
+        if (elements.depositPercentage) elements.depositPercentage.value = appData.depositPercentage.toFixed(1);
+    }
+
     appData.mortgageRequired = propertyPrice - appData.totalEquity;
     appData.mortgageFees = getVal('mortgageFees');
     const sdlt = calculateStampDuty(propertyPrice, appData.regionCode, appData.homeType, appData.isFTB);
@@ -1241,6 +1280,9 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.childcareError = document.getElementById('childcare-error');
     elements.insuranceError = document.getElementById('insurance-error');
     elements.otherError = document.getElementById('other-error');
+    elements.depositPercContainer = document.getElementById('depositPercContainer');
+    elements.depositAmtContainer = document.getElementById('depositAmtContainer');
+    elements.depositAmount = document.getElementById('depositAmount');
     elements.resultP1 = document.getElementById('result-p1');
     elements.resultP2 = document.getElementById('result-p2');
     elements.totalBillDisplay = document.getElementById('total-bill-display');
@@ -1305,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (field.type === 'number') val = parseFloat(val) || 0;
             appData[field.key || field.id] = val;
             if (field.id === 'propertyPrice') updatePropertyPriceDisplay(val, false);
-            if (field.id === 'depositPercentage') calculateEquityDetails();
+            if (field.id === 'depositPercentage' || field.id === 'depositAmount') calculateEquityDetails();
             if (field.id === 'mortgageInterestRate' || field.id === 'mortgageTerm') calculateMonthlyMortgage();
             saveToCache();
         }, 300);

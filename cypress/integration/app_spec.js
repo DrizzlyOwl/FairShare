@@ -218,7 +218,10 @@ describe('FairShare App', () => {
     // On Mortgage screen (Step 4)
     cy.get('#screen-4').should('be.visible');
     
-    // Default upfront cash (10% of 250k = 20k, plus SDLT/Legal)
+    // Explicitly set deposit to 10% to match previous test expectations
+    cy.get('[data-cy="depositPercentage-input"]').clear().type('10');
+    
+    // Default upfront cash (10% of 250k = 25k, plus SDLT/Legal)
     // Intercepted price is 250k.
     // 10% deposit = 25k.
     // SDLT for 250k Standard in EN = (125k * 0) + (125k * 0.02) = 2500.
@@ -233,5 +236,25 @@ describe('FairShare App', () => {
     
     // New total = 28700 + 999 = 29699
     cy.get('#totalUpfrontDisplay').should('contain.text', '£29,699');
+  });
+
+  it('should allow specifying deposit as a fixed amount', () => {
+    fillStep1();
+    fillStep2('SW1A 0AA');
+    
+    // Switch to Fixed Amount
+    cy.get('label[for="dtAmt"]').click();
+    cy.get('#depositAmtContainer').should('be.visible');
+    cy.get('#depositPercContainer').should('not.be.visible');
+    
+    // Enter £50,000 deposit
+    cy.get('[data-cy="depositAmount-input"]').clear().type('50000');
+    
+    // Check if percentage was calculated correctly (50k / 250k = 20%)
+    cy.get('[data-cy="depositPercentage-input"]').should('have.value', '20.0');
+    
+    // Check upfront summary
+    // 50000 (deposit) + 2500 (sdlt) + 1200 (legal) = 53700
+    cy.get('#totalUpfrontDisplay').should('contain.text', '£53,700');
   });
 });
