@@ -3,6 +3,7 @@ if (typeof appData === 'undefined') {
   globalThis.appData = {
     salaryP1: 0,
     salaryP2: 0,
+    salaryType: 'gross',
     ratioP1: 0.5,
     ratioP2: 0.5,
     propertyPrice: 0,
@@ -148,6 +149,55 @@ runTest('createAlertHTML should generate correct HTML structure', () => {
   const textDiv = alertDiv.querySelector('.alert__text');
   console.assert(textDiv !== null, 'Text div should exist');
   console.assert(textDiv.textContent === 'Test Message', 'Text content should be correct');
+});
+
+runTest('updateSalaryType should update labels, appData and clear errors', () => {
+  // Mock elements and functions needed for updateSalaryType
+  const mockElements = {
+    salaryP1Label: { innerText: '' },
+    salaryP2Label: { innerText: '' },
+    salaryP1: { placeholder: '' },
+    salaryP2: { placeholder: '' },
+    salaryP1ErrorText: { innerText: '' },
+    salaryP2ErrorText: { innerText: '' },
+    wkIncomeSubtitle: { innerText: '' },
+    salaryP1Error: { setAttribute: (attr, val) => { mockElements.salaryP1Error[attr] = val; } },
+    salaryP2Error: { setAttribute: (attr, val) => { mockElements.salaryP2Error[attr] = val; } }
+  };
+  
+  // Mock global functions
+  window.updateRatioBar = () => {};
+  window.saveToCache = () => {};
+  
+  // Update window elements
+  Object.assign(window.elements, mockElements);
+  
+  // Test switch to net
+  updateSalaryType('net');
+  console.assert(appData.salaryType === 'net', 'appData.salaryType should be net');
+  console.assert(window.elements.salaryP1Label.innerText === 'Your Monthly Take-home Pay', 'P1 label should be net');
+  console.assert(window.elements.salaryP1Error.hidden === '', 'P1 error should be hidden');
+  
+  // Test switch back to gross
+  updateSalaryType('gross');
+  console.assert(appData.salaryType === 'gross', 'appData.salaryType should be gross');
+  console.assert(window.elements.salaryP1Label.innerText === 'Your Annual Salary (Pre-tax)', 'P1 label should be gross');
+});
+
+runTest('updateSalaryType should handle zero salary and calculate 100/0 ratio', () => {
+  // Setup data
+  appData.salaryP1 = 50000;
+  appData.salaryP2 = 0;
+  
+  // Mock updateRatioBar to verify it's called
+  let ratioBarCalled = false;
+  window.updateRatioBar = () => { ratioBarCalled = true; };
+  
+  updateSalaryType('gross');
+  
+  console.assert(appData.ratioP1 === 1, 'Ratio P1 should be 1.0 (100%)');
+  console.assert(appData.ratioP2 === 0, 'Ratio P2 should be 0.0 (0%)');
+  console.assert(ratioBarCalled === true, 'updateRatioBar should have been called');
 });
 
 // -- END: Unit Tests --

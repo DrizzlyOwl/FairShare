@@ -2,6 +2,7 @@
 const appData = {
     salaryP1: 0,
     salaryP2: 0,
+    salaryType: 'gross', // 'gross' or 'net'
     ratioP1: 0.5,
     ratioP2: 0.5,
     propertyPrice: 0,
@@ -43,6 +44,46 @@ const appData = {
 };
 window.appData = appData;
 
+/**
+ * Updates the salary type labels and placeholders.
+ * @param {string} type - 'gross' or 'net'
+ */
+window.updateSalaryType = (type) => {
+    appData.salaryType = type;
+    
+    // Clear errors when switching
+    if (elements.salaryP1Error) elements.salaryP1Error.setAttribute('hidden', '');
+    if (elements.salaryP2Error) elements.salaryP2Error.setAttribute('hidden', '');
+
+    if (type === 'gross') {
+        if (elements.salaryP1Label) elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax)';
+        if (elements.salaryP2Label) elements.salaryP2Label.innerText = "Your Partner's Annual Salary (Pre-tax)";
+        if (elements.salaryP1) elements.salaryP1.placeholder = 'e.g. 35000';
+        if (elements.salaryP2) elements.salaryP2.placeholder = 'e.g. 45000';
+        if (elements.salaryP1ErrorText) elements.salaryP1ErrorText.innerText = 'Please enter a valid salary (0 or more).';
+        if (elements.salaryP2ErrorText) elements.salaryP2ErrorText.innerText = 'Please enter a valid salary for your partner (0 or more).';
+        if (elements.wkIncomeSubtitle) elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
+    } else {
+        if (elements.salaryP1Label) elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay';
+        if (elements.salaryP2Label) elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay";
+        if (elements.salaryP1) elements.salaryP1.placeholder = 'e.g. 2500';
+        if (elements.salaryP2) elements.salaryP2.placeholder = 'e.g. 3200';
+        if (elements.salaryP1ErrorText) elements.salaryP1ErrorText.innerText = 'Please enter a valid monthly net pay (0 or more).';
+        if (elements.salaryP2ErrorText) elements.salaryP2ErrorText.innerText = 'Please enter a valid monthly net pay for your partner (0 or more).';
+        if (elements.wkIncomeSubtitle) elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
+    }
+
+    // Update ratio calculation if values exist
+    const total = appData.salaryP1 + appData.salaryP2;
+    if (total > 0) {
+        appData.ratioP1 = appData.salaryP1 / total;
+        appData.ratioP2 = appData.salaryP2 / total;
+        if (typeof updateRatioBar === 'function') updateRatioBar();
+    }
+    
+    if (typeof saveToCache === 'function') saveToCache();
+};
+
 window.downloadCSV = () => {
     const table = document.getElementById('results-table');
     if (!table) return;
@@ -52,10 +93,11 @@ window.downloadCSV = () => {
     csvContent += `Generated: ${new Date().toLocaleDateString('en-GB')} ${new Date().toLocaleTimeString('en-GB')}\n\n`;
 
     // 1. Ratio Workings
+    const salaryLabel = appData.salaryType === 'gross' ? 'Annual Salary (Pre-tax)' : 'Monthly Net Pay';
     csvContent += "1. INCOME RATIO WORKINGS\n";
-    csvContent += `Your Annual Salary,${appData.salaryP1}\n`;
-    csvContent += `Partner Annual Salary,${appData.salaryP2}\n`;
-    csvContent += `Total Combined Salary,${appData.salaryP1 + appData.salaryP2}\n`;
+    csvContent += `Your ${salaryLabel},${appData.salaryP1}\n`;
+    csvContent += `Partner ${salaryLabel},${appData.salaryP2}\n`;
+    csvContent += `Total Combined ${appData.salaryType === 'gross' ? 'Annual' : 'Monthly Net'},${appData.salaryP1 + appData.salaryP2}\n`;
     csvContent += `Your Share %,${(appData.ratioP1 * 100).toFixed(1)}%\n`;
     csvContent += `Partner Share %,${(appData.ratioP2 * 100).toFixed(1)}%\n\n`;
 
@@ -329,9 +371,13 @@ window.saveToCache = () => {
         const radio = document.querySelector(`input[name="${key}SplitType"]:checked`);
         if (radio) inputs[`${key}SplitType`] = radio.value;
     });
-    const taxBand = document.querySelector('input[name="taxBand"]:checked');
-    if (taxBand) inputs.taxBand = taxBand.value;
-    const homeType = document.querySelector('input[name="homeType"]:checked');
+        const taxBand = document.querySelector('input[name="taxBand"]:checked');
+        if (taxBand) inputs.taxBand = taxBand.value;
+    
+        const salaryType = document.querySelector('input[name="salaryType"]:checked');
+        if (salaryType) inputs.salaryType = salaryType.value;
+    
+        const homeType = document.querySelector('input[name="homeType"]:checked');
     if (homeType) inputs.homeType = homeType.value;
     const buyerStatus = document.querySelector('input[name="buyerStatus"]:checked');
     if (buyerStatus) inputs.buyerStatus = buyerStatus.value;
@@ -376,10 +422,11 @@ window.loadFromCache = () => {
                 if (appData.splitTypes.hasOwnProperty(dataKey)) {
                     appData.splitTypes[dataKey] = value;
                 }
-            } else if (id === 'taxBand' || id === 'homeType' || id === 'depositSplitType' || id === 'buyerStatus') {
+            } else if (id === 'taxBand' || id === 'homeType' || id === 'depositSplitType' || id === 'buyerStatus' || id === 'salaryType') {
                 const radio = document.querySelector(`input[name="${id}"][value="${value}"]`);
                 if (radio) radio.checked = true;
                 if (id === 'taxBand') updatePricePreview(value);
+                if (id === 'salaryType') updateSalaryType(value);
             }
         }
     }
@@ -618,6 +665,7 @@ window.calculateMonthlyMortgage = () => {
     if (elements.monthlyMortgageDisplay) elements.monthlyMortgageDisplay.innerText = formatCurrency(monthlyPayment);
     if (elements.totalRepaymentDisplay) elements.totalRepaymentDisplay.innerText = formatCurrency(appData.totalRepayment);
 };
+
 window.updatePricePreview = (band) => {
     appData.band = band;
     const cost = bandPrices[band];
@@ -855,10 +903,25 @@ window.calculateFinalSplit = () => {
 const VALIDATION_CONFIG = {
     [SCREENS.INCOME]: {
         fields: [
-            { id: 'salaryP1', errorId: 'salaryP1Error', type: 'number', min: 0.01, saveTo: 'salaryP1' },
-            { id: 'salaryP2', errorId: 'salaryP2Error', type: 'number', min: 0.01, saveTo: 'salaryP2' }
+            { id: 'salaryP1', errorId: 'salaryP1Error', type: 'number', min: 0, saveTo: 'salaryP1' },
+            { id: 'salaryP2', errorId: 'salaryP2Error', type: 'number', min: 0, saveTo: 'salaryP2' }
         ],
         nextScreen: SCREENS.PROPERTY,
+        globalCheck: () => {
+            const total = appData.salaryP1 + appData.salaryP2;
+            if (total <= 0) {
+                if (elements.salaryP1Error) {
+                    elements.salaryP1Error.removeAttribute('hidden');
+                    if (elements.salaryP1ErrorText) elements.salaryP1ErrorText.innerText = 'At least one salary must be greater than zero.';
+                }
+                if (elements.salaryP2Error) {
+                    elements.salaryP2Error.removeAttribute('hidden');
+                    if (elements.salaryP2ErrorText) elements.salaryP2ErrorText.innerText = 'At least one salary must be greater than zero.';
+                }
+                return false;
+            }
+            return true;
+        },
         onSuccess: () => {
             const total = appData.salaryP1 + appData.salaryP2;
             if (total > 0) {
@@ -1003,6 +1066,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements Cache
     elements.salaryP1 = document.getElementById('salaryP1');
     elements.salaryP2 = document.getElementById('salaryP2');
+    elements.salaryP1Label = document.getElementById('salaryP1Label');
+    elements.salaryP2Label = document.getElementById('salaryP2Label');
+    elements.salaryP1ErrorText = document.getElementById('salaryP1ErrorText');
+    elements.salaryP2ErrorText = document.getElementById('salaryP2ErrorText');
     elements.postcode = document.getElementById('postcode');
     elements.propertyPrice = document.getElementById('propertyPrice');
     elements.bedrooms = document.getElementById('bedrooms');
@@ -1096,6 +1163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.wkSalaryP1 = document.getElementById('wk-salary-p1');
     elements.wkSalaryP2 = document.getElementById('wk-salary-p2');
     elements.wkTotalSalary = document.getElementById('wk-total-salary');
+    elements.wkIncomeSubtitle = document.getElementById('wk-income-subtitle');
     elements.wkP1Perc = document.getElementById('wk-p1-perc');
     elements.wkP2Perc = document.getElementById('wk-p2-perc');
     elements.wkPropertyPrice = document.getElementById('wk-property-price');

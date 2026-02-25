@@ -178,4 +178,36 @@ describe('FairShare App', () => {
       expect(percentage).to.be.closeTo(44, 1);
     });
   });
+
+  it('should toggle between gross and net salary types correctly', () => {
+    cy.get('[data-cy="next-button"]').click();
+    
+    // Default should be Annual Gross
+    cy.get('#salaryP1Label').should('contain.text', 'Annual Salary (Pre-tax)');
+    cy.get('[data-cy="salaryP1-input"]').should('have.attr', 'placeholder', 'e.g. 35000');
+    
+    // Switch to Monthly Net
+    cy.get('label[for="stNet"]').click();
+    cy.get('#salaryP1Label').should('contain.text', 'Monthly Take-home Pay');
+    cy.get('[data-cy="salaryP1-input"]').should('have.attr', 'placeholder', 'e.g. 2500');
+    
+    // Enter some net values
+    cy.get('[data-cy="salaryP1-input"]').type('3000');
+    cy.get('[data-cy="salaryP2-input"]').type('3000'); // 50/50 ratio
+    
+    // Switch back to Gross
+    cy.get('label[for="stGross"]').click();
+    cy.get('#salaryP1Label').should('contain.text', 'Annual Salary (Pre-tax)');
+    
+    // Complete journey and check workings
+    cy.get('[data-cy="next-button"]').click();
+    fillStep2('SW1A 0AA');
+    fillStep3();
+    fillStep4();
+    fillStep5();
+    
+    cy.get('#screen-7').should('be.visible');
+    cy.get('#wk-income-subtitle').should('contain.text', 'Annual');
+    cy.get('#wk-p1-perc').should('contain.text', '50.0%');
+  });
 });
