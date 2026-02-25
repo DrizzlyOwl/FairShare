@@ -5,9 +5,10 @@
   "main": "app.js",
   "scripts": {
     "start": "http-server . -p 8080",
-    "test": "npm run test:unit && npm run test:cypress",
+    "test": "npm run test:unit && npm run test:cypress && npm run test:a11y",
     "test:unit": "node run_unit_tests.js",
-    "test:cypress": "cypress run",
+    "test:cypress": "cypress run --spec cypress/integration/app_spec.js",
+    "test:a11y": "cypress run --spec cypress/integration/accessibility_spec.js",
     "cypress:open": "cypress open",
     "lint": "eslint app.js"
   },
@@ -21,7 +22,9 @@
   "author": "Ash Davies (DrizzlyOwl) and Gemini",
   "license": "MIT",
   "devDependencies": {
+    "axe-core": "^4.11.1",
     "cypress": "^12.0.0",
+    "cypress-axe": "^1.7.0",
     "eslint": "^10.0.0",
     "http-server": "^14.1.1",
     "jsdom": "^22.1.0"
