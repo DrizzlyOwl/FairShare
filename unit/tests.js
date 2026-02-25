@@ -151,6 +151,13 @@ runTest(
   }
 );
 
+runTest('calculateStampDuty should calculate standard rate for £300k in England', () => {
+  const engine = window.FinanceEngine;
+  const duty = engine.calculateStampDuty(300000, 'EN', 'first', false);
+  // (125000 * 0) + (125000 * 0.02) + (50000 * 0.05) = 2500 + 2500 = 5000
+  console.assert(duty === 5000, `Expected 5000, but got ${duty}`);
+});
+
 runTest('createAlertHTML should generate correct HTML structure', () => {
   const html = createAlertHTML('info', 'icon-info.svg', 'Test Message', 'test-id', true);
   const tempDiv = document.createElement('div');
@@ -294,6 +301,8 @@ runTest('handlePostcodeChange should update state and UI announcement for North 
       data: { regionCode: 'EN', isNorth: false },
       update: (newData) => { Object.assign(mockApp.store.data, newData); }
     },
+    equityDetailsCalculated: false,
+    calculateEquityDetails: function() { this.equityDetailsCalculated = true; },
     handlePostcodeChange: function(postcode) {
         const region = ApiService.getRegionFromPostcode(postcode);
         const announce = this.elements.regionAnnouncement;
@@ -311,6 +320,7 @@ runTest('handlePostcodeChange should update state and UI announcement for North 
 
             announce.querySelector('.alert__text').innerText = text;
             announce.removeAttribute('hidden');
+            this.calculateEquityDetails();
         } else {
             announce.setAttribute('hidden', '');
         }
@@ -327,8 +337,10 @@ runTest('handlePostcodeChange should update state and UI announcement for North 
   console.assert(mockApp.store.data.isNorth === true, `Expected isNorth to be true, got ${mockApp.store.data.isNorth}`);
   console.assert(alertTextObj.innerText === 'North of England region detected. Heating estimates adjusted.', `Wrong alert text: ${alertTextObj.innerText}`);
   console.assert(mockApp.elements.regionAnnouncement.hidden === false, 'Announcement should be visible');
+  console.assert(mockApp.equityDetailsCalculated === true, 'Should have triggered equity details calculation');
 
-  // Test with a Scottish postcode (Edinburgh - EH)
+  // Reset and Test with a Scottish postcode (Edinburgh - EH)
+  mockApp.equityDetailsCalculated = false;
   mockApp.handlePostcodeChange('EH1 1AA');
   console.assert(mockApp.store.data.regionCode === 'SC', `Expected region SC, got ${mockApp.store.data.regionCode}`);
     console.assert(mockApp.store.data.isNorth === false, `Expected isNorth to be false, got ${mockApp.store.data.isNorth}`);
