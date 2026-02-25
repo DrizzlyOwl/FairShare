@@ -903,8 +903,8 @@ window.calculateFinalSplit = () => {
 const VALIDATION_CONFIG = {
     [SCREENS.INCOME]: {
         fields: [
-            { id: 'salaryP1', errorId: 'salaryP1Error', type: 'number', min: 0, saveTo: 'salaryP1' },
-            { id: 'salaryP2', errorId: 'salaryP2Error', type: 'number', min: 0, saveTo: 'salaryP2' }
+            { id: 'salaryP1', errorId: 'salaryP1Error', type: 'number', min: 0, required: true, saveTo: 'salaryP1' },
+            { id: 'salaryP2', errorId: 'salaryP2Error', type: 'number', min: 0, required: true, saveTo: 'salaryP2' }
         ],
         nextScreen: SCREENS.PROPERTY,
         globalCheck: () => {
@@ -1018,8 +1018,11 @@ window.validateAndNext = async (screenId) => {
         let fieldValid = true;
         if (field.type === 'number') {
             const numVal = getVal(field.id);
-            if (field.allowEmpty && el.value === '') {
+            const isActuallyEmpty = el.value === '';
+            if (field.allowEmpty && isActuallyEmpty) {
                 val = 0;
+            } else if (field.required && isActuallyEmpty) {
+                fieldValid = false;
             } else if (isNaN(numVal) || (field.min !== undefined && numVal < field.min) || (field.max !== undefined && numVal > field.max)) {
                 fieldValid = false;
             } else {
