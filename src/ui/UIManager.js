@@ -188,7 +188,7 @@ export default class UIManager {
     showWarning(screenNum, msg) {
         const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
         if (!warnDiv) return;
-        warnDiv.outerHTML = createAlertHTML('warning', 'icon-error.svg', msg, `warning-screen-${screenNum}`);
+        warnDiv.outerHTML = createAlertHTML('warning', 'icon-error.svg', msg, `warning-screen-${screenNum}`, false);
     }
 
     /**

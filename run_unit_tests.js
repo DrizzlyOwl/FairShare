@@ -43,12 +43,16 @@ console.error = (...args) => {
 const modules = [
     { path: 'src/core/FinanceEngine.js', global: 'FinanceEngine', type: 'class' },
     { path: 'src/ui/Components.js', type: 'functional' },
-    { path: 'src/services/ApiService.js', global: 'ApiService', type: 'class' }
+    { path: 'src/services/ApiService.js', global: 'ApiService', type: 'class' },
+    { path: 'src/ui/UIManager.js', global: 'UIManager', type: 'class' }
 ];
 
 modules.forEach(mod => {
     let code = fs.readFileSync(path.join(__dirname, mod.path), 'utf8');
     
+    // Strip imports (JSDOM simulation environment doesn't support them in this setup)
+    code = code.replace(/^import\s+[\s\S]*?from\s+['"].*?['"];?/gm, '');
+
     // Remove all exports but keep the declarations and expose to window
     code = code.replace(/export const (\w+) =/g, 'const $1 = window.$1 =');
     code = code.replace(/export default class (\w+)/g, 'const $1 = window.$1 = class $1');

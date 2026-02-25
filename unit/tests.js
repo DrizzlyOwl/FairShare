@@ -1,3 +1,7 @@
+/* global FinanceEngine, ApiService, createAlertHTML, UIManager */
+
+console.log('FinanceEngine available:', !!FinanceEngine);
+
 // Mocking the DOM and other dependencies for testing
 if (typeof appData === 'undefined') {
   globalThis.appData = {
@@ -373,44 +377,68 @@ runTest('handlePostcodeChange should update state and UI announcement for North 
                 });
                 
                 runTest('updateSalaryTypeLabels should update labels and descriptions based on income mode', () => {
-                  const mockApp = {
-                    elements: {
-                      salaryP1Label: { innerText: '' },
-                      salaryP2Label: { innerText: '' },
-                      salaryP1: { placeholder: '' },
-                      salaryP2: { placeholder: '' },
-                      salaryP1Desc: { innerText: '' },
-                      salaryP2Desc: { innerText: '' },
-                      wkIncomeSubtitle: { innerText: '' },
-                      salaryP1Error: { setAttribute: () => {} },
-                      salaryP2Error: { setAttribute: () => {} }
-                    },
-                    updateSalaryTypeLabels: function(type) {
-                        if (type === 'gross') {
-                            this.elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax) *';
-                            this.elements.salaryP1.placeholder = 'e.g. 35000';
-                            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your total yearly income before any deductions.';
-                            this.elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
-                        } else {
-                            this.elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay *';
-                            this.elements.salaryP1.placeholder = 'e.g. 2500';
-                            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your average monthly income after all taxes and deductions.';
-                            this.elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
-                        }
-                    }
-                  };
-                
-                  // Test Gross mode
-                  mockApp.updateSalaryTypeLabels('gross');
-                  console.assert(mockApp.elements.salaryP1Label.innerText.includes('Annual Salary'), 'Label should include Annual Salary in gross mode');
-                  console.assert(mockApp.elements.salaryP1Desc.innerText === 'Enter your total yearly income before any deductions.', 'Description should match gross mode');
-                
-                  // Test Net mode
-                  mockApp.updateSalaryTypeLabels('net');
-                  console.assert(mockApp.elements.salaryP1Label.innerText.includes('Monthly Take-home'), 'Label should include Monthly Take-home in net mode');
-                  console.assert(mockApp.elements.salaryP1Desc.innerText === 'Enter your average monthly income after all taxes and deductions.', 'Description should match net mode');
-                });
-                
-                // -- END: Unit Tests --
-                
+  const mockApp = {
+    elements: {
+      salaryP1Label: { innerText: '' },
+      salaryP2Label: { innerText: '' },
+      salaryP1: { placeholder: '' },
+      salaryP2: { placeholder: '' },
+      salaryP1Desc: { innerText: '' },
+      salaryP2Desc: { innerText: '' },
+      wkIncomeSubtitle: { innerText: '' },
+      salaryP1Error: { setAttribute: () => {} },
+      salaryP2Error: { setAttribute: () => {} }
+    },
+    updateSalaryTypeLabels: function(type) {
+        if (type === 'gross') {
+            this.elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax) *';
+            this.elements.salaryP2Label.innerText = "Your Partner's Annual Salary (Pre-tax) *";
+            this.elements.salaryP1.placeholder = 'e.g. 35000';
+            this.elements.salaryP2.placeholder = 'e.g. 45000';
+            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your total yearly income before any deductions.';
+            if (this.elements.salaryP2Desc) this.elements.salaryP2Desc.innerText = "Enter your partner's total yearly income before any deductions.";
+            this.elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
+        } else {
+            this.elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay *';
+            this.elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay *";
+            this.elements.salaryP1.placeholder = 'e.g. 2500';
+            this.elements.salaryP2.placeholder = 'e.g. 3200';
+            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your average monthly income after all taxes and deductions.';
+            if (this.elements.salaryP2Desc) this.elements.salaryP2Desc.innerText = "Enter your partner's average monthly income after all taxes and deductions.";
+            this.elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
+        }
+    }
+  };
+
+  // Test Gross mode
+  mockApp.updateSalaryTypeLabels('gross');
+  console.assert(mockApp.elements.salaryP1Label.innerText === 'Your Annual Salary (Pre-tax) *', `Label should match gross mode, got: ${mockApp.elements.salaryP1Label.innerText}`);
+  console.assert(mockApp.elements.salaryP1Desc.innerText === 'Enter your total yearly income before any deductions.', 'Description should match gross mode');
+
+  // Test Net mode
+  mockApp.updateSalaryTypeLabels('net');
+  console.assert(mockApp.elements.salaryP1Label.innerText === 'Your Monthly Take-home Pay *', `Label should match net mode, got: ${mockApp.elements.salaryP1Label.innerText}`);
+  console.assert(mockApp.elements.salaryP1Desc.innerText === 'Enter your average monthly income after all taxes and deductions.', 'Description should match net mode');
+});
+
+runTest('showWarning should create a visible alert with correct message', () => {
+  const tempContainer = document.createElement('div');
+  tempContainer.id = 'test-container';
+  tempContainer.innerHTML = '<div id="warning-screen-2" hidden></div>';
+  document.body.appendChild(tempContainer);
+
+  const ui = new UIManager({}, {});
+  ui.showWarning(2, 'Test Warning Message');
+
+  const alertDiv = document.getElementById('warning-screen-2');
+  console.assert(alertDiv !== null, 'Alert div should exist');
+  console.assert(alertDiv.hasAttribute('hidden') === false, 'Alert should be visible (not hidden)');
   
+  const alertText = alertDiv.querySelector('.alert__text');
+  console.assert(alertText.textContent === 'Test Warning Message', `Alert text should match, got: ${alertText.textContent}`);
+
+  document.body.removeChild(tempContainer);
+});
+                  
+                  // -- END: Unit Tests --
+                    
