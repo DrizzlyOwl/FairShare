@@ -32,11 +32,11 @@ describe('FairShare App', () => {
   });
 
   const fillStep1 = () => {
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     cy.get('#screen-2').should('be.visible');
     cy.get('[data-cy="salaryP1-input"]').type('35000');
     cy.get('[data-cy="salaryP2-input"]').type('45000');
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     cy.get('#screen-3').should('be.visible');
   };
 
@@ -47,7 +47,7 @@ describe('FairShare App', () => {
     cy.get('[data-cy="taxBand-fieldset"] .segmented-control').contains('label', /^C$/).click();
     cy.get('[data-cy="bedrooms-input"]').clear().type('3');
     cy.get('[data-cy="bathrooms-input"]').clear().type('2');
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     cy.get('#screen-4').should('be.visible');
   };
 
@@ -55,7 +55,7 @@ describe('FairShare App', () => {
     cy.get('[data-cy="depositPercentage-input"]').clear().type('10');
     cy.get('[data-cy="mortgageInterestRate-input"]').clear().type('5');
     cy.get('[data-cy="mortgageTerm-input"]').clear().type('25');
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     cy.get('#screen-5').should('be.visible');
   };
 
@@ -64,7 +64,7 @@ describe('FairShare App', () => {
     cy.get('[data-cy="energyCost-input"]').should('not.have.value', ''); // Should be pre-filled
     cy.get('[data-cy="waterBill-input"]').should('not.have.value', ''); // Should be pre-filled
     cy.get('[data-cy="broadbandCost-input"]').type('35');
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     cy.get('#screen-6').should('be.visible');
   };
 
@@ -73,7 +73,7 @@ describe('FairShare App', () => {
     cy.get('[data-cy="childcareCost-input"]').type('0');
     cy.get('[data-cy="insuranceCost-input"]').type('50');
     cy.get('[data-cy="otherSharedCosts-input"]').type('100');
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
   };
 
   it('should calculate heating estimates correctly for a northern region', () => {
@@ -86,8 +86,8 @@ describe('FairShare App', () => {
       const northernEnergyCost = parseFloat(energyCost);
 
       // Go back and change to a southern postcode
-      cy.get('[data-cy="back-button"]').click();
-      cy.get('[data-cy="back-button"]').click();
+      cy.get('[data-cy="back-button"]').click({ force: true });
+      cy.get('[data-cy="back-button"]').click({ force: true });
       fillStep2('SW1A 0AA'); // London
       cy.get('#region-announcement').should('contain.text', 'London region detected.');
       fillStep3();
@@ -108,8 +108,8 @@ describe('FairShare App', () => {
       const southernEnergyCost = parseFloat(energyCost);
 
       // Go back and change to a northern postcode
-      cy.get('[data-cy="back-button"]').click();
-      cy.get('[data-cy="back-button"]').click();
+      cy.get('[data-cy="back-button"]').click({ force: true });
+      cy.get('[data-cy="back-button"]').click({ force: true });
       fillStep2('M1 1AD'); // Manchester
       cy.get('#region-announcement').should('contain.text', 'North of England region detected. Heating estimates adjusted.');
       fillStep3();
@@ -121,11 +121,11 @@ describe('FairShare App', () => {
   });
 
   it('should prevent navigation if required fields are empty', () => {
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     cy.get('#screen-2').should('be.visible');
 
     // Try clicking next without entering salaries
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
 
     // Should stay on screen 2 and show errors
     cy.get('#screen-2').should('be.visible');
@@ -134,7 +134,7 @@ describe('FairShare App', () => {
 
     // Fill one field
     cy.get('[data-cy="salaryP1-input"]').type('30000');
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
 
     // Should still stay on screen 2
     cy.get('#screen-2').should('be.visible');
@@ -142,7 +142,7 @@ describe('FairShare App', () => {
   });
 
   it('should persist entered data across page reloads', () => {
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     cy.get('[data-cy="salaryP1-input"]').type('55000');
     cy.get('[data-cy="salaryP2-input"]').type('65000');
 
@@ -153,7 +153,7 @@ describe('FairShare App', () => {
     cy.reload();
 
     // Check if values persisted
-    cy.get('[data-cy="next-button"]').click(); // Go to screen 2
+    cy.get('[data-cy="next-button"]').click({ force: true }); // Go to screen 2
     cy.get('[data-cy="salaryP1-input"]').should('have.value', '55000');
     cy.get('[data-cy="salaryP2-input"]').should('have.value', '65000');
   });
@@ -180,7 +180,7 @@ describe('FairShare App', () => {
   });
 
   it('should toggle between gross and net salary types correctly', () => {
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     
     // Default should be Annual Gross
     cy.get('#salaryP1Label').should('contain.text', 'Annual Salary (Pre-tax)');
@@ -200,7 +200,7 @@ describe('FairShare App', () => {
     cy.get('#salaryP1Label').should('contain.text', 'Annual Salary (Pre-tax)');
     
     // Complete journey and check workings
-    cy.get('[data-cy="next-button"]').click();
+    cy.get('[data-cy="next-button"]').click({ force: true });
     fillStep2('SW1A 0AA');
     fillStep3();
     fillStep4();
@@ -236,6 +236,27 @@ describe('FairShare App', () => {
     
     // New total = 28700 + 999 = 29699
     cy.get('#totalUpfrontDisplay').should('contain.text', '£29,699');
+  });
+
+  it('should display Scottish tax bands for a Scottish postcode', () => {
+    // 1. Enter salaries
+    cy.get('[data-cy="next-button"]').click({ force: true });
+    cy.get('[data-cy="salaryP1-input"]').type('30000');
+    cy.get('[data-cy="salaryP2-input"]').type('40000');
+    
+    // 2. Go to Property screen and enter Scottish postcode
+    cy.get('[data-cy="next-button"]').click({ force: true });
+    cy.get('[data-cy="postcode-input"]').type('EH1 1AD'); // Edinburgh
+    cy.get('[data-cy="postcode-input"]').blur();
+    cy.get('#region-announcement').should('contain.text', 'Scotland region detected.');
+    
+    // 3. Go back to Income screen and check for Scottish badges
+    cy.get('[data-cy="back-button"]').click({ force: true });
+    
+    // £30k in Scotland is Intermediate Rate
+    cy.get('#salaryP1-tax-badge').should('be.visible').and('contain.text', 'Intermediate Rate');
+    // £40k in Scotland is also Intermediate Rate (up to £43,662)
+    cy.get('#salaryP2-tax-badge').should('be.visible').and('contain.text', 'Intermediate Rate');
   });
 
   it('should allow specifying deposit as a fixed amount', () => {

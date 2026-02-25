@@ -167,6 +167,26 @@ runTest('createAlertHTML should generate correct HTML structure', () => {
   console.assert(textDiv.textContent === 'Test Message', 'Text content should be correct');
 });
 
+runTest('calculateTakeHome should handle England Basic Rate for £30k', () => {
+  const engine = window.FinanceEngine;
+  const salary = 30000;
+  const result = engine.calculateTakeHome(salary, 'EN');
+  
+  console.assert(result.bandName === 'Basic Rate', `Expected Basic Rate, but got ${result.bandName}`);
+  // Expected tax 3486, NI 1394. Total 4880. Net ~2093
+  console.assert(Math.round(result.monthlyNet) === 2093, `Expected approx £2,093, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle England Higher Rate for £80k', () => {
+  const engine = window.FinanceEngine;
+  const salary = 80000;
+  const result = engine.calculateTakeHome(salary, 'EN');
+  
+  console.assert(result.bandName === 'Higher Rate', `Expected Higher Rate, but got ${result.bandName}`);
+  // Expected tax 19432, NI 3610. Total 23042. Net ~4746
+  console.assert(Math.round(result.monthlyNet) === 4746, `Expected approx £4,746, but got ${Math.round(result.monthlyNet)}`);
+});
+
 runTest('calculateTakeHome should handle Additional Rate and tapered PA', () => {
   const engine = window.FinanceEngine;
   const salary = 150000;
@@ -175,6 +195,26 @@ runTest('calculateTakeHome should handle Additional Rate and tapered PA', () => 
   console.assert(result.bandName === 'Additional Rate', `Expected Additional Rate, but got ${result.bandName}`);
   // Expected tax 51189, NI 5010. Total 56199. Net ~7817
   console.assert(Math.round(result.monthlyNet) === 7817, `Expected approx £7,817, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Scottish Starter Rate for £14k', () => {
+  const engine = window.FinanceEngine;
+  const salary = 14000;
+  const result = engine.calculateTakeHome(salary, 'SC');
+  
+  console.assert(result.bandName === 'Starter Rate', `Expected Starter Rate, but got ${result.bandName}`);
+  // Expected tax 271.51, NI 114.40. Total 385.91. Net ~1134.50 -> 1134
+  console.assert(Math.round(result.monthlyNet) === 1134, `Expected approx £1,134, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Scottish Basic Rate for £20k', () => {
+  const engine = window.FinanceEngine;
+  const salary = 20000;
+  const result = engine.calculateTakeHome(salary, 'SC');
+  
+  console.assert(result.bandName === 'Basic Rate', `Expected Basic Rate, but got ${result.bandName}`);
+  // Expected tax 1463, NI 594. Total 2057. Net ~1495
+  console.assert(Math.round(result.monthlyNet) === 1495, `Expected approx £1,495, but got ${Math.round(result.monthlyNet)}`);
 });
 
 runTest('calculateTakeHome should handle Scottish Intermediate Rate for £30k', () => {
@@ -195,6 +235,43 @@ runTest('calculateTakeHome should handle Scottish Higher Rate for £60k', () => 
   console.assert(result.bandName === 'Higher Rate', `Expected Higher Rate, but got ${result.bandName}`);
   // Expected tax ~13228, NI ~3210. Total deductions ~16438. Net ~3630
   console.assert(Math.round(result.monthlyNet) === 3630, `Expected approx £3,630, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Scottish Advanced Rate for £80k', () => {
+  const engine = window.FinanceEngine;
+  const salary = 80000;
+  const result = engine.calculateTakeHome(salary, 'SC');
+  
+  console.assert(result.bandName === 'Advanced Rate', `Expected Advanced Rate, but got ${result.bandName}`);
+  // Expected tax ~21778, NI ~3610. Total 25388. Net ~4551
+  console.assert(Math.round(result.monthlyNet) === 4551, `Expected approx £4,551, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Scottish Top Rate for £150k', () => {
+  const engine = window.FinanceEngine;
+  const salary = 150000;
+  const result = engine.calculateTakeHome(salary, 'SC');
+  
+  console.assert(result.bandName === 'Top Rate', `Expected Top Rate, but got ${result.bandName}`);
+  // Expected tax ~56164, NI ~5010. Total 61174. Net ~7402
+  console.assert(Math.round(result.monthlyNet) === 7402, `Expected approx £7,402, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Personal Allowance boundaries', () => {
+  const engine = window.FinanceEngine;
+  
+  // Exactly at allowance
+  const atAllowance = engine.calculateTakeHome(12570, 'EN');
+  console.assert(atAllowance.bandName === 'Personal Allowance', `Expected Personal Allowance, but got ${atAllowance.bandName}`);
+  console.assert(Math.round(atAllowance.monthlyNet) === 1048, `Expected approx £1,048, but got ${Math.round(atAllowance.monthlyNet)}`);
+
+  // £1 above allowance (EN)
+  const aboveAllowanceEN = engine.calculateTakeHome(12571, 'EN');
+  console.assert(aboveAllowanceEN.bandName === 'Basic Rate', `Expected Basic Rate, but got ${aboveAllowanceEN.bandName}`);
+
+  // £1 above allowance (SC)
+  const aboveAllowanceSC = engine.calculateTakeHome(12571, 'SC');
+  console.assert(aboveAllowanceSC.bandName === 'Starter Rate', `Expected Starter Rate, but got ${aboveAllowanceSC.bandName}`);
 });
 
 // -- END: Unit Tests --

@@ -40,6 +40,17 @@
             </div>
         </header>
 
+        <div class="progress" id="progress-container">
+            <div class="progress__content">
+                <div class="progress__info">
+                    <span class="progress__text" aria-live="polite">Step 1 of 7: Welcome</span>
+                </div>
+                <div class="progress__track">
+                    <div class="progress__bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome"></div>
+                </div>
+            </div>
+        </div>
+
         <section class="screen" id="screen-1" aria-labelledby="heading-landing" tabindex="-1">
             <h2 id="heading-landing">
                 <span class="heading-icon" style="mask-image: url('icons/icon-heart.svg'); -webkit-mask-image: url('icons/icon-heart.svg');" aria-hidden="true"></span>
@@ -813,20 +824,8 @@
 </main>
 
 <footer>
-    Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.4 • 2026-02-25 15:20:00 GMT
+    Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.5 • 2026-02-25 15:30:00 GMT
 </footer>
-
-<div class="progress" id="progress-container">
-    <div class="progress__content">
-        <div class="progress__info">
-            <span class="progress__label">Current Progress</span>
-            <span class="progress__text" id="progress-text-alt" aria-live="polite">Step 1 of 7: Welcome</span>
-        </div>
-        <div class="progress__track" id="progress-track">
-            <div class="progress__bar" id="app-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome"></div>
-        </div>
-    </div>
-</div>
 
 <link rel="stylesheet" href="style.css?v=1740478179">
 <script type="module" src="src/main.js?v=1740478179"></script>

@@ -174,7 +174,6 @@ body {
     background-color: var(--color-bg-body);
     color: var(--color-text);
     padding: 1rem; /* Padding for mobile */
-    padding-bottom: 6rem; /* Ensure space for the fixed progress bar at the bottom */
     position: relative;
     min-height: 100vh;
 }
@@ -183,7 +182,7 @@ body {
 body::before {
     content: "";
     position: fixed;
-    bottom: 7rem; /* Offset for progress bar + padding */
+    bottom: 2rem;
     left: 2rem;
     width: 350px;
     height: 350px;
@@ -1302,52 +1301,37 @@ button, .btn {
 
 .table-total-row { font-weight: 800; background-color: var(--color-bg-alt); }
 
-/* Progress Indicator - Complete Redesign for Accessibility */
+/* Progress Indicator - Refactored for Container Flow */
 .progress {
-    position: fixed;
-    bottom: 0;
-    left: 0;
     width: 100%;
-    background-color: var(--color-bg-app);
-    padding: 1rem;
-    border-top: 2px solid var(--color-border);
-    z-index: 1000;
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    margin-bottom: 2rem;
+    box-shadow: none;
 }
 
 .progress__content {
-    max-width: 37.5rem;
-    margin: 0 auto;
     width: 100%;
-}
-
-@media (min-width: 1024px) {
-    .progress__content {
-        max-width: 42rem;
-    }
 }
 
 .progress__info {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 0.75rem;
-    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
 }
 
 .progress__label {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--color-text-light);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    display: none; /* Removed for minimalist style */
 }
 
 .progress__text {
-    font-size: 1rem; /* 16px minimum */
-    font-weight: 800;
-    color: var(--color-primary);
-    text-align: right;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    width: 100%;
+    text-align: center;
 }
 
 [data-theme='dark'] .progress__text,
@@ -1358,12 +1342,14 @@ button, .btn {
 }
 
 .progress__track {
-    height: 0.75rem;
+    height: 0.5rem; /* Thinner bar */
     background-color: var(--color-bg-track-light);
     border-radius: 1rem;
     overflow: hidden;
     position: relative;
     border: 1px solid var(--color-border);
+    width: 60%; /* Shorter width */
+    margin: 0 auto;
 }
 
 .progress__bar {
@@ -1392,6 +1378,11 @@ button, .btn {
     justify-content: center;
     align-items: center;
     z-index: 10000;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.lazy-loader[hidden] {
+    display: none !important; /* Completely remove from DOM flow and event chain */
 }
 
 .spinner {

@@ -38,6 +38,7 @@ const app = {
      * Initializes the application, caches elements, and sets up state/UI managers.
      */
     init() {
+        this.hideLoader();
         this.cacheElements();
         this.ui = new UIManager(this.elements, BAND_PRICES);
         this.store = new State(INITIAL_STATE, (data) => this.ui.render(data));
@@ -49,6 +50,25 @@ const app = {
         // Initial screen transition
         const initialScreen = window.location.hash.replace('#', '') || this.ui.SCREENS.LANDING;
         this.ui.switchScreen(this.findScreenByHeadingId(initialScreen) || this.ui.SCREENS.LANDING, true);
+    },
+
+    /**
+     * Removes the initial page loader when assets are ready.
+     */
+    hideLoader() {
+        const loader = document.querySelector('.lazy-loader');
+        if (!loader) return;
+
+        const performHide = () => loader.setAttribute('hidden', '');
+
+        if (document.fonts) {
+            document.fonts.ready.then(performHide).catch(performHide);
+        } else {
+            setTimeout(performHide, 500);
+        }
+        
+        // Safety fallback: ensure loader is gone after 2 seconds regardless
+        setTimeout(performHide, 2000);
     },
 
     /**
