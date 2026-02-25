@@ -1,4 +1,5 @@
 // Application Data - Made global for accessibility across functions and testing
+// Serves as the single source of truth for the calculation engine state.
 const appData = {
     salaryP1: 0,
     salaryP2: 0,
@@ -105,6 +106,7 @@ window.calculateTakeHome = (salary, region = 'EN') => {
     const higherLimit = 125140;
     
     // Tapered personal allowance for income > 100k
+    // Reduces by £1 for every £2 earned above threshold.
     let actualAllowance = pa;
     if (salary > 100000) {
         actualAllowance = Math.max(0, pa - ((salary - 100000) / 2));
@@ -121,7 +123,8 @@ window.calculateTakeHome = (salary, region = 'EN') => {
         tax = (salary - actualAllowance) * 0.2;
     }
 
-    // Very rough NI estimate (2025/26 Employee Class 1: 8% on £12,570 - £50,270, 2% above)
+    // Rough National Insurance estimate (2025/26 Employee Class 1)
+    // 8% on earnings between £12,570 and £50,270, 2% on earnings above.
     let ni = 0;
     if (salary > 50270) {
         ni = ((50270 - 12570) * 0.08) + ((salary - 50270) * 0.02);
@@ -145,7 +148,7 @@ window.updateTaxEstimate = (p) => {
     
     if (!input || !badge) return;
     
-    // Only show for gross annual salary
+    // Tax preview is only relevant for Annual Gross mode.
     if (appData.salaryType !== 'gross' || input.value === '' || parseFloat(input.value) <= 0) {
         badge.setAttribute('hidden', '');
         return;
@@ -164,6 +167,7 @@ window.updateTaxEstimate = (p) => {
 window.updateDepositType = (type) => {
     appData.depositType = type;
     
+    // Toggle container visibility instead of display to maintain layout flow.
     if (type === 'percentage') {
         if (elements.depositPercContainer) elements.depositPercContainer.removeAttribute('hidden');
         if (elements.depositAmtContainer) elements.depositAmtContainer.setAttribute('hidden', '');
@@ -184,6 +188,7 @@ window.calculateRatio = () => {
     let p1Basis = appData.salaryP1;
     let p2Basis = appData.salaryP2;
 
+    // Ratios are always calculated on take-home basis for fairness.
     if (appData.salaryType === 'gross') {
         const p1Net = calculateTakeHome(appData.salaryP1, appData.regionCode).monthlyNet;
         const p2Net = calculateTakeHome(appData.salaryP2, appData.regionCode).monthlyNet;
@@ -462,6 +467,7 @@ window.getVal = (id) => parseFloat(elements[id]?.value) || 0;
  * @param {number} p2 - Partner 2's share.
  */
 window.updateBreakdownRow = (key, total, p1, p2) => {
+    // Dynamic element targeting based on BEM-style breakdown IDs.
     if (elements[`bd${key}Total`]) elements[`bd${key}Total`].innerText = formatCurrency(total, 2);
     if (elements[`bd${key}P1`]) elements[`bd${key}P1`].innerText = formatCurrency(p1, 2);
     if (elements[`bd${key}P2`]) elements[`bd${key}P2`].innerText = formatCurrency(p2, 2);
@@ -549,11 +555,13 @@ window.debounce = (func, wait) => {
  */
 window.saveToCache = () => {
     const inputs = {};
+    // Persist all managed form fields.
     FORM_FIELDS.forEach(field => {
         if (elements[field.id]) {
             inputs[field.id] = elements[field.id].value;
         }
     });
+    // Persist split type preferences (ratio vs 50/50).
     Object.keys(appData.splitTypes).forEach(key => {
         const radio = document.querySelector(`input[name="${key}SplitType"]:checked`);
         if (radio) inputs[`${key}SplitType`] = radio.value;
@@ -581,7 +589,7 @@ window.saveToCache = () => {
  * Loads form inputs from localStorage and syncs appData.
  */
 window.loadFromCache = () => {
-    // 1. Sync appData with whatever is currently in the DOM (defaults from HTML)
+    // Stage 1: Initial sync with DOM defaults.
     FORM_FIELDS.forEach(field => {
         if (elements[field.id]) {
             const val = elements[field.id].value;
@@ -606,10 +614,12 @@ window.loadFromCache = () => {
         return;
     }
     const inputs = JSON.parse(cached);
+    // Stage 2: Hydrate DOM from cache.
     for (const [id, value] of Object.entries(inputs)) {
         if (elements[id]) {
             elements[id].value = value;
         } else {
+            // Handle radio groups which don't have IDs in FORM_FIELDS.
             if (id.endsWith('SplitType')) {
                 const radio = document.querySelector(`input[name="${id}"][value="${value}"]`);
                 if (radio) radio.checked = true;
@@ -627,7 +637,7 @@ window.loadFromCache = () => {
         }
     }
     
-    // 2. Re-sync appData with the potentially updated values from cache
+    // Stage 3: Re-sync appData with the updated DOM values.
     FORM_FIELDS.forEach(field => {
         const val = elements[field.id].value;
         const key = field.key || field.id;
@@ -687,6 +697,7 @@ window.setAllSplitTypes = (screen, type) => {
     window.formatPostcode = (input) => {
         const value = input.value.replace(/\s+/g, '').toUpperCase();
         if (value.length > 3) {
+            // Inserts space 3 characters from end per UK postcode convention.
             const incode = value.slice(-3);
             const outcode = value.slice(0, -3);
             input.value = outcode + ' ' + incode;
@@ -733,6 +744,7 @@ window.setAllSplitTypes = (screen, type) => {
         const areaMatch = pc.match(/^[A-Z]+/);
         if (!areaMatch) return null;
         const area = areaMatch[0];
+        // Scan regional prefixes to determine tax jurisdiction and water cost region.
         for (const regionKey in REGIONS) {
             if (REGIONS[regionKey].prefixes.includes(area)) {
                 return regionKey;
@@ -763,6 +775,7 @@ window.setAllSplitTypes = (screen, type) => {
             const regionName = REGIONS[regionKey].name;
             appData.regionCode = REGIONS[regionKey].code;
             announceDiv.removeAttribute('hidden');
+            // Adjust heating logic for northern regions (approx 10% premium).
             if (northernRegions.includes(regionKey)) {
                 appData.isNorth = true;
                 if (announceText) announceText.innerText = `${regionName} region detected. Heating estimates adjusted.`;
@@ -772,7 +785,7 @@ window.setAllSplitTypes = (screen, type) => {
             }
         } else if (pc.length > 0) {
             appData.isNorth = false;
-            appData.regionCode = 'EN'; // Default
+            appData.regionCode = 'EN'; // Default to England
             announceDiv.removeAttribute('hidden');
             if (announceText) announceText.innerText = "Region could not be determined.";
         } else {
@@ -787,6 +800,8 @@ window.setAllSplitTypes = (screen, type) => {
      * @returns {Promise<number>} The estimated price.
      */
     window.getEstimatedPropertyPrice = async (postcode) => {
+        // SPARQL query targets the PPI (Price Paid Index) dataset.
+        // Limits to 10 latest transactions for the specific postcode to average current market value.
         const sparqlQuery = `
             PREFIX lrppi: <http://landregistry.data.gov.uk/def/ppi/>
             PREFIX lrcommon: <http://landregistry.data.gov.uk/def/common/>
@@ -810,12 +825,15 @@ window.setAllSplitTypes = (screen, type) => {
             if (bindings.length === 0) throw new Error("No data found");
             const total = bindings.reduce((acc, curr) => acc + parseInt(curr.amount.value), 0);
             const average = total / bindings.length;
+            // Round to nearest £1,000 for cleaner UX.
             return Math.round(average / 1000) * 1000;
         } catch (error) {
+            // Fallback: Heuristic estimation based on postcode prefix and room count.
             showWarning(3, "We couldn't fetch live market data, so we've provided a local estimate.");
             const postcodePrefix = postcode.charAt(0);
             const beds = parseInt(elements.bedrooms.value) || 2;
             let basePrice = 250000;
+            // Simplified regional multipliers for the fallback.
             if (['L', 'M', 'B', 'S', 'N', 'G'].includes(postcodePrefix)) basePrice = 180000;
             else if (['W', 'E'].includes(postcodePrefix) || postcode.startsWith('SW') || postcode.startsWith('SE')) basePrice = 450000;
             basePrice += ((beds - 2) * 35000);
@@ -836,6 +854,7 @@ window.setAllSplitTypes = (screen, type) => {
         const regionBrackets = TAX_BRACKETS[region] || TAX_BRACKETS.EN;
         const isAdditional = homeType === 'second';
         let tax = 0;
+        // Apply regional relief logic (e.g. SDLT FTB relief in England vs Scottish 0% band).
         if (isFTB && !isAdditional) {
             if (region === 'EN' && price <= 500000) {
                 return calculateTieredTax(price, regionBrackets.ftb);
@@ -846,6 +865,7 @@ window.setAllSplitTypes = (screen, type) => {
             }
         }
         tax = calculateTieredTax(price, regionBrackets.standard);
+        // Apply flat surcharge for additional properties (buy-to-let/second homes).
         if (isAdditional && price >= 40000) {
             tax += price * regionBrackets.additionalSurcharge;
         }
@@ -859,6 +879,7 @@ window.setAllSplitTypes = (screen, type) => {
         const propertyPrice = appData.propertyPrice;
         if (isNaN(propertyPrice) || propertyPrice <= 0) return;
     
+        // Bi-directional sync between Percentage and Amount based on active input mode.
         if (appData.depositType === 'percentage') {
             let depositPercentage = appData.depositPercentage;
             if (depositPercentage > 100) {
@@ -885,6 +906,7 @@ window.setAllSplitTypes = (screen, type) => {
         appData.mortgageFees = getVal('mortgageFees');
         const sdlt = calculateStampDuty(propertyPrice, appData.regionCode, appData.homeType, appData.isFTB);
         let legalFees = 1200;
+        // Heuristic scaling for legal fees based on transaction complexity/value.
         if (propertyPrice > 500000) legalFees = 1800;
         if (propertyPrice > 1000000) legalFees = 2500;
             const sdltEl = elements.sdltEstimate;
@@ -895,6 +917,7 @@ window.setAllSplitTypes = (screen, type) => {
             if (elements.legalFeesDisplay) elements.legalFeesDisplay.innerText = formatCurrency(legalFees);
             if (elements.mortgageFeesDisplay) elements.mortgageFeesDisplay.innerText = formatCurrency(appData.mortgageFees);
             
+            // Upfront cash split logic: can be set to income ratio or 50/50.
             if (appData.depositSplitProportional) {
             appData.equityP1 = appData.totalEquity * appData.ratioP1;
             appData.equityP2 = appData.totalEquity * appData.ratioP2;
@@ -925,6 +948,7 @@ window.setAllSplitTypes = (screen, type) => {
             if (elements.totalRepaymentDisplay) elements.totalRepaymentDisplay.innerText = formatCurrency(0);
             return;
         }
+        // Monthly Amortization Formula: M = P [ i(1 + i)^n ] / [ (1 + i)^n – 1 ]
         const monthlyRate = (annualRate / 100) / 12;
         const numberOfPayments = termYears * 12;
         const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
@@ -933,8 +957,7 @@ window.setAllSplitTypes = (screen, type) => {
     
         if (elements.monthlyMortgageDisplay) elements.monthlyMortgageDisplay.innerText = formatCurrency(monthlyPayment);
         if (elements.totalRepaymentDisplay) elements.totalRepaymentDisplay.innerText = formatCurrency(appData.totalRepayment);
-    };
-    
+    };    
     /**
      * Updates the Council Tax cost preview based on selected band.
      * @param {string} band - The tax band letter (A-H).
@@ -1354,6 +1377,7 @@ window.validateAndNext = async (screenId) => {
     const config = VALIDATION_CONFIG[screenId];
     if (!config) return;
     let isValid = true;
+    // Pre-validation is used for async tasks like SPARQL property price fetching.
     if (config.preValidation) {
         if (!await config.preValidation()) isValid = false;
     }
@@ -1366,6 +1390,7 @@ window.validateAndNext = async (screenId) => {
         if (field.type === 'number') {
             const numVal = getVal(field.id);
             const isActuallyEmpty = el.value === '';
+            // allowEmpty is used for optional lifestyle costs like Childcare.
             if (field.allowEmpty && isActuallyEmpty) {
                 val = 0;
             } else if (field.required && isActuallyEmpty) {
@@ -1385,6 +1410,7 @@ window.validateAndNext = async (screenId) => {
             appData[field.saveTo] = val;
         }
     });
+    // globalCheck handles cross-field logic (e.g. combined income > 0).
     if (config.globalCheck && !config.globalCheck()) {
         isValid = false;
     }
@@ -1396,24 +1422,24 @@ window.validateAndNext = async (screenId) => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Lazy Loader Logic - Wait for fonts to be ready to avoid FOUT
+    // Stage 1: Asset Readiness Check
+    // Wait for fonts to prevent Layout Shift (CLS) on dynamic text elements.
     const loader = document.querySelector('.lazy-loader');
     if (loader) {
         if (document.fonts) {
             document.fonts.ready.then(() => {
                 loader.setAttribute('hidden', '');
             }).catch(() => {
-                // Fallback in case of error
                 loader.setAttribute('hidden', '');
             });
         } else {
-            // Fallback for older browsers
             setTimeout(() => {
                 loader.setAttribute('hidden', '');
             }, 500);
         }
     }
-    // DOM Elements Cache
+    // Stage 2: DOM Cache Hydration
+    // Population of the global 'elements' object for performance (minimizing DOM queries).
     elements.salaryP1 = document.getElementById('salaryP1');
     elements.salaryP2 = document.getElementById('salaryP2');
     elements.salaryP1Label = document.getElementById('salaryP1Label');
@@ -1516,7 +1542,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.bdTotalP1 = document.getElementById('bd-total-p1');
     elements.bdTotalP2 = document.getElementById('bd-total-p2');
 
-    // Workings elements
+    // Workings elements targeting calculations summary.
     elements.wkSalaryP1 = document.getElementById('wk-salary-p1');
     elements.wkSalaryP2 = document.getElementById('wk-salary-p2');
     elements.wkTotalSalary = document.getElementById('wk-total-salary');
@@ -1541,6 +1567,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.themeToggle.addEventListener('click', window.toggleTheme);
     }
 
+    // Stage 3: Event Delegation & Logic Binding
+    // Iterates through managed fields to bind input validation and debounced persistence.
     FORM_FIELDS.forEach(field => {
         const el = elements[field.id];
         if (!el) return;
@@ -1564,7 +1592,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         el.addEventListener('blur', () => {
-            // Ensure appData is sync'd before saving on blur
             let val = el.value;
             if (field.type === 'number') val = parseFloat(val) || 0;
             appData[field.key || field.id] = val;
@@ -1620,6 +1647,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Stage 4: Engine Startup
+    // Hydrates state from cache and performs initial UI render.
     document.querySelectorAll('main section').forEach(el => el.setAttribute('hidden', ''));
     const progressBar = elements.progressBar;
     if (progressBar) progressBar.style.width = '0%';
@@ -1629,6 +1658,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     window.switchScreen(SCREENS.LANDING, true);
 
+    // Stage 5: Global Key Intercepts
+    // Accessibility: Allows arrow key/enter navigation while avoiding conflict with form inputs.
     document.addEventListener('keydown', (e) => {
         const visibleScreen = document.querySelector('main section:not([hidden])');
         if (!visibleScreen) return;
