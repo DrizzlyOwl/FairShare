@@ -17,6 +17,7 @@ global.localStorage = {
   getItem: () => null,
   setItem: () => {},
   removeItem: () => {},
+  clear: () => {},
 };
 
 // Mock console.assert to throw error on failure

@@ -936,8 +936,11 @@ window.switchScreen = (id, isInitialLoad = false) => {
     updatePagination(id);
 };
 window.clearCacheAndReload = () => {
-    localStorage.removeItem(CACHE_KEY);
-    location.reload();
+    console.log("Clearing all application data...");
+    localStorage.clear();
+    // Use replace to ensure the old state (with potential hashes) isn't in history
+    const baseUrl = window.location.origin + window.location.pathname;
+    window.location.replace(baseUrl);
 };
 window.calculateFinalSplit = () => {
     // Upfront Costs Logic

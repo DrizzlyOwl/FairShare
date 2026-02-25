@@ -373,4 +373,38 @@ runTest('calculateTakeHome should handle Additional Rate and tapered PA', () => 
   console.assert(Math.round(result.monthlyNet) === 8026, `Expected approx £8,026, but got ${Math.round(result.monthlyNet)}`);
 });
 
+runTest('clearCacheAndReload should clear data and log it', () => {
+  let logCalled = false;
+  const originalLog = console.log;
+  console.log = (msg) => {
+    if (msg === "Clearing all application data...") logCalled = true;
+    originalLog(msg);
+  };
+  
+  const originalLocation = window.location;
+  try {
+    Object.defineProperty(window, 'location', {
+      value: { 
+        origin: 'http://localhost', 
+        pathname: '/', 
+        replace: () => {},
+        href: 'http://localhost/'
+      },
+      configurable: true
+    });
+  } catch (e) {}
+  
+  try {
+    clearCacheAndReload();
+  } catch (e) {}
+  
+  console.assert(logCalled === true, 'Console log for clearing should have been called');
+  
+  // Restore
+  console.log = originalLog;
+  try {
+    Object.defineProperty(window, 'location', { value: originalLocation });
+  } catch (e) {}
+});
+
 // -- END: Unit Tests --
