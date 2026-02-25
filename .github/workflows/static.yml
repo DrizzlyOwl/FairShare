@@ -44,6 +44,14 @@ jobs:
           wait-on: 'http://localhost:8080'
           command: npm run test:cypress
 
+      - name: Run Accessibility tests
+        uses: cypress-io/github-action@v6
+        with:
+          install: false
+          start: npm start
+          wait-on: 'http://localhost:8080'
+          command: npm run test:a11y
+
   # Single deploy job since we're just deploying
   deploy:
     needs: test
