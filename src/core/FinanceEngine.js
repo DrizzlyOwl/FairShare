@@ -68,10 +68,10 @@ export default class FinanceEngine {
     /**
      * Estimates monthly take-home pay based on 2025/26 UK rules.
      * @param {number} salary - Annual gross salary.
-     * @param {string} region - 'EN', 'SC', 'WA', 'NI'.
+     * @param {string} _region - 'EN', 'SC', 'WA', 'NI'.
      * @returns {Object} { bandName, monthlyNet }
      */
-    static calculateTakeHome(salary, region = 'EN') {
+    static calculateTakeHome(salary, _region = 'EN') {
         if (salary <= 0) return { bandName: 'Personal Allowance', monthlyNet: 0 };
 
         let tax = 0;

@@ -7,7 +7,7 @@ import State, { INITIAL_STATE } from './core/State.js';
 import FinanceEngine from './core/FinanceEngine.js';
 import ApiService from './services/ApiService.js';
 import UIManager from './ui/UIManager.js';
-import { formatCurrency, createAlertHTML } from './ui/Components.js';
+import { formatCurrency } from './ui/Components.js';
 
 const FORM_FIELDS = [
     { id: 'salaryP1', type: 'number' },
@@ -214,7 +214,7 @@ const app = {
         }
 
         const sdlt = FinanceEngine.calculateStampDuty(state.propertyPrice, state.regionCode, state.homeType, state.isFTB);
-        let legalFees = state.propertyPrice > 1000000 ? 2500 : (state.propertyPrice > 500000 ? 1800 : 1200);
+        const legalFees = state.propertyPrice > 1000000 ? 2500 : (state.propertyPrice > 500000 ? 1800 : 1200);
 
         const equityP1 = state.depositSplitProportional ? (totalEquity * state.ratioP1) : (totalEquity * 0.5);
         const equityP2 = state.depositSplitProportional ? (totalEquity * (1 - state.ratioP1)) : (totalEquity * 0.5);
@@ -283,7 +283,7 @@ const app = {
     },
 
     formatPostcode(input) {
-        let val = input.value.replace(/\s+/g, '').toUpperCase();
+        const val = input.value.replace(/\s+/g, '').toUpperCase();
         if (val.length > 3) {
             input.value = val.slice(0, -3) + ' ' + val.slice(-3);
         }
@@ -345,7 +345,7 @@ const app = {
         
         // Ported calculation logic
         const sdlt = FinanceEngine.calculateStampDuty(state.propertyPrice, state.regionCode, state.homeType, state.isFTB);
-        let legalFees = state.propertyPrice > 1000000 ? 2500 : (state.propertyPrice > 500000 ? 1800 : 1200);
+        const legalFees = state.propertyPrice > 1000000 ? 2500 : (state.propertyPrice > 500000 ? 1800 : 1200);
         const totalUpfront = state.totalEquity + sdlt + legalFees + state.mortgageFees;
 
         const upfrontP1 = totalUpfront * upfrontRatio;

@@ -22,7 +22,6 @@ global.localStorage = {
 
 // Mock console.assert to throw error on failure
 let failures = 0;
-const originalAssert = console.assert;
 console.assert = (condition, message) => {
   if (!condition) {
     failures++;

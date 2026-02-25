@@ -73,7 +73,7 @@ export default class ApiService {
             const total = bindings.reduce((acc, curr) => acc + parseInt(curr.amount.value), 0);
             const average = total / bindings.length;
             return Math.round(average / 1000) * 1000;
-        } catch (error) {
+        } catch (_error) {
             // Fallback: Heuristic estimation
             const postcodePrefix = postcode.charAt(0);
             let basePrice = 250000;

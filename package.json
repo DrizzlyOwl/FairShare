@@ -10,7 +10,7 @@
     "test:cypress": "cypress run --spec cypress/integration/app_spec.js",
     "test:a11y": "cypress run --spec cypress/integration/accessibility_spec.js",
     "cypress:open": "cypress open",
-    "lint": "eslint app.js"
+    "lint": "eslint src unit run_unit_tests.js service-worker.js"
   },
   "keywords": [
     "calculator",

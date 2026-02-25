@@ -3,7 +3,12 @@ const STATIC_ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js',
+    './src/main.js',
+    './src/core/State.js',
+    './src/core/FinanceEngine.js',
+    './src/ui/Components.js',
+    './src/ui/UIManager.js',
+    './src/services/ApiService.js',
     './logo.svg',
     './favicon.svg',
     './manifest.json',
@@ -37,7 +42,6 @@ self.addEventListener('activate', event => {
 // Fetch strategy: Stale-While-Revalidate for assets, Network-First for navigation
 self.addEventListener('fetch', event => {
     const { request } = event;
-    const url = new URL(request.url);
 
     // Navigation requests (HTML)
     if (request.mode === 'navigate') {
