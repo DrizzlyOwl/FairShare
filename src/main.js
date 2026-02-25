@@ -47,6 +47,9 @@ const app = {
         this.bindEvents();
         this.syncUIWithState();
         
+        // Hide all screens initially to ensure clean state
+        document.querySelectorAll('main section.screen').forEach(el => el.setAttribute('hidden', ''));
+
         // Initial screen transition
         const initialScreen = window.location.hash.replace('#', '') || this.ui.SCREENS.LANDING;
         this.ui.switchScreen(this.findScreenByHeadingId(initialScreen) || this.ui.SCREENS.LANDING, true);
@@ -59,7 +62,11 @@ const app = {
         const loader = document.querySelector('.lazy-loader');
         if (!loader) return;
 
-        const performHide = () => loader.setAttribute('hidden', '');
+        const performHide = () => {
+            loader.setAttribute('hidden', '');
+            // Completely remove from DOM after a short delay to allow for transition
+            setTimeout(() => loader.remove(), 500);
+        };
 
         if (document.fonts) {
             document.fonts.ready.then(performHide).catch(performHide);
@@ -149,7 +156,7 @@ const app = {
             });
         });
 
-        // Specialized Listeners
+        // Specialized Button Listeners
         if (this.elements.estimatePriceBtn) {
             this.elements.estimatePriceBtn.onclick = () => this.handlePriceEstimation();
         }
@@ -157,6 +164,46 @@ const app = {
         if (this.elements.themeToggle) {
             this.elements.themeToggle.onclick = () => this.toggleTheme();
         }
+
+        if (this.elements.startOverButton) {
+            this.elements.startOverButton.onclick = () => this.clearCache();
+        }
+
+        if (document.getElementById('downloadCSVBtn')) {
+            document.getElementById('downloadCSVBtn').onclick = () => this.downloadCSV();
+        }
+
+        // Toggle / Radio Listeners
+        document.querySelectorAll('input[name="salaryType"]').forEach(radio => {
+            radio.onchange = () => {
+                this.store.update({ salaryType: radio.value });
+                this.updateSalaryTypeLabels(radio.value);
+                this.updateTaxEstimate('P1');
+                this.updateTaxEstimate('P2');
+                this.calculateRatio();
+            };
+        });
+
+        document.querySelectorAll('input[name="depositType"]').forEach(radio => {
+            radio.onchange = () => {
+                this.store.update({ depositType: radio.value });
+                if (radio.value === 'percentage') {
+                    this.elements.depositPercContainer.removeAttribute('hidden');
+                    this.elements.depositAmtContainer.setAttribute('hidden', '');
+                } else {
+                    this.elements.depositPercContainer.setAttribute('hidden', '');
+                    this.elements.depositAmtContainer.removeAttribute('hidden');
+                }
+                this.calculateEquityDetails();
+            };
+        });
+
+        document.querySelectorAll('input[name="taxBand"]').forEach(radio => {
+            radio.onchange = () => {
+                this.store.update({ band: radio.value });
+                this.ui.updatePricePreview(radio.value);
+            };
+        });
 
         document.querySelectorAll('input[name="depositSplitType"]').forEach(radio => {
             radio.onchange = () => {
@@ -180,8 +227,95 @@ const app = {
             };
         });
 
+        // Bulk Utility/Committed Toggles
+        document.querySelectorAll('input[name="masterUtilities"]').forEach(radio => {
+            radio.onchange = () => this.setAllSplitTypes('utilities', radio.value);
+        });
+
+        document.querySelectorAll('input[name="masterCommitted"]').forEach(radio => {
+            radio.onchange = () => this.setAllSplitTypes('committed', radio.value);
+        });
+
         // Navigation Intercept
         document.addEventListener('keydown', (e) => this.handleGlobalKeydown(e));
+    },
+
+    /**
+     * Updates labels and placeholders based on Gross vs Net income selection.
+     */
+    updateSalaryTypeLabels(type) {
+        if (this.elements.salaryP1Error) this.elements.salaryP1Error.setAttribute('hidden', '');
+        if (this.elements.salaryP2Error) this.elements.salaryP2Error.setAttribute('hidden', '');
+
+        if (type === 'gross') {
+            this.elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax)';
+            this.elements.salaryP2Label.innerText = "Your Partner's Annual Salary (Pre-tax)";
+            this.elements.salaryP1.placeholder = 'e.g. 35000';
+            this.elements.salaryP2.placeholder = 'e.g. 45000';
+            this.elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
+        } else {
+            this.elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay';
+            this.elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay";
+            this.elements.salaryP1.placeholder = 'e.g. 2500';
+            this.elements.salaryP2.placeholder = 'e.g. 3200';
+            this.elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
+        }
+    },
+
+    /**
+     * Generates and downloads a CSV report of the calculation results.
+     */
+    downloadCSV() {
+        const table = this.elements.resultsTable;
+        if (!table) return;
+
+        const state = this.store.data;
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "FairShare Bill Splitting Report\n";
+        csvContent += `Generated: ${new Date().toLocaleDateString('en-GB')} ${new Date().toLocaleTimeString('en-GB')}\n\n`;
+
+        const salaryLabel = state.salaryType === 'gross' ? 'Annual Salary (Pre-tax)' : 'Monthly Net Pay';
+        csvContent += "1. INCOME RATIO WORKINGS\n";
+        csvContent += `Your ${salaryLabel},${state.salaryP1}\n`;
+        csvContent += `Partner ${salaryLabel},${state.salaryP2}\n`;
+        csvContent += `Your Share %,${(state.ratioP1 * 100).toFixed(1)}%\n`;
+        csvContent += `Partner Share %,${(state.ratioP2 * 100).toFixed(1)}%\n\n`;
+
+        csvContent += "2. MORTGAGE & EQUITY\n";
+        csvContent += `Property Value,${state.propertyPrice}\n`;
+        csvContent += `Deposit %,${state.depositPercentage}%\n`;
+        csvContent += `Monthly Payment,${state.monthlyMortgagePayment.toFixed(2)}\n\n`;
+
+        csvContent += "3. FULL COST BREAKDOWN\n";
+        const rows = table.querySelectorAll('tr');
+        rows.forEach(row => {
+            const cols = row.querySelectorAll('th, td');
+            const rowData = Array.from(cols).map(col => `"${col.innerText.replace(/[£,]/g, '')}"`);
+            csvContent += rowData.join(",") + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `fairshare_report_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    },
+
+    /**
+     * Toggles the application theme.
+     */
+    toggleTheme() {
+        const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('fairshare_theme', theme);
+        
+        const logoImg = this.elements.headerBrand?.querySelector('.header-brand__logo');
+        if (logoImg) {
+            const buster = logoImg.src.match(/\?v=\d+/) || '';
+            logoImg.src = `${theme === 'dark' ? 'logo-dark.svg' : 'logo.svg'}${buster}`;
+        }
     },
 
     /**
@@ -632,10 +766,16 @@ const app = {
 
     /**
      * Clears application state and performs a clean reload.
+     * Preserves the user's theme preference.
      */
     clearCache() {
+        const theme = localStorage.getItem('fairshare_theme');
         this.store.clear();
-        window.location.replace(window.location.origin + window.location.pathname);
+        if (theme) localStorage.setItem('fairshare_theme', theme);
+        
+        // Redirect to base URL to ensure clean reload without old hashes
+        const baseUrl = window.location.origin + window.location.pathname;
+        window.location.replace(baseUrl);
     },
 
     /**

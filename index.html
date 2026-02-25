@@ -34,7 +34,7 @@
                 <button id="theme-toggle" class="header-brand__theme-toggle" aria-label="Toggle Night Mode">
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-lightning.svg'); mask-image: url('icons/icon-lightning.svg');" aria-hidden="true"></span>
                 </button>
-                <button id="start-over-button" onclick="clearCacheAndReload()" aria-label="Start over and clear all data" class="header-brand__reset-btn">
+                <button id="start-over-button" aria-label="Start over and clear all data" class="header-brand__reset-btn">
                     Start Over
                 </button>
             </div>
@@ -103,9 +103,9 @@
             <div class="form-group">
                 <label class="form-label">How do you want to enter your income?</label>
                 <div class="toggle">
-                    <input type="radio" name="salaryType" id="stGross" value="gross" checked class="toggle__input" onchange="updateSalaryType('gross')">
+                    <input type="radio" name="salaryType" id="stGross" value="gross" checked class="toggle__input">
                     <label for="stGross" class="toggle__label">Annual Gross</label>
-                    <input type="radio" name="salaryType" id="stNet" value="net" class="toggle__input" onchange="updateSalaryType('net')">
+                    <input type="radio" name="salaryType" id="stNet" value="net" class="toggle__input">
                     <label for="stNet" class="toggle__label">Monthly Net</label>
                     <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
@@ -118,8 +118,9 @@
                 <div id="salaryP1-tax-badge" class="badge badge--info" hidden></div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-error" data-cy="salaryP1-input">
+                    <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-desc salaryP1-error" data-cy="salaryP1-input">
                 </div>
+                <p id="salaryP1-desc" class="help-text">Enter your total yearly income before any deductions.</p>
                 <div id="salaryP1-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text" id="salaryP1ErrorText">Please enter a valid salary (0 or more).</div>
@@ -133,8 +134,9 @@
                 <div id="salaryP2-tax-badge" class="badge badge--info" hidden></div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-error" data-cy="salaryP2-input">
+                    <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-desc salaryP2-error" data-cy="salaryP2-input">
                 </div>
+                <p id="salaryP2-desc" class="help-text">Enter your partner's total yearly income before any deductions.</p>
                 <div id="salaryP2-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text" id="salaryP2ErrorText">Please enter a valid salary for your partner (0 or more).</div>
@@ -155,7 +157,7 @@
             <div class="form-group">
                 <label class="form-label" for="postcode">Property Postcode</label>
                 <div class="input-group">
-                    <input type="text" id="postcode" class="input-group__control" aria-describedby="postcode-help postcode-error" onblur="checkRegion()" placeholder="e.g. SW1A 0AA" data-cy="postcode-input">
+                    <input type="text" id="postcode" class="input-group__control" aria-describedby="postcode-help postcode-error" placeholder="e.g. SW1A 0AA" data-cy="postcode-input">
                 </div>
                 <div id="postcode-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
@@ -172,9 +174,10 @@
                 <label class="form-label" for="propertyPrice">Estimated Property Value</label>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="propertyPrice" class="input-group__control" placeholder="e.g. 250000" aria-describedby="propertyPrice-error" data-cy="propertyPrice-input">
+                    <input type="number" id="propertyPrice" class="input-group__control" placeholder="e.g. 250000" aria-describedby="propertyPrice-desc propertyPrice-error" data-cy="propertyPrice-input">
                     <button type="button" id="estimatePriceBtn" class="btn-addon" data-cy="estimatePrice-button">Estimate</button>
                 </div>
+                <p id="propertyPrice-desc" class="help-text">The estimated market value of the property you're buying or already own.</p>
                 <div id="propertyPrice-error" class="alert alert--error" hidden>
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                     <div class="alert__text">Please enter a value or use your postcode to estimate.</div>
@@ -192,28 +195,28 @@
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-external-link.svg'); mask-image: url('icons/icon-external-link.svg');" aria-hidden="true"></span>
                 </a>
                 <div class="segmented-control">
-                    <input type="radio" name="taxBand" id="bA" value="A" onchange="updatePricePreview('A')" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bA" value="A" class="segmented-control__input">
                     <label for="bA" class="segmented-control__label">A</label>
                     
-                    <input type="radio" name="taxBand" id="bB" value="B" onchange="updatePricePreview('B')" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bB" value="B" class="segmented-control__input">
                     <label for="bB" class="segmented-control__label">B</label>
                     
-                    <input type="radio" name="taxBand" id="bC" value="C" onchange="updatePricePreview('C')" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bC" value="C" class="segmented-control__input">
                     <label for="bC" class="segmented-control__label">C</label>
                     
-                    <input type="radio" name="taxBand" id="bD" value="D" onchange="updatePricePreview('D')" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bD" value="D" class="segmented-control__input">
                     <label for="bD" class="segmented-control__label">D</label>
                     
-                    <input type="radio" name="taxBand" id="bE" value="E" onchange="updatePricePreview('E')" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bE" value="E" class="segmented-control__input">
                     <label for="bE" class="segmented-control__label">E</label>
                     
-                    <input type="radio" name="taxBand" id="bF" value="F" onchange="updatePricePreview('F')" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bF" value="F" class="segmented-control__input">
                     <label for="bF" class="segmented-control__label">F</label>
                     
-                    <input type="radio" name="taxBand" id="bG" value="G" onchange="updatePricePreview('G')" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bG" value="G" class="segmented-control__input">
                     <label for="bG" class="segmented-control__label">G</label>
                     
-                    <input type="radio" name="taxBand" id="bH" value="H" onchange="updatePricePreview('H')" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bH" value="H" class="segmented-control__input">
                     <label for="bH" class="segmented-control__label">H</label>
                 </div>
                 <div id="taxBand-error" class="alert alert--error" aria-live="assertive" hidden>
@@ -271,9 +274,9 @@
             <div class="form-group">
                 <label class="form-label">How do you want to set your deposit?</label>
                 <div class="toggle">
-                    <input type="radio" name="depositType" id="dtPerc" value="percentage" checked class="toggle__input" onchange="updateDepositType('percentage')">
+                    <input type="radio" name="depositType" id="dtPerc" value="percentage" checked class="toggle__input">
                     <label for="dtPerc" class="toggle__label">Percentage</label>
-                    <input type="radio" name="depositType" id="dtAmt" value="amount" class="toggle__input" onchange="updateDepositType('amount')">
+                    <input type="radio" name="depositType" id="dtAmt" value="amount" class="toggle__input">
                     <label for="dtAmt" class="toggle__label">Fixed Amount</label>
                     <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
@@ -321,9 +324,10 @@
                 <div class="form-group col">
                     <label class="form-label" for="mortgageInterestRate">Interest Rate (APR %)</label>
                     <div class="input-group">
-                        <input type="number" id="mortgageInterestRate" class="input-group__control" value="5" min="0" step="0.1" required aria-describedby="mortgageInterestRate-error" data-cy="mortgageInterestRate-input">
+                        <input type="number" id="mortgageInterestRate" class="input-group__control" value="5" min="0" step="0.1" required aria-describedby="mortgageInterestRate-desc mortgageInterestRate-error" data-cy="mortgageInterestRate-input">
                         <span class="input-group__addon">%</span>
                     </div>
+                    <p id="mortgageInterestRate-desc" class="help-text">The annual interest rate for your mortgage.</p>
                     <div id="mortgageInterestRate-error" class="alert alert--error" hidden>
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                         <div class="alert__text">Invalid interest rate.</div>
@@ -333,8 +337,9 @@
                 <div class="form-group col">
                     <label class="form-label" for="mortgageTerm">Repayment Term (Years)</label>
                     <div class="input-group">
-                        <input type="number" id="mortgageTerm" class="input-group__control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-help mortgageTerm-error" data-cy="mortgageTerm-input">
+                        <input type="number" id="mortgageTerm" class="input-group__control" value="25" min="1" max="50" required aria-describedby="mortgageTerm-desc mortgageTerm-error" data-cy="mortgageTerm-input">
                     </div>
+                    <p id="mortgageTerm-desc" class="help-text">The number of years you'll take to pay off the mortgage.</p>
                     <div id="mortgageTerm-error" class="alert alert--error" hidden>
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a term (1-50 years).</div>
@@ -427,9 +432,9 @@
                 <div class="master-toggle-inner">
                     <span class="master-toggle-label">Set all utilities to:</span>
                     <div class="toggle" style="margin-bottom: 0; max-width: 18rem;">
-                        <input type="radio" name="masterUtilities" id="muRatio" value="yes" checked onchange="setAllSplitTypes('utilities', 'yes')" class="toggle__input">
+                        <input type="radio" name="masterUtilities" id="muRatio" value="yes" checked class="toggle__input">
                         <label for="muRatio" class="toggle__label">Ratio</label>
-                        <input type="radio" name="masterUtilities" id="muEqual" value="no" onchange="setAllSplitTypes('utilities', 'no')" class="toggle__input">
+                        <input type="radio" name="masterUtilities" id="muEqual" value="no" class="toggle__input">
                         <label for="muEqual" class="toggle__label">50/50</label>
                         <span class="toggle__slider"></span>
                     </div>
@@ -449,15 +454,10 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="councilTaxCost" class="input-group__control" required aria-describedby="councilTaxCost-help councilTaxCost-error" data-cy="councilTaxCost-input">
+                    <input type="number" id="councilTaxCost" class="input-group__control" required aria-describedby="councilTaxCost-desc councilTaxCost-error" data-cy="councilTaxCost-input">
                 </div>
-                <div id="councilTaxCost-error" class="alert alert--error" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter the monthly council tax.</div>
-                </div>
-                <div id="councilTaxCost-help" class="help-text">Estimated based on your selected tax band.</div>
-            </div>
-
+                <p id="councilTaxCost-desc" class="help-text">Estimated monthly council tax based on your selected tax band.</p>
+...
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="energyCost">Monthly Energy (Gas/Elec) (£)</label>
@@ -471,15 +471,10 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="energyCost" class="input-group__control" required aria-describedby="energy-explainer energyCost-error" data-cy="energyCost-input">
+                    <input type="number" id="energyCost" class="input-group__control" required aria-describedby="energyCost-desc energyCost-error" data-cy="energyCost-input">
                 </div>
-                <div id="energyCost-error" class="alert alert--error" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter an energy estimate.</div>
-                </div>
-                <div id="energy-explainer" class="help-text">Regional average for this property size.</div>
-            </div>
-
+                <p id="energyCost-desc" class="help-text">Estimated monthly utility cost for gas and electricity.</p>
+...
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="waterBill">Monthly Water Bill (£)</label>
@@ -493,15 +488,10 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="waterBill" class="input-group__control" value="30" required aria-describedby="waterBill-help waterBill-error" data-cy="waterBill-input">
+                    <input type="number" id="waterBill" class="input-group__control" value="30" required aria-describedby="waterBill-desc waterBill-error" data-cy="waterBill-input">
                 </div>
-                <div id="waterBill-error" class="alert alert--error" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter a water bill amount.</div>
-                </div>
-                <div id="waterBill-help" class="help-text">Regional average based on bathrooms and location.</div>
-            </div>
-
+                <p id="waterBill-desc" class="help-text">Average regional monthly water cost based on property size.</p>
+...
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="broadbandCost">Monthly Broadband & TV (£)</label>
@@ -515,39 +505,10 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="broadbandCost" class="input-group__control" placeholder="e.g. 35" aria-describedby="broadband-help broadband-error" data-cy="broadbandCost-input">
+                    <input type="number" id="broadbandCost" class="input-group__control" placeholder="e.g. 35" aria-describedby="broadbandCost-desc broadband-error" data-cy="broadbandCost-input">
                 </div>
-                <div id="broadband-error" class="alert alert--error" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter a valid amount.</div>
-                </div>
-                <div id="broadband-help" class="help-text">Internet, cable, and streaming subscriptions.</div>
-            </div>
-        </section>
-
-        <section class="screen" id="screen-6" aria-labelledby="heading-committed" tabindex="-1" hidden>
-            <h2 id="heading-committed">
-                <span class="heading-icon" style="mask-image: url('icons/icon-receipt.svg'); -webkit-mask-image: url('icons/icon-receipt.svg');" aria-hidden="true"></span>
-                Committed Spending
-            </h2>
-            <p>Add optional shared lifestyle expenses.</p>
-            <p class="screen-summary">
-                List any other regular costs you plan to share, such as food or childcare. This ensures your joint budget covers all aspects of your daily life.
-            </p>
-
-            <div class="master-toggle">
-                <div class="master-toggle-inner">
-                    <span class="master-toggle-label">Set all lifestyle costs to:</span>
-                    <div class="toggle" style="margin-bottom: 0; max-width: 18rem;">
-                        <input type="radio" name="masterCommitted" id="mcRatio" value="yes" checked onchange="setAllSplitTypes('committed', 'yes')" class="toggle__input">
-                        <label for="mcRatio" class="toggle__label">Ratio</label>
-                        <input type="radio" name="masterCommitted" id="mcEqual" value="no" onchange="setAllSplitTypes('committed', 'no')" class="toggle__input">
-                        <label for="mcEqual" class="toggle__label">50/50</label>
-                        <span class="toggle__slider"></span>
-                    </div>
-                </div>
-            </div>
-
+                <p id="broadbandCost-desc" class="help-text">Internet, cable, and streaming subscriptions.</p>
+...
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="groceriesCost">Monthly Groceries (£)</label>
@@ -561,15 +522,10 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="groceriesCost" class="input-group__control" placeholder="e.g. 400" aria-describedby="groceries-help groceries-error" data-cy="groceriesCost-input">
+                    <input type="number" id="groceriesCost" class="input-group__control" placeholder="e.g. 400" aria-describedby="groceriesCost-desc groceries-error" data-cy="groceriesCost-input">
                 </div>
-                <div id="groceries-error" class="alert alert--error" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter an amount.</div>
-                </div>
-                <div id="groceries-help" class="help-text">Food, household supplies, and shared toiletries.</div>
-            </div>
-
+                <p id="groceriesCost-desc" class="help-text">Food, household supplies, and shared toiletries.</p>
+...
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="childcareCost">Monthly Childcare (£)</label>
@@ -583,15 +539,10 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="childcareCost" class="input-group__control" placeholder="e.g. 200" aria-describedby="childcare-help childcare-error" data-cy="childcareCost-input">
+                    <input type="number" id="childcareCost" class="input-group__control" placeholder="e.g. 200" aria-describedby="childcareCost-desc childcare-error" data-cy="childcareCost-input">
                 </div>
-                <div id="childcare-error" class="alert alert--error" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter an amount.</div>
-                </div>
-                <div id="childcare-help" class="help-text">Nursery, childminders, or other regular care costs.</div>
-            </div>
-
+                <p id="childcareCost-desc" class="help-text">Nursery, childminders, or other regular care costs.</p>
+...
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="insuranceCost">Shared Insurances (£)</label>
@@ -605,15 +556,10 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="insuranceCost" class="input-group__control" placeholder="e.g. 50" aria-describedby="insurance-help insurance-error" data-cy="insuranceCost-input">
+                    <input type="number" id="insuranceCost" class="input-group__control" placeholder="e.g. 50" aria-describedby="insuranceCost-desc insurance-error" data-cy="insuranceCost-input">
                 </div>
-                <div id="insurance-error" class="alert alert--error" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter an amount.</div>
-                </div>
-                <div id="insurance-help" class="help-text">Combined life, health, or pet insurance payments.</div>
-            </div>
-
+                <p id="insuranceCost-desc" class="help-text">Combined life, health, or pet insurance payments.</p>
+...
             <div class="form-group">
                 <div class="field-header">
                     <label class="form-label" for="otherSharedCosts">Other Shared Costs (£)</label>
@@ -627,14 +573,9 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group__addon">£</span>
-                    <input type="number" id="otherSharedCosts" class="input-group__control" placeholder="e.g. 100" aria-describedby="other-help other-error" data-cy="otherSharedCosts-input">
+                    <input type="number" id="otherSharedCosts" class="input-group__control" placeholder="e.g. 100" aria-describedby="otherSharedCosts-desc other-error" data-cy="otherSharedCosts-input">
                 </div>
-                <div id="other-error" class="alert alert--error" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                    <div class="alert__text">Please enter an amount.</div>
-                </div>
-                <div id="other-help" class="help-text">Gym, streaming services, or other joint subscriptions.</div>
-            </div>
+                <p id="otherSharedCosts-desc" class="help-text">Gym, streaming services, or other joint subscriptions.</p>
         </section>
 
         <section class="screen" id="screen-7" aria-labelledby="heading-results" tabindex="-1" hidden>
@@ -809,7 +750,7 @@
             <p class="help-text breakdown-summary" id="breakdown-summary"></p>
 
             <div class="nav nav--vertical">
-                <button type="button" id="downloadCSVBtn" class="btn btn-success btn-block" onclick="downloadCSV()">
+                <button type="button" id="downloadCSVBtn" class="btn btn-success btn-block">
                     <span class="icon-btn icon-btn--lg" style="-webkit-mask-image: url('icons/icon-download.svg'); mask-image: url('icons/icon-download.svg'); margin-right: 0.5rem;" aria-hidden="true"></span>
                     Download results as CSV
                 </button>
@@ -824,7 +765,7 @@
 </main>
 
 <footer>
-    Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.5 • 2026-02-25 15:30:00 GMT
+    Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.7 • 2026-02-25 15:55:00 GMT
 </footer>
 
 <link rel="stylesheet" href="style.css?v=1740478179">

@@ -60,16 +60,18 @@ export default class State {
      */
     constructor(initialState = INITIAL_STATE, onUpdateCallback = null) {
         this.#onUpdate = onUpdateCallback;
+        this.#data = { ...initialState };
         
+        const self = this;
         // Setup Proxy for automatic persistence and reactivity.
         const handler = {
             set: (target, prop, value) => {
+                if (target[prop] === value) return true;
                 target[prop] = value;
-                this.persist();
-                if (this.#onUpdate) this.#onUpdate(this.#data);
+                self.persist();
+                if (self.#onUpdate) self.#onUpdate(self.#data);
                 return true;
             },
-            // Deep proxy for nested objects like splitTypes
             get: (target, prop) => {
                 if (typeof target[prop] === 'object' && target[prop] !== null) {
                     return new Proxy(target[prop], handler);
@@ -78,7 +80,7 @@ export default class State {
             }
         };
 
-        this.#data = new Proxy({ ...initialState }, handler);
+        this.#data = new Proxy(this.#data, handler);
     }
 
     /**
@@ -86,7 +88,10 @@ export default class State {
      * @param {Object} newData - Key-value pairs to merge into state.
      */
     update(newData) {
+        // Use the raw data target to avoid multiple Proxy set calls
         Object.assign(this.#data, newData);
+        this.persist();
+        if (this.#onUpdate) this.#onUpdate(this.#data);
     }
 
     /**

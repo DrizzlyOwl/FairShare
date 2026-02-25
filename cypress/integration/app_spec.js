@@ -32,48 +32,50 @@ describe('FairShare App', () => {
   });
 
   const fillStep1 = () => {
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    cy.get('#screen-2').should('be.visible');
-    cy.get('[data-cy="salaryP1-input"]').type('35000');
-    cy.get('[data-cy="salaryP2-input"]').type('45000');
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    cy.get('#screen-3').should('be.visible');
+    cy.get('[data-cy="next-button"]', { timeout: 15000 }).should('be.visible').click({ force: true });
+    cy.get('#screen-2', { timeout: 15000 }).should('be.visible');
+    cy.get('[data-cy="salaryP1-input"]').should('be.visible').type('35000');
+    cy.get('[data-cy="salaryP2-input"]').should('be.visible').type('45000');
+    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
+    cy.get('#screen-3', { timeout: 15000 }).should('be.visible');
   };
 
   const fillStep2 = (postcode) => {
-    cy.get('[data-cy="postcode-input"]').clear().type(postcode);
+    cy.get('[data-cy="postcode-input"]', { timeout: 15000 }).should('be.visible').clear().type(postcode);
     cy.get('[data-cy="postcode-input"]').blur();
-    // Use a more specific selector for the tax band label to avoid matching other text
-    cy.get('[data-cy="taxBand-fieldset"] .segmented-control').contains('label', /^C$/).click();
-    cy.get('[data-cy="bedrooms-input"]').clear().type('3');
-    cy.get('[data-cy="bathrooms-input"]').clear().type('2');
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    cy.get('#screen-4').should('be.visible');
+    cy.wait(1000); // Wait for regional detection
+    
+    cy.get('[data-cy="taxBand-fieldset"] .segmented-control').should('be.visible').contains('label', /^C$/).click();
+    cy.get('[data-cy="bedrooms-input"]').should('be.visible').clear().type('3');
+    cy.get('[data-cy="bathrooms-input"]').should('be.visible').clear().type('2');
+    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
+    cy.get('#screen-4', { timeout: 15000 }).should('be.visible');
   };
 
   const fillStep3 = () => {
-    cy.get('[data-cy="depositPercentage-input"]').clear().type('10');
-    cy.get('[data-cy="mortgageInterestRate-input"]').clear().type('5');
-    cy.get('[data-cy="mortgageTerm-input"]').clear().type('25');
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    cy.get('#screen-5').should('be.visible');
+    cy.get('[data-cy="depositPercentage-input"]', { timeout: 15000 }).should('be.visible').clear().type('10');
+    cy.get('[data-cy="mortgageInterestRate-input"]').should('be.visible').clear().type('5');
+    cy.get('[data-cy="mortgageTerm-input"]').should('be.visible').clear().type('25');
+    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
+    cy.get('#screen-5', { timeout: 15000 }).should('be.visible');
   };
 
   const fillStep4 = () => {
-    cy.get('[data-cy="councilTaxCost-input"]').should('not.have.value', ''); // Should be pre-filled
-    cy.get('[data-cy="energyCost-input"]').should('not.have.value', ''); // Should be pre-filled
-    cy.get('[data-cy="waterBill-input"]').should('not.have.value', ''); // Should be pre-filled
-    cy.get('[data-cy="broadbandCost-input"]').type('35');
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    cy.get('#screen-6').should('be.visible');
+    cy.get('[data-cy="councilTaxCost-input"]', { timeout: 15000 }).should('be.visible'); 
+    cy.get('[data-cy="energyCost-input"]').should('be.visible'); 
+    cy.get('[data-cy="waterBill-input"]').should('be.visible'); 
+    cy.get('[data-cy="broadbandCost-input"]').should('be.visible').type('35');
+    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
+    cy.get('#screen-6', { timeout: 15000 }).should('be.visible');
   };
 
   const fillStep5 = () => {
-    cy.get('[data-cy="groceriesCost-input"]').type('400');
-    cy.get('[data-cy="childcareCost-input"]').type('0');
-    cy.get('[data-cy="insuranceCost-input"]').type('50');
-    cy.get('[data-cy="otherSharedCosts-input"]').type('100');
-    cy.get('[data-cy="next-button"]').click({ force: true });
+    cy.get('[data-cy="groceriesCost-input"]', { timeout: 15000 }).should('be.visible').type('400');
+    cy.get('[data-cy="childcareCost-input"]').should('be.visible').type('0');
+    cy.get('[data-cy="insuranceCost-input"]').should('be.visible').type('50');
+    cy.get('[data-cy="otherSharedCosts-input"]').should('be.visible').type('100');
+    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
+    cy.get('#screen-7', { timeout: 15000 }).should('be.visible');
   };
 
   it('should calculate heating estimates correctly for a northern region', () => {

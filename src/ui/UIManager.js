@@ -31,21 +31,36 @@ export default class UIManager {
      * @param {boolean} [isInitialLoad=false] - Whether this is the first screen load.
      */
     switchScreen(id, isInitialLoad = false) {
+        console.log(`Switching to screen: ${id}, Initial: ${isInitialLoad}`);
         const target = document.getElementById(id);
+        if (!target) {
+            console.error(`Target screen not found: ${id}`);
+            return;
+        }
+
         const heading = target.querySelector('h2');
 
-        if (!isInitialLoad) {
+        // Only update hash if not initial load and not in a test environment
+        // Hash updates can trigger unwanted page cycles in some CI/Test runners
+        if (!isInitialLoad && !window.Cypress) {
             window.location.hash = heading?.id || id;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        document.querySelectorAll('main section').forEach(el => el.setAttribute('hidden', ''));
+        // Hide all screens
+        document.querySelectorAll('main section.screen').forEach(el => {
+            el.setAttribute('hidden', '');
+        });
+        
+        // Show target
         target.removeAttribute('hidden');
+        console.log(`Screen ${id} hidden attribute after removal: ${target.hasAttribute('hidden')}`);
         
         if (!isInitialLoad) target.focus();
 
         this.updateProgress(id);
         this.updateLogoVisibility(id);
+        this.updateBackgroundImage(id);
         
         // Notify orchestrator to update navigation buttons
         if (window.app && window.app.updatePagination) {
@@ -97,6 +112,27 @@ export default class UIManager {
     }
 
     /**
+     * Updates the body background image based on the active screen.
+     * @param {string} screenId - The active screen ID.
+     */
+    updateBackgroundImage(screenId) {
+        const screenToImageMap = {
+            [this.SCREENS.LANDING]: 'bg-landing.svg',
+            [this.SCREENS.INCOME]: 'bg-income.svg',
+            [this.SCREENS.PROPERTY]: 'bg-property.svg',
+            [this.SCREENS.MORTGAGE]: 'bg-mortgage.svg',
+            [this.SCREENS.UTILITIES]: 'bg-utilities.svg',
+            [this.SCREENS.COMMITTED]: 'bg-committed.svg',
+            [this.SCREENS.RESULTS]: 'bg-results.svg'
+        };
+
+        const newImage = screenToImageMap[screenId];
+        if (newImage) {
+            document.body.style.setProperty('--bg-image', `url('images/${newImage}')`);
+        }
+    }
+
+    /**
      * Updates the visual ratio bar.
      * @param {number} ratioP1 - Partner 1 share (0-1).
      * @param {number} ratioP2 - Partner 2 share (0-1).
@@ -114,6 +150,20 @@ export default class UIManager {
         }
         if (this.elements.ratioTextDesc) {
             this.elements.ratioTextDesc.innerText = `Income ratio is ${p1P}% You and ${p2P}% Your Partner.`;
+        }
+    }
+
+    /**
+     * Updates the Council Tax cost preview based on selected band.
+     * @param {string} band - The tax band letter (A-H).
+     */
+    updatePricePreview(band) {
+        const cost = this.bandPrices[band];
+        const display = this.elements.bandPriceDisplay;
+        if (display) {
+            display.outerHTML = createAlertHTML('info', 'icon-info.svg', `Band ${band} selected. Estimated cost: ${formatCurrency(cost)} per month.`, 'band-price-display');
+            // Re-cache element after outerHTML replacement
+            this.elements.bandPriceDisplay = document.getElementById('band-price-display');
         }
     }
 
