@@ -249,20 +249,24 @@ body::before {
 
 @media (min-width: 1024px) {
     .app-container {
-        max-width: 42rem;
+        max-width: 54rem;
     }
 }
 
 .header-brand {
     position: relative;
     margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
 }
 
 .header-brand__logo {
     width: 100%;
+    max-width: 30rem;
     height: auto;
     border-radius: 0.5rem;
     display: block;
+    margin: 0 auto;
 }
 
 .header-brand__controls {

@@ -92,6 +92,54 @@ window.updateSalaryType = (type) => {
 };
 
 /**
+ * Calculates estimated monthly take-home pay based on 2025/26 UK rules.
+ * @param {number} salary - Annual gross salary
+ * @param {string} region - 'EN' or 'SC' (defaults to EN)
+ * @returns {object} { bandName, monthlyNet }
+ */
+window.calculateTakeHome = (salary, region = 'EN') => {
+    if (salary <= 0) return { bandName: 'Personal Allowance', monthlyNet: 0 };
+
+    let tax = 0;
+    let bandName = 'Personal Allowance';
+    
+    // 2025/26 England/Wales/NI Standard Bands (Default)
+    const pa = 12570;
+    const basicLimit = 50270;
+    const higherLimit = 125140;
+    
+    // Tapered personal allowance for income > 100k
+    let actualAllowance = pa;
+    if (salary > 100000) {
+        actualAllowance = Math.max(0, pa - ((salary - 100000) / 2));
+    }
+
+    if (salary > higherLimit) {
+        bandName = 'Additional Rate';
+        tax = ((basicLimit - pa) * 0.2) + ((higherLimit - basicLimit) * 0.4) + ((salary - higherLimit) * 0.45);
+    } else if (salary > basicLimit) {
+        bandName = 'Higher Rate';
+        tax = ((basicLimit - pa) * 0.2) + ((salary - basicLimit) * 0.4);
+    } else if (salary > actualAllowance) {
+        bandName = 'Basic Rate';
+        tax = (salary - actualAllowance) * 0.2;
+    }
+
+    // Very rough NI estimate (2025/26 Employee Class 1: 8% on £12,570 - £50,270, 2% above)
+    let ni = 0;
+    if (salary > 50270) {
+        ni = ((50270 - 12570) * 0.08) + ((salary - 50270) * 0.02);
+    } else if (salary > 12570) {
+        ni = (salary - 12570) * 0.08;
+    }
+
+    return {
+        bandName,
+        monthlyNet: (salary - tax - ni) / 12
+    };
+};
+
+/**
  * Estimates income tax band and monthly take-home pay.
  * @param {string} p - 'P1' or 'P2'
  */
@@ -107,42 +155,7 @@ window.updateTaxEstimate = (p) => {
         return;
     }
 
-    const salary = parseFloat(input.value);
-    let tax = 0;
-    let bandName = 'Personal Allowance';
-    
-    // 2025/26 England/Wales/NI Standard Bands
-    const personalAllowance = 12570;
-    const basicLimit = 50270;
-    const higherLimit = 125140;
-    
-    // Tapered personal allowance for income > 100k
-    let actualAllowance = personalAllowance;
-    if (salary > 100000) {
-        actualAllowance = Math.max(0, personalAllowance - ((salary - 100000) / 2));
-    }
-
-    if (salary > higherLimit) {
-        bandName = 'Additional Rate';
-        tax = ((basicLimit - personalAllowance) * 0.2) + ((higherLimit - basicLimit) * 0.4) + ((salary - higherLimit) * 0.45);
-    } else if (salary > basicLimit) {
-        bandName = 'Higher Rate';
-        tax = ((basicLimit - personalAllowance) * 0.2) + ((salary - basicLimit) * 0.4);
-    } else if (salary > actualAllowance) {
-        bandName = 'Basic Rate';
-        tax = (salary - actualAllowance) * 0.2;
-    }
-
-    // Very rough NI estimate (2025/26 Employee Class 1: 8% on £12,570 - £50,270, 2% above)
-    let ni = 0;
-    if (salary > 50270) {
-        ni = ((50270 - 12570) * 0.08) + ((salary - 50270) * 0.02);
-    } else if (salary > 12570) {
-        ni = (salary - 12570) * 0.08;
-    }
-
-    const annualNet = salary - tax - ni;
-    const monthlyNet = annualNet / 12;
+    const { bandName, monthlyNet } = calculateTakeHome(parseFloat(input.value), appData.regionCode);
 
     badge.innerText = `${bandName} • Est. £${Math.round(monthlyNet).toLocaleString()}/mo take-home`;
     badge.removeAttribute('hidden');
@@ -858,6 +871,10 @@ window.switchScreen = (id, isInitialLoad = false) => {
     // Update background image
     updateBackgroundImage(id);
 
+    if (id === SCREENS.INCOME) {
+        updateTaxEstimate('P1');
+        updateTaxEstimate('P2');
+    }
     if (id === SCREENS.PROPERTY) hideWarning(3);
     if (id === SCREENS.UTILITIES || id === SCREENS.RESULTS) updateRatioBar();
     const logo = elements.headerBrand.querySelector('.header-brand__logo');
@@ -1295,6 +1312,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         el.addEventListener('input', () => {
             if (field.id === 'postcode') formatPostcode(el);
+            if (field.id === 'salaryP1') updateTaxEstimate('P1');
+            if (field.id === 'salaryP2') updateTaxEstimate('P2');
             debouncedInput();
         });
 

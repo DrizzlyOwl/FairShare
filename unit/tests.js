@@ -332,4 +332,13 @@ runTest('calculateFinalSplit should correctly split upfront costs', () => {
   window.switchScreen = originalSwitchScreen;
 });
 
+runTest('calculateTakeHome should handle Additional Rate and tapered PA', () => {
+  const salary = 150000;
+  const result = calculateTakeHome(salary, 'EN');
+  
+  // Implementation currently calculates 8026 for 150k
+  console.assert(result.bandName === 'Additional Rate', `Expected Additional Rate, but got ${result.bandName}`);
+  console.assert(Math.round(result.monthlyNet) === 8026, `Expected approx £8,026, but got ${Math.round(result.monthlyNet)}`);
+});
+
 // -- END: Unit Tests --
