@@ -42,5 +42,6 @@ A high-performance, framework-less web utility for proportionate bill splitting 
 ## 🔄 Workflow
 1. **Research:** Map BEM impacts before changing CSS.
 2. **Execute:** Apply surgical updates to `index.html`, `style.css`, and relevant modules in `/src` simultaneously.
-3. **Build Tracking:** Increment the build number and update the build datetime in the `index.html` footer before EVERY push to GitHub. Always use **GMT Standard Time** for the timestamp.
-4. **Verify:** Update `unit/tests.js` if component structures change.
+3. **Task Tracking:** Agents MUST define a list of TODOs in the `TODO.md` file in order to keep track of actions. Once actions have been completed, the `TODO.md` file must be truncated.
+4. **Build Tracking:** Increment the build number and update the build datetime in the `index.html` footer before EVERY push to GitHub. Always use **GMT Standard Time** for the timestamp.
+5. **Verify:** Update `unit/tests.js` if component structures change.
