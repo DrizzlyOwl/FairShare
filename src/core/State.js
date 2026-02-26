@@ -32,7 +32,7 @@ export const INITIAL_STATE = {
     postcode: '',
     isNorth: false,
     regionCode: 'EN', // EN, SC, WA, NI
-    band: '',
+    taxBand: '',
     beds: 0,
     baths: 0,
     homeType: 'first',
@@ -52,6 +52,7 @@ export const INITIAL_STATE = {
 export default class State {
     #data;
     #onUpdate;
+    #persistTimeout;
     #CACHE_KEY = 'fairshare_cache';
 
     /**
@@ -97,11 +98,18 @@ export default class State {
     }
 
     /**
-     * Saves current state to localStorage.
+     * Saves current state to localStorage with a short throttle.
+     * Prevents UI jank and redundant writes during fast typing.
      */
     persist() {
         if (typeof window !== 'undefined' && window.Cypress) return;
-        localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));
+        
+        if (this.#persistTimeout) return;
+        
+        this.#persistTimeout = setTimeout(() => {
+            localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));
+            this.#persistTimeout = null;
+        }, 500);
     }
 
     /**
@@ -125,8 +133,13 @@ export default class State {
 
     /**
      * Clears local storage and resets state to INITIAL_STATE.
+     * Cancels any pending throttled persistence.
      */
     clear() {
+        if (this.#persistTimeout) {
+            clearTimeout(this.#persistTimeout);
+            this.#persistTimeout = null;
+        }
         localStorage.removeItem(this.#CACHE_KEY);
         this.update(INITIAL_STATE);
     }

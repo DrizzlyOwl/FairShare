@@ -4,17 +4,10 @@
  */
 
 import { createAlertHTML, formatCurrency } from './Components.js';
+import { SCREEN_MAP } from '../core/Constants.js';
 
 export default class UIManager {
-    SCREENS = {
-        LANDING: 'screen-1',
-        INCOME: 'screen-2',
-        PROPERTY: 'screen-3',
-        MORTGAGE: 'screen-4',
-        UTILITIES: 'screen-5',
-        COMMITTED: 'screen-6',
-        RESULTS: 'screen-7'
-    };
+    SCREENS = SCREEN_MAP;
 
     /**
      * @param {Object} elements - Pre-populated element cache.

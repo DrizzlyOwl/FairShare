@@ -40,7 +40,7 @@ if (typeof appData === 'undefined') {
     postcode: '',
     isNorth: false,
     regionCode: 'EN',
-    band: '',
+    taxBand: '',
     beds: 0,
     baths: 0,
     homeType: 'first',
@@ -121,6 +121,42 @@ runTest('calculateStampDuty should apply FTB relief for England', () => {
     console.assert(duty === 0, `Expected 0, but got ${duty}`);
 });
 
+runTest('calculateTakeHome should handle tapered personal allowance for £150k', () => {
+    const engine = window.FinanceEngine;
+    const result = engine.calculateTakeHome(150000, 'EN');
+    // At £150k, allowance is £0. Tax: (50270 * 0.2) + (74870 * 0.4) + (24860 * 0.45) = 10054 + 29948 + 11187 = 51189
+    // NI: (50270-12570)*0.08 + (150000-50270)*0.02 = 3016 + 1994 = 5010
+    // Net: (150000 - 51189 - 5010) / 12 = 7816.75
+    console.assert(Math.round(result.monthlyNet) === 7817, `Expected approx £7,817, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Scottish tax bands for £40k', () => {
+    const engine = window.FinanceEngine;
+    const result = engine.calculateTakeHome(40000, 'SC');
+    console.assert(result.bandName === 'Intermediate Rate', `Expected Intermediate Rate, but got ${result.bandName}`);
+});
+
+runTest('calculateStampDuty should apply surcharge for additional property', () => {
+    const engine = window.FinanceEngine;
+    // £300k standard: 125k*0 + 125k*0.02 + 50k*0.05 = 5000
+    // Additional surcharge: 300k * 0.03 = 9000
+    const duty = engine.calculateStampDuty(300000, 'EN', 'second', false);
+    console.assert(duty === 14000, `Expected 14000, but got ${duty}`);
+});
+
+runTest('calculateStampDuty should handle Welsh LTT', () => {
+    const engine = window.FinanceEngine;
+    // £200k WA standard: 180k*0 + 20k*0.035 = 700
+    const duty = engine.calculateStampDuty(200000, 'WA', 'first', false);
+    console.assert(duty === 700, `Expected 700, but got ${duty}`);
+});
+
+runTest('calculateMortgage should handle 0% interest rate gracefully', () => {
+    const engine = window.FinanceEngine;
+    const res = engine.calculateMortgage(200000, 0, 25);
+    console.assert(res.monthlyPayment === 0, 'Should return 0 for 0% interest');
+});
+
 // -- START: State Tests --
 
 runTest('State should initialize with default data', () => {
@@ -146,6 +182,13 @@ runTest('State.update should handle bulk updates', () => {
     console.assert(store.data.salaryP2 === 60000, 'salaryP2 should be 60000');
 });
 
+runTest('State.hydrate should recover state from localStorage', () => {
+    localStorage.setItem('fairshare_cache', JSON.stringify({ salaryP1: 12345 }));
+    const store = new State(INITIAL_STATE);
+    store.hydrate();
+    console.assert(store.data.salaryP1 === 12345, 'Hydrated state should reflect cached value');
+});
+
 // -- START: ApiService Tests --
 
 runTest('getRegionFromPostcode should identify a Scottish postcode', () => {
@@ -157,6 +200,22 @@ runTest('estimateWaterCost should scale with bathrooms', () => {
     const cost1 = ApiService.estimateWaterCost('SW1A 1AA', 1);
     const cost2 = ApiService.estimateWaterCost('SW1A 1AA', 3);
     console.assert(cost2 > cost1, '3 bathrooms should cost more than 1');
+});
+
+runTest('ApiService.getRegionFromPostcode should map multiple UK regions', () => {
+    const wal = ApiService.getRegionFromPostcode('CF10 1BH');
+    console.assert(wal.code === 'WA', 'Cardiff should map to Wales (WA)');
+
+    const ni = ApiService.getRegionFromPostcode('BT1 1AA');
+    console.assert(ni.code === 'NI', 'Belfast should map to NI');
+
+    const eng = ApiService.getRegionFromPostcode('SW1A 1AA');
+    console.assert(eng.code === 'EN', 'London should map to England (EN)');
+});
+
+runTest('ApiService.getRegionFromPostcode should return null for invalid formats', () => {
+    const res = ApiService.getRegionFromPostcode('INVALID');
+    console.assert(res === null, 'Should return null for invalid postcode');
 });
 
 // -- START: UI Component Tests --
@@ -308,6 +367,118 @@ runTest('calculateFinalSplit integration should correctly calculate upfront and 
     console.assert(result.totalP1 === 1313, `Monthly P1 mismatch: ${result.totalP1}`);
     // Monthly Check P2: 60 + 50 + 12 + 15 + 160 + 600 = 897
     console.assert(result.totalP2 === 897, `Monthly P2 mismatch: ${result.totalP2}`);
+});
+
+runTest('renderCalculationWorkings should update all detail fields', () => {
+    const mockState = {
+        salaryP1: 30000,
+        salaryP2: 20000,
+        ratioP1: 0.6,
+        ratioP2: 0.4,
+        propertyPrice: 300000,
+        depositPercentage: 10.5,
+        totalEquity: 31500,
+        depositSplitProportional: true,
+        mortgageRequired: 268500,
+        mortgageInterestRate: 4.5,
+        mortgageTerm: 25,
+        monthlyMortgagePayment: 1500.99,
+        totalRepayment: 450297.00
+    };
+
+    const mockElements = {
+        wkSalaryP1: { innerText: '' },
+        wkSalaryP2: { innerText: '' },
+        wkTotalSalary: { innerText: '' },
+        wkP1Perc: { innerText: '' },
+        wkP2Perc: { innerText: '' },
+        wkPropertyPrice: { innerText: '' },
+        wkDepositPerc: { innerText: '' },
+        wkTotalEquity: { innerText: '' },
+        wkDepositSplitType: { innerText: '' },
+        wkMortgageRequired: { innerText: '' },
+        wkInterestRate: { innerText: '' },
+        wkMortgageTerm: { innerText: '' },
+        wkMonthlyPayment: { innerText: '' },
+        wkTotalRepayment: { innerText: '' }
+    };
+
+    // Use actual logic from window.app.renderCalculationWorkings
+    // We bind to a mock "this" to isolate logic from real app state
+    const renderFunc = window.app.renderCalculationWorkings.bind({
+        store: { data: mockState },
+        elements: mockElements
+    });
+
+    renderFunc();
+
+    console.assert(mockElements.wkDepositSplitType.innerText === 'Income Ratio', 'Deposit split type mismatch');
+    console.assert(mockElements.wkMortgageRequired.innerText.includes('£268,500'), 'Mortgage required mismatch');
+    console.assert(mockElements.wkInterestRate.innerText === '4.5%', 'Interest rate mismatch');
+    console.assert(mockElements.wkMortgageTerm.innerText === 25, 'Mortgage term mismatch');
+    console.assert(mockElements.wkDepositPerc.innerText === '10.5%', 'Deposit percentage mismatch');
+    console.assert(mockElements.wkTotalRepayment.innerText.includes('£450,297.00'), `Total repayment mismatch: ${mockElements.wkTotalRepayment.innerText}`);
+});
+
+// -- START: Validator Tests --
+
+runTest('Validator.validateField should enforce numeric constraints', () => {
+    const v = window.Validator;
+    console.assert(v.validateField('salaryP1', 50000) === true, 'Valid salary should pass');
+    console.assert(v.validateField('salaryP1', -100) === false, 'Negative salary should fail');
+    console.assert(v.validateField('salaryP1', 'invalid') === false, 'Non-numeric salary should fail');
+});
+
+runTest('Validator.validateField should enforce string patterns (postcode)', () => {
+    const v = window.Validator;
+    console.assert(v.validateField('postcode', 'SW1A 1AA') === true, 'Valid postcode should pass');
+    console.assert(v.validateField('postcode', '12345') === false, 'Invalid postcode format should fail');
+});
+
+runTest('Validator.validateScreen should catch cross-field income rules', () => {
+    const v = window.Validator;
+    const result1 = v.validateScreen('screen-2', { salaryP1: 0, salaryP2: 0 });
+    console.assert(result1.isValid === false, 'Both salaries zero should fail screen-2');
+    console.assert(result1.errors.includes('salaryP1'), 'Should report salaryP1 error');
+
+    const result2 = v.validateScreen('screen-2', { salaryP1: 50000, salaryP2: 0 });
+    console.assert(result2.isValid === true, 'One salary > 0 should pass screen-2');
+});
+
+runTest('Validator.validateScreen should validate property screen', () => {
+    const v = window.Validator;
+    const data = { postcode: 'M1 1AD', propertyPrice: 300000, taxBand: 'C' };
+    console.assert(v.validateScreen('screen-3', data).isValid === true, 'Valid property data should pass');
+    
+    const invalidData = { postcode: 'invalid', propertyPrice: 0, taxBand: '' };
+    const result = v.validateScreen('screen-3', invalidData);
+    console.assert(result.isValid === false, 'Invalid property data should fail');
+    console.assert(result.errors.length === 3, `Expected 3 errors, got ${result.errors.length}`);
+});
+
+runTest('Validator.validateField should enforce enum constraints (taxBand)', () => {
+    const v = window.Validator;
+    console.assert(v.validateField('taxBand', 'A') === true, 'Band A should pass');
+    console.assert(v.validateField('taxBand', 'Z') === false, 'Invalid Band Z should fail');
+});
+
+runTest('Validator.validateField should enforce max constraints (depositPercentage)', () => {
+    const v = window.Validator;
+    console.assert(v.validateField('depositPercentage', 101) === false, '101% deposit should fail');
+    console.assert(v.validateField('depositPercentage', 50) === true, '50% deposit should pass');
+});
+
+runTest('Validator.validateField should handle diverse UK postcode formats', () => {
+    const v = window.Validator;
+    ['M1 1AD', 'SW1A 1AA', 'EH1 1AD', 'BT1 1AA'].forEach(pc => {
+        console.assert(v.validateField('postcode', pc) === true, `Postcode ${pc} should pass`);
+    });
+});
+
+runTest('State.clear should reset to INITIAL_STATE', () => {
+    const store = new State({ salaryP1: 99999, salaryP2: 99999 });
+    store.clear();
+    console.assert(store.data.salaryP1 === 0, 'State should reset to default');
 });
 
 // -- END: Unit Tests --

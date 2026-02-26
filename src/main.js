@@ -8,30 +8,9 @@ import FinanceEngine from './core/FinanceEngine.js';
 import ApiService from './services/ApiService.js';
 import UIManager from './ui/UIManager.js';
 import { formatCurrency } from './ui/Components.js';
-
-const FORM_FIELDS = [
-    { id: 'salaryP1', type: 'number' },
-    { id: 'salaryP2', type: 'number' },
-    { id: 'postcode', type: 'text' },
-    { id: 'propertyPrice', type: 'number' },
-    { id: 'bedrooms', type: 'number', key: 'beds' },
-    { id: 'bathrooms', type: 'number', key: 'baths' },
-    { id: 'councilTaxCost', type: 'number' },
-    { id: 'energyCost', type: 'number' },
-    { id: 'waterBill', type: 'number' },
-    { id: 'broadbandCost', type: 'number' },
-    { id: 'groceriesCost', type: 'number' },
-    { id: 'childcareCost', type: 'number' },
-    { id: 'insuranceCost', type: 'number' },
-    { id: 'otherSharedCosts', type: 'number' },
-    { id: 'depositPercentage', type: 'number' },
-    { id: 'depositAmount', type: 'number' },
-    { id: 'mortgageInterestRate', type: 'number' },
-    { id: 'mortgageTerm', type: 'number' },
-    { id: 'mortgageFees', type: 'number' }
-];
-
-const BAND_PRICES = { 'A': 110, 'B': 128, 'C': 146, 'D': 165, 'E': 201, 'F': 238, 'G': 275, 'H': 330 };
+import CSV from './ui/Export.js';
+import Validator from './core/Validator.js';
+import { FORM_FIELDS, BAND_PRICES } from './core/Constants.js';
 
 const app = {
     /**
@@ -204,7 +183,7 @@ const app = {
 
         document.querySelectorAll('input[name="taxBand"]').forEach(radio => {
             radio.onchange = () => {
-                this.store.update({ band: radio.value });
+                this.store.update({ taxBand: radio.value });
                 this.ui.updatePricePreview(radio.value);
             };
         });
@@ -274,41 +253,7 @@ const app = {
      * Generates and downloads a CSV report of the calculation results.
      */
     downloadCSV() {
-        const table = this.elements.resultsTable;
-        if (!table) return;
-
-        const state = this.store.data;
-        let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "FairShare Bill Splitting Report\n";
-        csvContent += `Generated: ${new Date().toLocaleDateString('en-GB')} ${new Date().toLocaleTimeString('en-GB')}\n\n`;
-
-        const salaryLabel = state.salaryType === 'gross' ? 'Annual Salary (Pre-tax)' : 'Monthly Net Pay';
-        csvContent += "1. INCOME RATIO WORKINGS\n";
-        csvContent += `Your ${salaryLabel},${state.salaryP1}\n`;
-        csvContent += `Partner ${salaryLabel},${state.salaryP2}\n`;
-        csvContent += `Your Share %,${(state.ratioP1 * 100).toFixed(1)}%\n`;
-        csvContent += `Partner Share %,${(state.ratioP2 * 100).toFixed(1)}%\n\n`;
-
-        csvContent += "2. MORTGAGE & EQUITY\n";
-        csvContent += `Property Value,${state.propertyPrice}\n`;
-        csvContent += `Deposit %,${state.depositPercentage}%\n`;
-        csvContent += `Monthly Payment,${state.monthlyMortgagePayment.toFixed(2)}\n\n`;
-
-        csvContent += "3. FULL COST BREAKDOWN\n";
-        const rows = table.querySelectorAll('tr');
-        rows.forEach(row => {
-            const cols = row.querySelectorAll('th, td');
-            const rowData = Array.from(cols).map(col => `"${col.innerText.replace(/[£,]/g, '')}"`);
-            csvContent += rowData.join(",") + "\n";
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `fairshare_report_${new Date().toISOString().slice(0,10)}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        CSV.download(this.store.data, this.elements.resultsTable);
     },
 
     /**
@@ -717,9 +662,14 @@ const app = {
         if (wk.wkP1Perc) wk.wkP1Perc.innerText = (state.ratioP1 * 100).toFixed(1) + '%';
         if (wk.wkP2Perc) wk.wkP2Perc.innerText = (state.ratioP2 * 100).toFixed(1) + '%';
         if (wk.wkPropertyPrice) wk.wkPropertyPrice.innerText = formatCurrency(state.propertyPrice);
-        if (wk.wkDepositPerc) wk.wkDepositPerc.innerText = state.depositPercentage + '%';
+        if (wk.wkDepositPerc) wk.wkDepositPerc.innerText = state.depositPercentage.toFixed(1) + '%';
         if (wk.wkTotalEquity) wk.wkTotalEquity.innerText = formatCurrency(state.totalEquity);
+        if (wk.wkDepositSplitType) wk.wkDepositSplitType.innerText = state.depositSplitProportional ? 'Income Ratio' : '50/50';
+        if (wk.wkMortgageRequired) wk.wkMortgageRequired.innerText = formatCurrency(state.mortgageRequired);
+        if (wk.wkInterestRate) wk.wkInterestRate.innerText = state.mortgageInterestRate + '%';
+        if (wk.wkMortgageTerm) wk.wkMortgageTerm.innerText = state.mortgageTerm;
         if (wk.wkMonthlyPayment) wk.wkMonthlyPayment.innerText = formatCurrency(state.monthlyMortgagePayment, 2);
+        if (wk.wkTotalRepayment) wk.wkTotalRepayment.innerText = formatCurrency(state.totalRepayment, 2);
     },
 
     /**
@@ -771,15 +721,26 @@ const app = {
      * @returns {boolean} Whether the screen data is valid.
      */
     validateScreen(screenId) {
-        let isValid = true;
+        // Ensure state is fresh before validation
+        this.forceStateSync();
+        
+        const { isValid, errors } = Validator.validateScreen(screenId, this.store.data);
+
+        // Map of screen fields to clear/set
+        const screenFields = {
+            [this.ui.SCREENS.INCOME]: ['salaryP1', 'salaryP2'],
+            [this.ui.SCREENS.PROPERTY]: ['postcode', 'propertyPrice', 'taxBand'],
+            [this.ui.SCREENS.MORTGAGE]: ['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'],
+            [this.ui.SCREENS.UTILITIES]: ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'],
+            [this.ui.SCREENS.COMMITTED]: ['groceriesCost', 'childcareCost', 'insuranceCost', 'otherSharedCosts']
+        };
 
         const setFieldState = (fieldId, fieldValid) => {
             const el = document.getElementById(fieldId);
             const errorEl = document.getElementById(`${fieldId}-error`) || document.getElementById(fieldId.replace('Cost', '') + '-error');
-            const group = el?.closest('.input-group');
+            const group = el?.closest('.input-group') || el?.closest('.segmented-control');
 
             if (!fieldValid) {
-                isValid = false;
                 errorEl?.removeAttribute('hidden');
                 group?.classList.add('input-group--error');
             } else {
@@ -788,64 +749,9 @@ const app = {
             }
         };
 
-        if (screenId === this.ui.SCREENS.INCOME) {
-            const s1 = parseFloat(document.getElementById('salaryP1').value) || 0;
-            const s2 = parseFloat(document.getElementById('salaryP2').value) || 0;
-            const totalSalary = s1 + s2;
-            
-            // At least one salary must be > 0
-            const incomeValid = totalSalary > 0;
-            setFieldState('salaryP1', incomeValid);
-            setFieldState('salaryP2', incomeValid);
-            if (!incomeValid) isValid = false;
-        }
-
-        if (screenId === this.ui.SCREENS.PROPERTY) {
-            const postcode = document.getElementById('postcode').value.trim();
-            const price = parseFloat(document.getElementById('propertyPrice').value) || 0;
-            
-            setFieldState('postcode', !!postcode);
-            setFieldState('propertyPrice', price > 0);
-            
-            const bandError = document.getElementById('taxBand-error');
-            const selectedBand = document.querySelector('input[name="taxBand"]:checked');
-            if (!selectedBand) {
-                isValid = false;
-                bandError?.removeAttribute('hidden');
-            } else {
-                bandError?.setAttribute('hidden', '');
-            }
-        }
-
-        if (screenId === this.ui.SCREENS.MORTGAGE) {
-            const depositType = document.querySelector('input[name="depositType"]:checked')?.value;
-            const interestRate = parseFloat(document.getElementById('mortgageInterestRate').value);
-            const term = parseFloat(document.getElementById('mortgageTerm').value);
-
-            if (depositType === 'percentage') {
-                const perc = parseFloat(document.getElementById('depositPercentage').value);
-                setFieldState('depositPercentage', !isNaN(perc) && perc >= 0 && perc <= 100);
-            } else {
-                const amt = parseFloat(document.getElementById('depositAmount').value);
-                setFieldState('depositAmount', !isNaN(amt) && amt >= 0);
-            }
-            setFieldState('mortgageInterestRate', !isNaN(interestRate) && interestRate >= 0);
-            setFieldState('mortgageTerm', !isNaN(term) && term > 0);
-        }
-
-        if (screenId === this.ui.SCREENS.UTILITIES) {
-            ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'].forEach(id => {
-                const val = document.getElementById(id).value;
-                setFieldState(id, val !== '' && !isNaN(parseFloat(val)));
-            });
-        }
-
-        if (screenId === this.ui.SCREENS.COMMITTED) {
-            ['groceriesCost', 'childcareCost', 'insuranceCost', 'otherSharedCosts'].forEach(id => {
-                const val = document.getElementById(id).value;
-                setFieldState(id, val !== '' && !isNaN(parseFloat(val)));
-            });
-        }
+        // Clear all errors on screen first, then re-apply based on Validator results
+        (screenFields[screenId] || []).forEach(f => setFieldState(f, true));
+        errors.forEach(f => setFieldState(f, false));
 
         return isValid;
     },

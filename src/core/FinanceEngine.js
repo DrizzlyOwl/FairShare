@@ -4,72 +4,7 @@
  * Zero DOM dependencies.
  */
 
-/**
- * Income Tax Configuration for 2025/26 tax year.
- * Thresholds are total annual income levels.
- */
-export const INCOME_TAX_CONFIG = {
-    EN: {
-        personalAllowance: 12570,
-        taperThreshold: 100000,
-        bands: [
-            { upto: 50270, rate: 0.20, name: 'Basic Rate' },
-            { upto: 125140, rate: 0.40, name: 'Higher Rate' },
-            { upto: Infinity, rate: 0.45, name: 'Additional Rate' }
-        ]
-    },
-    SC: {
-        personalAllowance: 12570,
-        taperThreshold: 100000,
-        bands: [
-            { upto: 14876, rate: 0.19, name: 'Starter Rate' },
-            { upto: 26561, rate: 0.20, name: 'Basic Rate' },
-            { upto: 43662, rate: 0.21, name: 'Intermediate Rate' },
-            { upto: 75000, rate: 0.42, name: 'Higher Rate' },
-            { upto: 125140, rate: 0.45, name: 'Advanced Rate' },
-            { upto: Infinity, rate: 0.47, name: 'Top Rate' }
-        ]
-    }
-};
-
-export const TAX_BRACKETS = {
-    EN: {
-        standard: [
-            { upto: 125000, rate: 0 },
-            { upto: 250000, rate: 0.02 },
-            { upto: 925000, rate: 0.05 },
-            { upto: 1500000, rate: 0.10 },
-            { over: 1500000, rate: 0.12 }
-        ],
-        ftb: [
-            { upto: 300000, rate: 0 },
-            { upto: 500000, rate: 0.05 }
-        ],
-        additionalSurcharge: 0.03
-    },
-    SC: {
-        standard: [
-            { upto: 145000, rate: 0 },
-            { upto: 250000, rate: 0.02 },
-            { upto: 325000, rate: 0.05 },
-            { upto: 750000, rate: 0.10 },
-            { over: 750000, rate: 0.12 }
-        ],
-        ftbRelief: 600,
-        additionalSurcharge: 0.04
-    },
-    WA: {
-        standard: [
-            { upto: 180000, rate: 0 },
-            { upto: 250000, rate: 0.035 },
-            { upto: 400000, rate: 0.05 },
-            { upto: 750000, rate: 0.075 },
-            { upto: 1500000, rate: 0.10 },
-            { over: 1500000, rate: 0.12 }
-        ],
-        additionalSurcharge: 0.03
-    }
-};
+import { INCOME_TAX_CONFIG, TAX_BRACKETS } from './Constants.js';
 
 export default class FinanceEngine {
     /**
