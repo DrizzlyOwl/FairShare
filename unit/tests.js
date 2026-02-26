@@ -403,14 +403,13 @@ runTest('renderCalculationWorkings should update all detail fields', () => {
         wkTotalRepayment: { innerText: '' }
     };
 
-    // Use actual logic from window.app.renderCalculationWorkings
+    // Use actual logic from window.UIManager.prototype.renderCalculationWorkings
     // We bind to a mock "this" to isolate logic from real app state
-    const renderFunc = window.app.renderCalculationWorkings.bind({
-        store: { data: mockState },
+    const renderFunc = window.UIManager.prototype.renderCalculationWorkings.bind({
         elements: mockElements
     });
 
-    renderFunc();
+    renderFunc(mockState);
 
     console.assert(mockElements.wkDepositSplitType.innerText === 'Income Ratio', 'Deposit split type mismatch');
     console.assert(mockElements.wkMortgageRequired.innerText.includes('£268,500'), 'Mortgage required mismatch');
@@ -479,6 +478,80 @@ runTest('State.clear should reset to INITIAL_STATE', () => {
     const store = new State({ salaryP1: 99999, salaryP2: 99999 });
     store.clear();
     console.assert(store.data.salaryP1 === 0, 'State should reset to default');
+});
+
+// -- START: Export Tests --
+
+runTest('CSV.generateRawCSV should format state and table data correctly', () => {
+    const mockState = {
+        salaryP1: 50000,
+        salaryP2: 30000,
+        ratioP1: 0.625,
+        ratioP2: 0.375,
+        propertyPrice: 250000,
+        depositPercentage: 10,
+        monthlyMortgagePayment: 1200,
+        salaryType: 'gross'
+    };
+
+    const table = document.createElement('table');
+    table.innerHTML = `
+        <tr><th>Expense</th><td>Total</td></tr>
+        <tr><td>Council Tax</td><td>£150</td></tr>
+    `;
+
+    const csv = window.CSV.generateRawCSV(mockState, table);
+    
+    console.assert(csv.includes('FairShare Bill Splitting Report'), 'CSV missing title');
+    console.assert(csv.includes('Your Annual Salary (Pre-tax),50000'), 'CSV missing P1 salary');
+    console.assert(csv.includes('Property Value,250000'), 'CSV missing property price');
+    console.assert(csv.includes('"Council Tax","150"'), 'CSV missing table data');
+});
+
+runTest('CalculationEngine.getSummary should unify all financial logic', () => {
+    const mockState = {
+        propertyPrice: 300000,
+        regionCode: 'EN',
+        homeType: 'first',
+        isFTB: true,
+        totalEquity: 30000,
+        mortgageFees: 999,
+        ratioP1: 0.6,
+        ratioP2: 0.4,
+        depositSplitProportional: true,
+        councilTaxCost: 200,
+        energyCost: 100,
+        waterBill: 50,
+        broadbandCost: 30,
+        groceriesCost: 400,
+        childcareCost: 0,
+        insuranceCost: 20,
+        otherSharedCosts: 50,
+        monthlyMortgagePayment: 1500,
+        splitTypes: {
+            councilTax: 'no', // 50/50
+            energy: 'yes',    // Proportional
+            water: 'yes',
+            broadband: 'yes',
+            groceries: 'yes',
+            insurance: 'yes',
+            otherShared: 'yes'
+        }
+    };
+
+    const summary = window.CalculationEngine.getSummary(mockState);
+
+    // Upfront: SDLT(0) + Legal(1200) + Equity(30000) + Fees(999) = 32199
+    console.assert(summary.upfront.total === 32199, `Upfront total mismatch: ${summary.upfront.total}`);
+    console.assert(summary.upfront.p1 === 32199 * 0.6, 'Upfront P1 split mismatch');
+
+    // Monthly: 1500 + 200 + 100 + 50 + 30 + 400 + 0 + 20 + 50 = 2350
+    console.assert(summary.monthly.total === 2350, `Monthly total mismatch: ${summary.monthly.total}`);
+    
+    // Check specific split (Council Tax 50/50 of 200 = 100 each)
+    console.assert(summary.monthly.costs.councilTax.p1 === 100, 'Council tax split mismatch');
+    // Check specific split (Energy 60% of 100 = 60)
+    console.assert(summary.monthly.costs.energy.p1 === 60, 'Energy split mismatch');
 });
 
 // -- END: Unit Tests --
