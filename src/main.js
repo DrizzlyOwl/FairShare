@@ -7,7 +7,7 @@ import State, { INITIAL_STATE } from './core/State.js';
 import FinanceEngine from './core/FinanceEngine.js';
 import ApiService from './services/ApiService.js';
 import UIManager from './ui/UIManager.js';
-import { formatCurrency } from './ui/Components.js';
+import { formatCurrency, debounce } from './utils/Helpers.js';
 import CSV from './ui/Export.js';
 import Validator from './core/Validator.js';
 import CalculationEngine from './core/Calculations.js';
@@ -115,7 +115,7 @@ const app = {
             const el = this.elements[field.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase())] || document.getElementById(field.id);
             if (!el) return;
 
-            const debouncedUpdate = this.debounce(() => {
+            const debouncedUpdate = debounce(() => {
                 let val = el.value;
                 if (field.type === 'number') val = parseFloat(val) || 0;
                 this.store.update({ [field.key || field.id]: val });
@@ -428,24 +428,6 @@ const app = {
     },
 
     // --- Helper Methods ---
-
-    /**
-     * Simple debounce implementation for input handling.
-     * @param {Function} func - Function to debounce.
-     * @param {number} wait - Wait time in ms.
-     * @returns {Function}
-     */
-    debounce(func, wait) {
-        let timeout;
-        return (...args) => {
-            if (window.Cypress) {
-                // Execute immediately in test environment
-                return func.apply(this, args);
-            }
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    },
 
     /**
      * Formats postcode input according to UK standards.
