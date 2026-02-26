@@ -20,38 +20,51 @@ FairShare automates household budgeting by establishing a contribution ratio bas
 - **Accessibility First**: Fully **WCAG 2.1 AA** compliant with dark mode support and a focus on legible typography (min 16px).
 - **PWA Ready**: Works offline and is installable as a standalone utility.
 
-## 🛠️ Tech Stack
-
-This application adheres to a "naked" but highly polished architectural philosophy:
-
-- **Engine**: Vanilla JavaScript (ES6+) - Zero dependencies for maximum performance.
-- **Styling**: Modern CSS (Variables, Flexbox, Grid) with BEM naming convention.
-- **Components**: Polished, framework-less UI elements like animated toggles and segmented controls.
-- **Testing**: Robust suite including Node.js (JSDOM) unit tests, Cypress integration tests, and Axe-core accessibility audits.
-- **Storage**: `localStorage` for automatic progress persistence.
-
 ## 🏗️ Technical Architecture
 
-FairShare is built using a **Decoupled Modular Design** powered by ES6 modules, ensuring high maintainability and testability without a framework.
+FairShare is built using a **Decoupled Modular Design** powered by ES6 modules. This architecture ensures high maintainability and testability without the overhead of a framework.
 
-### 1. Specialized Controllers
-The application logic is decomposed into specialized controllers to separate concerns:
-- **`NavigationController`**: Manages the screen-to-screen lifecycle, hash-based routing, and global keyboard navigation.
-- **`FormController`**: Handles complex input life-cycles, real-time formatting, and screen-level validation.
-- **`UIManager`**: Orchestrates view state transitions, progress tracking, and BEM-compliant DOM updates.
+### 1. Core Concepts & Design Patterns
 
-### 2. Core Logic & State
-- **`State.js`**: A reactive state container using a **JS Proxy** to intercept changes. It automatically triggers UI renders and handles throttled persistence to `localStorage`.
-- **`FinanceEngine.js`**: A pure functional engine for UK-specific financial calculations (Tax, NI, SDLT, Mortgages), completely isolated from the DOM.
-- **`FinanceOrchestrator.js`**: Coordinates complex flows between the engine and the state, acting as a middle layer for business logic.
+- **Reactive State (Proxy Pattern)**: The application state in `State.js` is wrapped in a Javascript Proxy. Any modification to the state automatically triggers a UI render and a throttled persistence write to `localStorage`.
+- **Pure Functional Logic**: All financial calculations in `FinanceEngine.js` are pure functions. They take inputs and return outputs with zero side effects or DOM dependencies, making them highly testable via JSDOM.
+- **Orchestration Layer**: `FinanceOrchestrator.js` serves as the "brain" of the application, coordinating complex flows between the state and the engine.
+- **Specialized Controllers**:
+    - **`NavigationController`**: Manages the screen-to-screen lifecycle, hash-based routing, and global keyboard navigation.
+    - **`FormController`**: Handles complex input life-cycles, real-time formatting, and screen-level validation.
+    - **`UIManager`**: Orchestrates view state transitions, progress tracking, and BEM-compliant DOM updates.
 
-### 3. Service Layer
-- **`ApiService.js`**: Manages external data fetching (UK Land Registry SPARQL) and regional heuristic lookups, decoupled from the UI.
+### 2. Developer Workflow: Adding a New Feature
 
-### 4. Utility Patterns
-- **Declarative Validation**: Centralized schema-based validation in `Validator.js`.
-- **Functional Exports**: `Export.js` provides utility for generating and downloading dynamic CSV reports.
-- **BEM Styling**: Strict adherence to the Block-Element-Modifier pattern for modular, collision-free CSS.
+To maintain architectural integrity, follow this lifecycle when adding new functionality:
+
+1.  **Define State**: Add new keys to `INITIAL_STATE` in `src/core/State.js`.
+2.  **Update Constants**: If the feature requires new fields or screen IDs, update `src/core/Constants.js`.
+3.  **Implement Pure Logic**: Add necessary calculation methods to `src/core/FinanceEngine.js`.
+4.  **Update Orchestrator**: Create a method in `src/core/FinanceOrchestrator.js` to bridge the new logic with the application state.
+5.  **Declare Validation**: Add field or screen-level rules to `src/core/Validator.js`.
+6.  **Update UI**:
+    - Add HTML structure in `index.html` using **BEM** selectors.
+    - Add styling in `style.css`.
+    - Implement rendering logic in `src/ui/UIManager.js`.
+7.  **Bind Events**: Connect the new UI elements in `src/ui/FormController.js` or `src/main.js`.
+8.  **Verify**: Add unit tests in `unit/tests.js` and integration tests in `cypress/integration/`.
+
+### 3. Coding Standards & Conventions
+
+- **BEM Styling**: Strictly adhere to the Block-Element-Modifier pattern (e.g., `.card`, `.card__title`, `.card--highlighted`). Avoid context-dependent nested selectors.
+- **Icon Implementation**: Use the CSS `mask-image` pattern on `<span>` tags for icons. This allows for dynamic coloring via `background-color: currentColor`.
+- **Accessibility**: All interactive elements must be keyboard accessible. Maintain **WCAG 2.1 AA** compliance. Typography must be at least **1rem (16px)**.
+- **Documentation**: All classes and methods must include **DocBlock** comments detailing parameters and return types.
+- **Build Process**: Increment the Build Number and update the GMT timestamp in the `index.html` footer before every push. This also refreshes static asset cache busters.
+
+### 4. Technical Stack Summary
+
+- **Engine**: Vanilla JavaScript (ES6+)
+- **Styling**: Modern CSS (Variables, Flexbox, Grid)
+- **Persistence**: `localStorage` via State Proxy
+- **Testing**: Node.js/JSDOM (Unit), Cypress (Integration/A11y)
+- **API**: UK Land Registry SPARQL Endpoint
 
 ## 🚀 Installation
 
