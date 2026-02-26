@@ -61,12 +61,13 @@ console.error = (...args) => {
  * Transforms ES6 exports/imports into global window properties for the JSDOM environment.
  */
 const modules = [
+    { path: 'src/utils/Helpers.js', type: 'functional' },
     { path: 'src/core/Constants.js', type: 'functional' },
     { path: 'src/core/FinanceEngine.js', global: 'FinanceEngine', type: 'class' },
+    { path: 'src/core/FinanceOrchestrator.js', global: 'FinanceOrchestrator', type: 'class' },
     { path: 'src/core/Calculations.js', global: 'CalculationEngine', type: 'class' },
     { path: 'src/core/State.js', global: 'State', type: 'class' },
     { path: 'src/core/Validator.js', global: 'Validator', type: 'class' },
-    { path: 'src/utils/Helpers.js', type: 'functional' },
     { path: 'src/services/ApiService.js', global: 'ApiService', type: 'class' },
     { path: 'src/ui/UIManager.js', global: 'UIManager', type: 'class' },
     { path: 'src/ui/Export.js', global: 'CSV', type: 'class' },

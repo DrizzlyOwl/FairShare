@@ -3,11 +3,13 @@
  * Centralized configuration and business rule definitions for FairShare.
  */
 
+import { deepFreeze } from '../utils/Helpers.js';
+
 /**
  * Income Tax Configuration for 2025/26 tax year.
  * Thresholds are total annual income levels.
  */
-export const INCOME_TAX_CONFIG = {
+export const INCOME_TAX_CONFIG = deepFreeze({
     EN: {
         personalAllowance: 12570,
         taperThreshold: 100000,
@@ -29,13 +31,23 @@ export const INCOME_TAX_CONFIG = {
             { upto: Infinity, rate: 0.47, name: 'Top Rate' }
         ]
     }
-};
+});
+
+/**
+ * National Insurance Configuration for 2025/26 tax year (UK-wide).
+ */
+export const NI_CONFIG = deepFreeze({
+    lowerThreshold: 12570,
+    upperThreshold: 50270,
+    standardRate: 0.08,
+    higherRate: 0.02
+});
 
 /**
  * Property Tax (Stamp Duty) Brackets by region.
  * Includes EN (SDLT), SC (LBTT), and WA (LTT).
  */
-export const TAX_BRACKETS = {
+export const TAX_BRACKETS = deepFreeze({
     EN: {
         standard: [
             { upto: 125000, rate: 0 },
@@ -72,12 +84,12 @@ export const TAX_BRACKETS = {
         ],
         additionalSurcharge: 0.03
     }
-};
+});
 
 /**
  * Regional mapping and utility cost heuristics based on postcode prefixes.
  */
-export const REGIONS = {
+export const REGIONS = deepFreeze({
     NI: { name: 'Northern Ireland', prefixes: ['BT'], cost: 0, code: 'NI' },
     SCOTLAND: { name: 'Scotland', prefixes: ['AB', 'DD', 'DG', 'EH', 'FK', 'G', 'HS', 'IV', 'KA', 'KW', 'KY', 'ML', 'PA', 'PH', 'TD', 'ZE'], cost: 42, code: 'SC' },
     WALES: { name: 'Wales', prefixes: ['CF', 'LD', 'LL', 'NP', 'SA', 'SY'], cost: 55, code: 'WA' },
@@ -87,17 +99,29 @@ export const REGIONS = {
     EAST: { name: 'East of England', prefixes: ['AL', 'CB', 'CM', 'CO', 'EN', 'HP', 'IP', 'LU', 'NR', 'RM', 'SG', 'SS'], cost: 52, code: 'EN' },
     MIDLANDS: { name: 'Midlands', prefixes: ['B', 'CV', 'DE', 'DY', 'HR', 'LE', 'LN', 'NG', 'NN', 'ST', 'SY', 'TF', 'WR', 'WS', 'WV'], cost: 48, code: 'EN' },
     NORTH: { name: 'North of England', prefixes: ['BB', 'BD', 'BL', 'CA', 'CH', 'CW', 'DH', 'DL', 'DN', 'FY', 'HD', 'HG', 'HU', 'HX', 'L', 'LA', 'LS', 'M', 'NE', 'OL', 'PR', 'S', 'SK', 'SR', 'TS', 'WA', 'WF', 'WN', 'YO'], cost: 45, code: 'EN' }
-};
+});
+
+/**
+ * Optimized lookup map for postcode prefixes.
+ * Generated from REGIONS at runtime to provide O(1) access.
+ */
+const prefixEntries = [];
+for (const [key, region] of Object.entries(REGIONS)) {
+    region.prefixes.forEach(prefix => {
+        prefixEntries.push([prefix, { ...region, key }]);
+    });
+}
+export const PREFIX_MAP = deepFreeze(Object.fromEntries(prefixEntries));
 
 /**
  * Default monthly price estimates for Council Tax bands.
  */
-export const BAND_PRICES = { 'A': 110, 'B': 128, 'C': 146, 'D': 165, 'E': 201, 'F': 238, 'G': 275, 'H': 330 };
+export const BAND_PRICES = deepFreeze({ 'A': 110, 'B': 128, 'C': 146, 'D': 165, 'E': 201, 'F': 238, 'G': 275, 'H': 330 });
 
 /**
  * Definition of all form inputs managed by the orchestrator.
  */
-export const FORM_FIELDS = [
+export const FORM_FIELDS = deepFreeze([
     { id: 'salaryP1', type: 'number' },
     { id: 'salaryP2', type: 'number' },
     { id: 'postcode', type: 'text' },
@@ -117,12 +141,12 @@ export const FORM_FIELDS = [
     { id: 'mortgageInterestRate', type: 'number' },
     { id: 'mortgageTerm', type: 'number' },
     { id: 'mortgageFees', type: 'number' }
-];
+]);
 
 /**
  * Identifier map for application screens.
  */
-export const SCREEN_MAP = {
+export const SCREEN_MAP = deepFreeze({
     LANDING: 'screen-1',
     INCOME: 'screen-2',
     PROPERTY: 'screen-3',
@@ -130,4 +154,4 @@ export const SCREEN_MAP = {
     UTILITIES: 'screen-5',
     COMMITTED: 'screen-6',
     RESULTS: 'screen-7'
-};
+});

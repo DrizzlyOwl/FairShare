@@ -60,10 +60,12 @@ describe('FairShare - Property & Regional Rules', () => {
     fillPropertyStep('SW1A 1AA', '300000', 'C');
 
     cy.get('#screen-4').should('be.visible');
+    // Initial: 10% (30k) + SDLT (5k) + Legal (1200) = £36,200
     cy.get('#totalUpfrontDisplay').should('contain.text', '£36,200');
 
     // Select "Buy-to-let" on screen 4
     cy.get('label[for="homeSecond"]').click();
+    // Additional Surcharge (+3% of 300k = +9k): 36,200 + 9,000 = £45,200
     cy.get('#totalUpfrontDisplay', { timeout: 10000 }).should('contain.text', '£45,200');
   });
 
@@ -72,6 +74,7 @@ describe('FairShare - Property & Regional Rules', () => {
     fillPropertyStep('M1 1AD', '200000', 'C');
 
     cy.get('#screen-4').should('be.visible');
+    // Orchestrator returns 10.0 (fixed decimals)
     cy.get('[data-cy="depositPercentage-input"]').should('have.value', '10.0');
     cy.get('label[for="dtAmt"]').click(); 
     

@@ -4,7 +4,7 @@
  * Decoupled from the DOM.
  */
 
-import { REGIONS } from '../core/Constants.js';
+import { REGIONS, PREFIX_MAP } from '../core/Constants.js';
 
 export default class ApiService {
     /**
@@ -18,12 +18,8 @@ export default class ApiService {
         const areaMatch = pc.match(/^[A-Z]+/);
         if (!areaMatch) return null;
         const area = areaMatch[0];
-        for (const regionKey in REGIONS) {
-            if (REGIONS[regionKey].prefixes.includes(area)) {
-                return { key: regionKey, ...REGIONS[regionKey] };
-            }
-        }
-        return null;
+        
+        return PREFIX_MAP[area] || null;
     }
 
     /**

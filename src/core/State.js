@@ -62,37 +62,57 @@ export default class State {
     constructor(initialState = INITIAL_STATE, onUpdateCallback = null) {
         this.#onUpdate = onUpdateCallback;
         // Use a non-proxied object for the initial internal data
-        this.#data = { ...initialState };
+        const data = { ...initialState };
         
         const self = this;
-        // Proxy definition
-        const handler = {
-            set: (target, prop, value) => {
-                if (target[prop] === value) return true;
-                target[prop] = value;
-                self.persist();
-                if (self.#onUpdate) self.#onUpdate(self.#data);
-                return true;
-            },
-            get: (target, prop) => {
-                if (typeof target[prop] === 'object' && target[prop] !== null) {
-                    return new Proxy(target[prop], handler);
+        // Map to cache proxies for nested objects to prevent memory leaks and redundant object creation
+        const proxyCache = new WeakMap();
+
+        const createProxy = (target) => {
+            if (proxyCache.has(target)) return proxyCache.get(target);
+
+            const handler = {
+                set: (target, prop, value) => {
+                    if (target[prop] === value) return true;
+                    target[prop] = value;
+                    self.persist();
+                    // Avoid triggering onUpdate for every field if we're in a bulk update
+                    if (self.#onUpdate && !self.#isBatchUpdating) {
+                        self.#onUpdate(self.#data);
+                    }
+                    return true;
+                },
+                get: (target, prop) => {
+                    const value = target[prop];
+                    if (typeof value === 'object' && value !== null) {
+                        return createProxy(value);
+                    }
+                    return value;
                 }
-                return target[prop];
-            }
+            };
+
+            const proxy = new Proxy(target, handler);
+            proxyCache.set(target, proxy);
+            return proxy;
         };
 
-        // ONLY proxy the #data object AFTER initial setup to avoid constructor persistence
-        this.#data = new Proxy(this.#data, handler);
+        this.#data = createProxy(data);
     }
+
+    #isBatchUpdating = false;
 
     /**
      * Replaces multiple state properties at once.
      * @param {Object} newData - Key-value pairs to merge into state.
      */
     update(newData) {
-        // Use the raw data target to avoid multiple Proxy set calls
-        Object.assign(this.#data, newData);
+        this.#isBatchUpdating = true;
+        try {
+            Object.assign(this.#data, newData);
+        } finally {
+            this.#isBatchUpdating = false;
+        }
+        
         this.persist();
         if (this.#onUpdate) this.#onUpdate(this.#data);
     }
@@ -104,7 +124,9 @@ export default class State {
     persist() {
         if (typeof window !== 'undefined' && window.Cypress) return;
         
-        if (this.#persistTimeout) return;
+        if (this.#persistTimeout) {
+            clearTimeout(this.#persistTimeout);
+        }
         
         this.#persistTimeout = setTimeout(() => {
             localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));

@@ -4,7 +4,7 @@
  * Zero DOM dependencies.
  */
 
-import { INCOME_TAX_CONFIG, TAX_BRACKETS } from './Constants.js';
+import { INCOME_TAX_CONFIG, TAX_BRACKETS, NI_CONFIG } from './Constants.js';
 
 export default class FinanceEngine {
     /**
@@ -70,12 +70,12 @@ export default class FinanceEngine {
         }
 
         // National Insurance (UK wide for 2025/26)
-        // 8% on £12,570 - £50,270, 2% above £50,270
         let ni = 0;
-        if (salary > 50270) {
-            ni = ((50270 - 12570) * 0.08) + ((salary - 50270) * 0.02);
-        } else if (salary > 12570) {
-            ni = (salary - 12570) * 0.08;
+        if (salary > NI_CONFIG.upperThreshold) {
+            ni = ((NI_CONFIG.upperThreshold - NI_CONFIG.lowerThreshold) * NI_CONFIG.standardRate) + 
+                 ((salary - NI_CONFIG.upperThreshold) * NI_CONFIG.higherRate);
+        } else if (salary > NI_CONFIG.lowerThreshold) {
+            ni = (salary - NI_CONFIG.lowerThreshold) * NI_CONFIG.standardRate;
         }
 
         return {

@@ -65,3 +65,23 @@ export const debounce = (func, wait) => {
         timeout = setTimeout(() => func.apply(this, args), wait);
     };
 };
+
+/**
+ * Recursively freezes an object and its nested properties.
+ * @param {Object} obj - The object to freeze.
+ * @returns {Object} The frozen object.
+ */
+export const deepFreeze = (obj) => {
+    Object.freeze(obj);
+    Object.getOwnPropertyNames(obj).forEach((prop) => {
+        const value = obj[prop];
+        if (
+            value !== null &&
+            (typeof value === 'object' || typeof value === 'function') &&
+            !Object.isFrozen(value)
+        ) {
+            deepFreeze(value);
+        }
+    });
+    return obj;
+};

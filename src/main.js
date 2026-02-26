@@ -5,12 +5,12 @@
 
 import State, { INITIAL_STATE } from './core/State.js';
 import FinanceEngine from './core/FinanceEngine.js';
+import FinanceOrchestrator from './core/FinanceOrchestrator.js';
 import ApiService from './services/ApiService.js';
 import UIManager from './ui/UIManager.js';
 import { formatCurrency, debounce } from './utils/Helpers.js';
 import CSV from './ui/Export.js';
 import Validator from './core/Validator.js';
-import CalculationEngine from './core/Calculations.js';
 import { FORM_FIELDS, BAND_PRICES } from './core/Constants.js';
 
 const app = {
@@ -20,7 +20,9 @@ const app = {
     init() {
         this.hideLoader();
         this.cacheElements();
-        this.ui = new UIManager(this.elements, BAND_PRICES);
+        
+        // Pass a bound callback to decouple UIManager from global app
+        this.ui = new UIManager(this.elements, BAND_PRICES, (id) => this.updatePagination(id));
         this.store = new State(INITIAL_STATE, (data) => this.ui.render(data));
         
         this.store.hydrate();
@@ -110,9 +112,9 @@ const app = {
      * Binds DOM event listeners to application logic.
      */
     bindEvents() {
-        // Form field event binding
+        // Form field event binding - Highly declarative
         FORM_FIELDS.forEach(field => {
-            const el = this.elements[field.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase())] || document.getElementById(field.id);
+            const el = document.getElementById(field.id);
             if (!el) return;
 
             const debouncedUpdate = debounce(() => {
@@ -120,10 +122,20 @@ const app = {
                 if (field.type === 'number') val = parseFloat(val) || 0;
                 this.store.update({ [field.key || field.id]: val });
                 
-                // Logic side effects
-                if (field.id === 'propertyPrice') this.updatePropertyPriceDisplay(val, false);
-                if (field.id === 'depositPercentage' || field.id === 'depositAmount') this.calculateEquityDetails();
-                if (field.id === 'mortgageInterestRate' || field.id === 'mortgageTerm') this.calculateMonthlyMortgage();
+                // Logic side effects handled by orchestrator updates
+                const stateUpdate = {};
+                if (field.id === 'propertyPrice') {
+                    this.updatePropertyPriceDisplay(val, false);
+                    Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
+                }
+                if (['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'].includes(field.id)) {
+                    Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
+                }
+                
+                if (Object.keys(stateUpdate).length > 0) {
+                    this.store.update(stateUpdate);
+                    this.syncCalculatedFields(stateUpdate);
+                }
             }, 300);
 
             el.addEventListener('input', () => {
@@ -134,7 +146,7 @@ const app = {
                 }
                 if (field.id === 'salaryP1' || field.id === 'salaryP2') {
                     this.updateTaxEstimate(field.id === 'salaryP1' ? 'P1' : 'P2');
-                    this.calculateRatio();
+                    this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
                 }
                 debouncedUpdate();
             });
@@ -164,7 +176,7 @@ const app = {
                 this.updateSalaryTypeLabels(radio.value);
                 this.updateTaxEstimate('P1');
                 this.updateTaxEstimate('P2');
-                this.calculateRatio();
+                this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
             };
         });
 
@@ -178,7 +190,7 @@ const app = {
                     this.elements.depositPercContainer.setAttribute('hidden', '');
                     this.elements.depositAmtContainer.removeAttribute('hidden');
                 }
-                this.calculateEquityDetails();
+                this.store.update(FinanceOrchestrator.calculateEquityDetails(this.store.data));
             };
         });
 
@@ -192,7 +204,9 @@ const app = {
         document.querySelectorAll('input[name="depositSplitType"]').forEach(radio => {
             radio.onchange = () => {
                 this.store.update({ depositSplitProportional: radio.value === 'yes' });
-                this.calculateEquityDetails();
+                const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
+                this.store.update(update);
+                this.syncCalculatedFields(update);
             };
         });
 
@@ -200,14 +214,14 @@ const app = {
             radio.onchange = () => {
                 this.store.update({ homeType: radio.value });
                 this.updateFTBVisibility();
-                this.calculateEquityDetails();
+                this.store.update(FinanceOrchestrator.calculateEquityDetails(this.store.data));
             };
         });
 
         document.querySelectorAll('input[name="buyerStatus"]').forEach(radio => {
             radio.onchange = () => {
                 this.store.update({ isFTB: radio.value === 'ftb' });
-                this.calculateEquityDetails();
+                this.store.update(FinanceOrchestrator.calculateEquityDetails(this.store.data));
             };
         });
 
@@ -306,74 +320,30 @@ const app = {
         });
 
         this.updateFTBVisibility();
-        this.calculateEquityDetails();
-        this.calculateRatio();
+        const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
+        this.store.update(update);
+        this.syncCalculatedFields(update);
+        this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
     },
 
     // --- Logic Wrappers (Bridging Engine/Store/UI) ---
 
     /**
-     * Orchestrates the income ratio calculation between the engine and store.
+     * Syncs transient/calculated values back to UI elements.
+     * @param {Object} update - Result of an orchestration calculation.
      */
-    calculateRatio() {
-        const state = this.store.data;
-        let p1Basis = state.salaryP1;
-        let p2Basis = state.salaryP2;
+    syncCalculatedFields(update) {
+        if (update.depositPercentage && this.elements.depositPercentage) 
+            this.elements.depositPercentage.value = update.depositPercentage;
+        if (update.depositAmount && this.elements.depositAmount) 
+            this.elements.depositAmount.value = update.depositAmount;
 
-        if (state.salaryType === 'gross') {
-            p1Basis = FinanceEngine.calculateTakeHome(state.salaryP1, state.regionCode).monthlyNet;
-            p2Basis = FinanceEngine.calculateTakeHome(state.salaryP2, state.regionCode).monthlyNet;
-        }
-
-        const total = p1Basis + p2Basis;
-        if (total > 0) {
-            this.store.update({ ratioP1: p1Basis / total, ratioP2: p2Basis / total });
-        } else {
-            this.store.update({ ratioP1: 0.5, ratioP2: 0.5 });
-        }
-    },
-
-    /**
-     * Orchestrates property equity and deposit calculations.
-     */
-    calculateEquityDetails() {
-        this.forceStateSync();
-        const state = this.store.data;
-        if (state.propertyPrice <= 0) return;
-
-        let totalEquity = state.totalEquity;
-        let depositPerc = state.depositPercentage;
-        let depositAmt = state.depositAmount;
-
-        if (state.depositType === 'percentage') {
-            totalEquity = state.propertyPrice * (depositPerc / 100);
-            depositAmt = totalEquity;
-        } else {
-            totalEquity = depositAmt;
-            depositPerc = (depositAmt / state.propertyPrice) * 100;
-        }
-
-        const sdlt = FinanceEngine.calculateStampDuty(state.propertyPrice, state.regionCode, state.homeType, state.isFTB);
-        const legalFees = state.propertyPrice > 1000000 ? 2500 : (state.propertyPrice > 500000 ? 1800 : 1200);
-
-        const equityP1 = state.depositSplitProportional ? (totalEquity * state.ratioP1) : (totalEquity * 0.5);
-        const equityP2 = state.depositSplitProportional ? (totalEquity * (1 - state.ratioP1)) : (totalEquity * 0.5);
-
-        this.store.update({
-            totalEquity,
-            depositPercentage: depositPerc,
-            depositAmount: depositAmt,
-            mortgageRequired: state.propertyPrice - totalEquity,
-            equityP1,
-            equityP2
-        });
-
-        // Explicitly sync the cross-calculated fields back to DOM
-        if (this.elements.depositPercentage) this.elements.depositPercentage.value = depositPerc.toFixed(1);
-        if (this.elements.depositAmount) this.elements.depositAmount.value = Math.round(depositAmt);
-
-        this.renderUpfrontWorkings(sdlt, legalFees);
-        this.calculateMonthlyMortgage();
+        if (update._sdlt !== undefined) this.renderUpfrontWorkings(update._sdlt, update._legalFees);
+        
+        if (this.elements.monthlyMortgageDisplay && update.monthlyMortgagePayment !== undefined) 
+            this.elements.monthlyMortgageDisplay.innerText = formatCurrency(update.monthlyMortgagePayment);
+        if (this.elements.totalRepaymentDisplay && update.totalRepayment !== undefined) 
+            this.elements.totalRepaymentDisplay.innerText = formatCurrency(update.totalRepayment);
     },
 
     /**
@@ -394,22 +364,6 @@ const app = {
     },
 
     /**
-     * Orchestrates monthly mortgage payment calculation.
-     */
-    calculateMonthlyMortgage() {
-        const state = this.store.data;
-        const result = FinanceEngine.calculateMortgage(state.mortgageRequired, state.mortgageInterestRate, state.mortgageTerm);
-        
-        this.store.update({
-            monthlyMortgagePayment: result.monthlyPayment,
-            totalRepayment: result.totalRepayment
-        });
-
-        if (this.elements.monthlyMortgageDisplay) this.elements.monthlyMortgageDisplay.innerText = formatCurrency(result.monthlyPayment);
-        if (this.elements.totalRepaymentDisplay) this.elements.totalRepaymentDisplay.innerText = formatCurrency(result.totalRepayment);
-    },
-
-    /**
      * Handles async property price estimation via ApiService.
      */
     async handlePriceEstimation() {
@@ -424,7 +378,10 @@ const app = {
         this.store.update({ propertyPrice: price });
         this.elements.propertyPrice.value = price;
         this.updatePropertyPriceDisplay(price, !!result.isEstimated);
-        this.calculateEquityDetails();
+        
+        const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
+        this.store.update(update);
+        this.syncCalculatedFields(update);
     },
 
     // --- Helper Methods ---
@@ -463,7 +420,9 @@ const app = {
             announce.removeAttribute('hidden');
             
             // Recalculate SDLT/Legal fees as they are region-dependent
-            this.calculateEquityDetails();
+            const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
+            this.store.update(update);
+            this.syncCalculatedFields(update);
         } else {
             announce.setAttribute('hidden', '');
         }
@@ -547,20 +506,12 @@ const app = {
     /**
      * Calculates the final bill splitting breakdown and transitions to results.
      */
-    calculateFinalSplit() {
-        const summary = CalculationEngine.getSummary(this.store.data);
-        const { upfront, monthly } = summary;
+    renderResults() {
+        const summary = FinanceOrchestrator.getFinalSummary(this.store.data);
+        const { monthly } = summary;
         const { costs } = monthly;
 
-        if (this.elements.totalUpfrontDisplay) this.elements.totalUpfrontDisplay.innerText = formatCurrency(upfront.total);
-        if (this.elements.equityP1Display) this.elements.equityP1Display.innerText = formatCurrency(upfront.p1);
-        if (this.elements.equityP2Display) this.elements.equityP2Display.innerText = formatCurrency(upfront.p2);
-
-        if (this.elements.resultP1) this.elements.resultP1.innerText = formatCurrency(monthly.p1, 2);
-        if (this.elements.resultP2) this.elements.resultP2.innerText = formatCurrency(monthly.p2, 2);
-        if (this.elements.totalBillDisplay) this.elements.totalBillDisplay.innerText = formatCurrency(monthly.total, 2);
-
-        // Update Breakdown Table via UI Manager
+        // UI Updates via UIManager
         this.ui.updateBreakdownRow('Mortgage', costs.mortgage.total, costs.mortgage.p1, costs.mortgage.p2);
         this.ui.updateBreakdownRow('Tax', costs.councilTax.total, costs.councilTax.p1, costs.councilTax.p2);
         this.ui.updateBreakdownRow('Energy', costs.energy.total, costs.energy.p1, costs.energy.p2);
@@ -578,29 +529,6 @@ const app = {
         this.ui.renderResultsSummary(summary);
         this.ui.renderCalculationWorkings(this.store.data);
         this.ui.switchScreen('screen-7');
-    },
-
-    /**
-     * Populates regional utility and tax estimates into the UI and state.
-     */
-    populateEstimates() {
-        const state = this.store.data;
-        const councilTax = BAND_PRICES[state.band] || 0;
-        let energy = 40 + (state.beds * 25) + (state.baths * 15);
-        if (state.isNorth) energy *= 1.1;
-        if (['E', 'F', 'G', 'H'].includes(state.band)) energy *= 1.15;
-
-        const water = ApiService.estimateWaterCost(state.postcode, state.baths);
-
-        this.store.update({
-            councilTaxCost: councilTax,
-            energyCost: Math.round(energy),
-            waterBill: Math.round(water)
-        });
-
-        if (this.elements.councilTaxCost) this.elements.councilTaxCost.value = councilTax;
-        if (this.elements.energyCost) this.elements.energyCost.value = Math.round(energy);
-        if (this.elements.waterBill) this.elements.waterBill.value = Math.round(water);
     },
 
     /**
@@ -682,24 +610,20 @@ const app = {
         });
 
         // 2. Sync ALL radio groups found in the document
-        // This dynamically handles any radio group without needing a hardcoded list
         const radioNames = new Set();
         document.querySelectorAll('input[type="radio"]').forEach(r => radioNames.add(r.name));
         
         radioNames.forEach(name => {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) {
-                // Handle utility split types (e.g., councilTaxSplitType)
                 if (name.endsWith('SplitType')) {
                     if (!stateUpdate.splitTypes) stateUpdate.splitTypes = { ...this.store.data.splitTypes };
                     const key = name.replace('SplitType', '');
                     stateUpdate.splitTypes[key] = checked.value;
                 } 
-                // Handle specialized boolean flags
                 else if (name === 'buyerStatus') {
                     stateUpdate.isFTB = checked.value === 'ftb';
                 }
-                // Standard top-level state properties (e.g. salaryType, depositType, taxBand)
                 else {
                     stateUpdate[name] = checked.value;
                 }
@@ -718,18 +642,24 @@ const app = {
         this.forceStateSync();
 
         // 2. Run screen-specific logic updates based on the NEW state
+        let stateUpdate = {};
         if (screenId === this.ui.SCREENS.INCOME) {
-            this.calculateRatio();
+            stateUpdate = FinanceOrchestrator.calculateRatio(this.store.data);
         }
         if (screenId === this.ui.SCREENS.PROPERTY) {
-            this.populateEstimates();
-            this.calculateEquityDetails();
+            Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.store.data));
+            Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
         }
         if (screenId === this.ui.SCREENS.MORTGAGE) {
-            this.calculateMonthlyMortgage();
+            Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
         }
         if (screenId === this.ui.SCREENS.COMMITTED) {
-            this.calculateFinalSplit();
+            this.renderResults();
+        }
+
+        if (Object.keys(stateUpdate).length > 0) {
+            this.store.update(stateUpdate);
+            this.syncCalculatedFields(stateUpdate);
         }
 
         // 3. Now validate the refreshed state/DOM

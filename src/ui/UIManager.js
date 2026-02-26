@@ -12,10 +12,12 @@ export default class UIManager {
     /**
      * @param {Object} elements - Pre-populated element cache.
      * @param {Object} bandPrices - Regional cost reference.
+     * @param {Function} onScreenChangeCallback - Called when screen transitions occur.
      */
-    constructor(elements, bandPrices) {
+    constructor(elements, bandPrices, onScreenChangeCallback = null) {
         this.elements = elements;
         this.bandPrices = bandPrices;
+        this.onScreenChange = onScreenChangeCallback;
     }
 
     /**
@@ -55,9 +57,9 @@ export default class UIManager {
         this.updateLogoVisibility(id);
         this.updateBackgroundImage(id);
         
-        // Notify orchestrator to update navigation buttons
-        if (window.app && window.app.updatePagination) {
-            window.app.updatePagination(id);
+        // Notify via callback instead of global object
+        if (this.onScreenChange) {
+            this.onScreenChange(id);
         }
     }
 
@@ -152,12 +154,12 @@ export default class UIManager {
      */
     updatePricePreview(band) {
         const cost = this.bandPrices[band];
-        const display = this.elements.bandPriceDisplay;
-        if (display) {
-            display.outerHTML = createAlertHTML('info', 'icon-info.svg', `Band ${band} selected. Estimated cost: ${formatCurrency(cost)} per month.`, 'band-price-display');
-            // Re-cache element after outerHTML replacement
-            this.elements.bandPriceDisplay = document.getElementById('band-price-display');
-        }
+        this.updateAlert('band-price-display', {
+            variant: 'info',
+            icon: 'icon-info.svg',
+            text: `Band ${band} selected. Estimated cost: ${formatCurrency(cost)} per month.`,
+            hidden: false
+        });
     }
 
     /**
@@ -174,14 +176,52 @@ export default class UIManager {
     }
 
     /**
+     * Performs a targeted update on an alert component without replacing the whole element.
+     * @param {string} id - The alert element ID.
+     * @param {Object} options - Update options {variant, icon, text, hidden}.
+     */
+    updateAlert(id, { variant, icon, text, hidden }) {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        if (variant) {
+            // Remove existing variant classes and add the new one
+            el.classList.remove('alert--info', 'alert--warning', 'alert--error');
+            el.classList.add(`alert--${variant}`);
+        }
+
+        if (icon) {
+            const iconEl = el.querySelector('.alert__icon');
+            if (iconEl) {
+                const url = `url('icons/${icon}')`;
+                iconEl.style.webkitMaskImage = url;
+                iconEl.style.maskImage = url;
+            }
+        }
+
+        if (text !== undefined) {
+            const textEl = el.querySelector('.alert__text');
+            if (textEl) textEl.innerHTML = text;
+        }
+
+        if (hidden !== undefined) {
+            if (hidden) el.setAttribute('hidden', '');
+            else el.removeAttribute('hidden');
+        }
+    }
+
+    /**
      * Displays a warning alert on a specific screen.
      * @param {number} screenNum - Screen number identifier.
      * @param {string} msg - The message to display.
      */
     showWarning(screenNum, msg) {
-        const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
-        if (!warnDiv) return;
-        warnDiv.outerHTML = createAlertHTML('warning', 'icon-error.svg', msg, `warning-screen-${screenNum}`, false);
+        this.updateAlert(`warning-screen-${screenNum}`, {
+            variant: 'warning',
+            icon: 'icon-error.svg',
+            text: msg,
+            hidden: false
+        });
     }
 
     /**
@@ -189,8 +229,7 @@ export default class UIManager {
      * @param {number} screenNum - Screen number identifier.
      */
     hideWarning(screenNum) {
-        const warnDiv = document.getElementById(`warning-screen-${screenNum}`);
-        if (warnDiv) warnDiv.setAttribute('hidden', '');
+        this.updateAlert(`warning-screen-${screenNum}`, { hidden: true });
     }
 
     /**
