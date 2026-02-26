@@ -308,8 +308,20 @@ const app = {
         this.store.clear();
         if (theme) localStorage.setItem('fairshare_theme', theme);
         
-        window.location.hash = '';
-        window.location.replace(window.location.origin + window.location.pathname);
+        // Unregister all service workers
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (const registration of registrations) {
+                    registration.unregister();
+                }
+            }).finally(() => {
+                window.location.hash = '';
+                window.location.replace(window.location.origin + window.location.pathname);
+            });
+        } else {
+            window.location.hash = '';
+            window.location.replace(window.location.origin + window.location.pathname);
+        }
     },
 
     /**
