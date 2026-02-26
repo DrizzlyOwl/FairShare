@@ -569,4 +569,58 @@ runTest('CalculationEngine.getSummary should unify all financial logic', () => {
     console.assert(summary.monthly.costs.energy.p1 === 60, 'Energy split mismatch');
 });
 
+// -- START: Coverage Edge Case Tests --
+
+runTest('ApiService.getRegionFromPostcode edge cases', () => {
+    console.assert(window.ApiService.getRegionFromPostcode('') === null, 'Empty string should return null');
+    console.assert(window.ApiService.getRegionFromPostcode('12345') === null, 'Numeric only should return null');
+    console.assert(window.ApiService.getRegionFromPostcode('XYZ123') === null, 'Unknown prefix should return null');
+});
+
+runTest('ApiService.estimateWaterCost unknown region fallback', () => {
+    const cost = window.ApiService.estimateWaterCost('XYZ123', 1);
+    console.assert(cost === 50, `Expected default 50 for unknown region, got ${cost}`);
+});
+
+runTest('ApiService.getEstimatedPropertyPrice fallback logic', async () => {
+    // We can't easily mock fetch in this JSDOM script without refactoring run_unit_tests.js, 
+    // but we can trigger the catch block by providing a malformed URL or invalid postcode.
+    const result = await window.ApiService.getEstimatedPropertyPrice('INVALID', 2);
+    console.assert(result.isEstimated === true, 'Should use heuristic fallback');
+    console.assert(result.price === 250000, 'Default fallback price should be 250k');
+});
+
+runTest('Validator field edge cases', () => {
+    const v = window.Validator;
+    console.assert(v.validateField('nonExistentField', 123) === true, 'Undefined fields should pass');
+    console.assert(v.validateField('salaryP1', '') === false, 'Required field with empty string should fail');
+    console.assert(v.validateField('salaryP1', null) === false, 'Required field with null should fail');
+    console.assert(v.validateField('depositPercentage', 0) === true, 'Min boundary (0) should pass');
+    console.assert(v.validateField('depositPercentage', 100) === true, 'Max boundary (100) should pass');
+});
+
+runTest('Validator screen validation branches', () => {
+    const v = window.Validator;
+    
+    // Screen 4: Mortgage (Amount type)
+    const s4Amt = v.validateScreen('screen-4', { 
+        depositType: 'amount', 
+        depositAmount: 50000, 
+        mortgageInterestRate: 5, 
+        mortgageTerm: 25 
+    });
+    console.assert(s4Amt.isValid === true, 'Screen 4 amount-based should pass');
+
+    // Screen 5: Utilities (Failure)
+    const s5Fail = v.validateScreen('screen-5', { councilTaxCost: 'invalid' });
+    console.assert(s5Fail.isValid === false, 'Screen 5 invalid cost should fail');
+    console.assert(s5Fail.errors.includes('councilTaxCost'), 'Should identify councilTaxCost error');
+
+    // Screen 6: Lifestyle (Success)
+    const s6 = v.validateScreen('screen-6', { 
+        groceriesCost: 400, childcareCost: 0, insuranceCost: 50, otherSharedCosts: 100 
+    });
+    console.assert(s6.isValid === true, 'Screen 6 valid data should pass');
+});
+
 // -- END: Unit Tests --
