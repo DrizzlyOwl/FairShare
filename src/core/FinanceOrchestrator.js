@@ -16,6 +16,7 @@ export default class FinanceOrchestrator {
      * @returns {Object} Updated state slice.
      */
     static calculateRatio(state) {
+        console.log(`[FinanceOrchestrator] Recalculating Income Ratio based on "${state.salaryType}" salaries.`);
         let p1Basis = state.salaryP1;
         let p2Basis = state.salaryP2;
 
@@ -39,6 +40,7 @@ export default class FinanceOrchestrator {
      */
     static calculateEquityDetails(state) {
         if (state.propertyPrice <= 0) return {};
+        console.log(`[FinanceOrchestrator] Recalculating Equity and Mortgage details for property price: £${state.propertyPrice}`);
 
         let totalEquity = state.totalEquity;
         let depositPerc = state.depositPercentage;

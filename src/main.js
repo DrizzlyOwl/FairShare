@@ -18,6 +18,7 @@ const app = {
      * Initializes the application, caches elements, and sets up controllers.
      */
     init() {
+        console.log(`[App] Initializing FairShare...`);
         this.hideLoader();
         this.cacheElements();
         

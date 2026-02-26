@@ -74,6 +74,7 @@ export default class State {
             const handler = {
                 set: (target, prop, value) => {
                     if (target[prop] === value) return true;
+                    console.log(`[State] Property "${prop}" changed:`, target[prop], "->", value);
                     target[prop] = value;
                     self.persist();
                     // Avoid triggering onUpdate for every field if we're in a bulk update
@@ -107,6 +108,7 @@ export default class State {
      */
     update(newData) {
         this.#isBatchUpdating = true;
+        console.log(`[State] Batch Update:`, newData);
         try {
             Object.assign(this.#data, newData);
         } finally {

@@ -26,7 +26,7 @@ export default class UIManager {
      * @param {boolean} [isInitialLoad=false] - Whether this is the first screen load.
      */
     switchScreen(id, isInitialLoad = false) {
-        console.log(`UIManager switching to screen: ${id}`);
+        console.log(`[UIManager] Navigating to: ${id} (Initial Load: ${isInitialLoad})`);
         const target = document.getElementById(id);
         if (!target) {
             console.error(`Target screen not found: ${id}`);

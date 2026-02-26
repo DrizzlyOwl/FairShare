@@ -38,6 +38,7 @@ export default class FormController {
             const debouncedUpdate = debounce(() => {
                 let val = el.value;
                 if (field.type === 'number') val = parseFloat(val) || 0;
+                console.log(`[FormController] Debounced Input Update: ${field.id} =`, val);
                 this.store.update({ [field.key || field.id]: val });
                 
                 // Logic side effects handled by orchestrator updates
@@ -315,6 +316,7 @@ export default class FormController {
         this.forceStateSync();
         
         const { isValid, errors } = Validator.validateScreen(screenId, this.store.data);
+        console.log(`[FormController] Validating Screen: ${screenId}. Result: ${isValid}`, errors.length ? `Errors: ${errors}` : "");
 
         // Map of screen fields to clear/set
         const screenFields = {
@@ -351,6 +353,7 @@ export default class FormController {
      * Comprehensive sync for all field types, including radios and nested split preferences.
      */
     forceStateSync() {
+        console.log(`[FormController] Executing forced state-DOM synchronization.`);
         const stateUpdate = {};
         
         // 1. Sync standard form fields (text/number)
