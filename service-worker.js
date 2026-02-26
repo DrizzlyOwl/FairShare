@@ -1,4 +1,15 @@
+/**
+ * service-worker.js
+ * PWA Service Worker for FairShare.
+ * Handles static asset caching and offline functionality.
+ */
+
 const CACHE_NAME = 'fairshare-v3';
+
+/**
+ * Static assets to be cached for offline use.
+ * @type {string[]}
+ */
 const STATIC_ASSETS = [
     './',
     './index.html',
@@ -15,7 +26,10 @@ const STATIC_ASSETS = [
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional'
 ];
 
-// On install, pre-cache all static assets
+/**
+ * 'install' event listener.
+ * Pre-caches all static assets defined in STATIC_ASSETS.
+ */
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -26,7 +40,10 @@ self.addEventListener('install', event => {
     );
 });
 
-// On activate, clean up old caches
+/**
+ * 'activate' event listener.
+ * Cleans up old cache versions and claims clients.
+ */
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(keys => Promise.all(
@@ -39,7 +56,10 @@ self.addEventListener('activate', event => {
     );
 });
 
-// Fetch strategy: Stale-While-Revalidate for assets, Network-First for navigation
+/**
+ * 'fetch' event listener.
+ * Implements Stale-While-Revalidate for static assets and Network-First for navigation.
+ */
 self.addEventListener('fetch', event => {
     const { request } = event;
 

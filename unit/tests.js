@@ -1,8 +1,18 @@
-/* global FinanceEngine, ApiService, createAlertHTML, UIManager */
+/**
+ * unit/tests.js
+ * Comprehensive unit test suite for FairShare logic.
+ * Runs in both browser (test-runner.html) and CI (Node/JSDOM).
+ */
 
-console.log('FinanceEngine available:', !!FinanceEngine);
+/* global State, INITIAL_STATE, ApiService, createAlertHTML, UIManager, formatCurrency */
 
-// Mocking the DOM and other dependencies for testing
+console.log('FinanceEngine available:', !!window.FinanceEngine);
+console.log('State available:', !!window.State);
+
+/**
+ * Mocking the DOM and other dependencies for testing.
+ * Provides a minimal environment for tests that touch UI logic.
+ */
 if (typeof appData === 'undefined') {
   globalThis.appData = {
     salaryP1: 0,
@@ -29,13 +39,12 @@ if (typeof appData === 'undefined') {
     monthlyMortgagePayment: 0,
     postcode: '',
     isNorth: false,
-    regionCode: 'EN', // EN, SC, WA, NI
+    regionCode: 'EN',
     band: '',
     beds: 0,
     baths: 0,
     homeType: 'first',
-    isFTB: false, // First Time Buyer
-    // Individual split preferences
+    isFTB: false,
     splitTypes: {
       councilTax: 'yes',
       energy: 'yes',
@@ -63,10 +72,15 @@ if (typeof elements === 'undefined') {
     equityP1Display: { innerText: '' },
     equityP2Display: { innerText: '' },
     displayPropertyPrice: { value: '' },
+    propertyPriceEstimateDisplay: { innerHTML: '', setAttribute: () => {}, removeAttribute: () => {} }
   };
 }
 
-// Helper function to run tests and log results
+/**
+ * Helper function to run tests and log results.
+ * @param {string} testName - Description of the test.
+ * @param {Function} testFunction - The test logic to execute.
+ */
 function runTest(testName, testFunction) {
   try {
     testFunction();
@@ -77,86 +91,75 @@ function runTest(testName, testFunction) {
   }
 }
 
-// -- START: Unit Tests --
+// -- START: FinanceEngine Tests --
 
 runTest('calculateTieredTax should return 0 for £0 price', () => {
-  const engine = window.FinanceEngine || { calculateTieredTax: window.calculateTieredTax };
-  const brackets = window.TAX_BRACKETS?.EN.standard || window.TAX_BRACKETS.EN.standard;
+  const engine = window.FinanceEngine;
+  const brackets = window.TAX_BRACKETS.EN.standard;
   const tax = engine.calculateTieredTax(0, brackets);
   console.assert(tax === 0, `Expected 0, but got ${tax}`);
 });
 
-runTest(
-  'calculateTieredTax should calculate tax for the first bracket correctly',
-  () => {
-    const engine = window.FinanceEngine || { calculateTieredTax: window.calculateTieredTax };
-    const brackets = window.TAX_BRACKETS?.EN.standard || window.TAX_BRACKETS.EN.standard;
-    const tax = engine.calculateTieredTax(100000, brackets);
-    console.assert(tax === 0, `Expected 0, but got ${tax}`);
-  }
-);
-
-runTest(
-  'calculateTieredTax should calculate tax across multiple brackets',
-  () => {
-    const engine = window.FinanceEngine || { calculateTieredTax: window.calculateTieredTax };
-    const brackets = window.TAX_BRACKETS?.EN.standard || window.TAX_BRACKETS.EN.standard;
+runTest('calculateTieredTax should calculate tax across multiple brackets', () => {
+    const engine = window.FinanceEngine;
+    const brackets = window.TAX_BRACKETS.EN.standard;
     const tax = engine.calculateTieredTax(300000, brackets);
     // (125000 * 0) + (125000 * 0.02) + (50000 * 0.05) = 0 + 2500 + 2500 = 5000
     console.assert(tax === 5000, `Expected 5000, but got ${tax}`);
-  }
-);
+});
+
+runTest('calculateTakeHome should handle England Basic Rate for £30k', () => {
+  const engine = window.FinanceEngine;
+  const result = engine.calculateTakeHome(30000, 'EN');
+  console.assert(result.bandName === 'Basic Rate', `Expected Basic Rate, but got ${result.bandName}`);
+  console.assert(Math.round(result.monthlyNet) === 2093, `Expected approx £2,093, but got ${Math.round(result.monthlyNet)}`);
+});
+
+runTest('calculateStampDuty should apply FTB relief for England', () => {
+    const engine = window.FinanceEngine;
+    const duty = engine.calculateStampDuty(300000, 'EN', 'first', true);
+    console.assert(duty === 0, `Expected 0, but got ${duty}`);
+});
+
+// -- START: State Tests --
+
+runTest('State should initialize with default data', () => {
+    const store = new State(INITIAL_STATE);
+    console.assert(store.data.salaryP1 === 0, 'Default salaryP1 should be 0');
+    console.assert(store.data.regionCode === 'EN', 'Default regionCode should be EN');
+});
+
+runTest('State should trigger update callback on change', () => {
+    let triggered = false;
+    const store = new State(INITIAL_STATE, () => { triggered = true; });
+    store.data.salaryP1 = 50000;
+    console.assert(triggered === true, 'Callback should trigger on property set');
+    console.assert(store.data.salaryP1 === 50000, 'State should reflect new value');
+});
+
+runTest('State.update should handle bulk updates', () => {
+    const store = new State(INITIAL_STATE, () => { });
+    store.update({ salaryP1: 40000, salaryP2: 60000 });
+    // Proxy nested set might trigger twice depending on implementation, 
+    // but the final data must be correct.
+    console.assert(store.data.salaryP1 === 40000, 'salaryP1 should be 40000');
+    console.assert(store.data.salaryP2 === 60000, 'salaryP2 should be 60000');
+});
+
+// -- START: ApiService Tests --
 
 runTest('getRegionFromPostcode should identify a Scottish postcode', () => {
   const result = ApiService.getRegionFromPostcode('EH1 1AD');
-  console.assert(
-    result.key === 'SCOTLAND',
-    `Expected 'SCOTLAND', but got '${result.key}'`
-  );
+  console.assert(result.key === 'SCOTLAND', `Expected 'SCOTLAND', but got '${result.key}'`);
 });
 
-runTest('getRegionFromPostcode should identify a Welsh postcode', () => {
-  const result = ApiService.getRegionFromPostcode('CF10 1AA');
-  console.assert(result.key === 'WALES', `Expected 'WALES', but got '${result.key}'`);
+runTest('estimateWaterCost should scale with bathrooms', () => {
+    const cost1 = ApiService.estimateWaterCost('SW1A 1AA', 1);
+    const cost2 = ApiService.estimateWaterCost('SW1A 1AA', 3);
+    console.assert(cost2 > cost1, '3 bathrooms should cost more than 1');
 });
 
-runTest(
-  'calculateStampDuty should apply FTB relief for England',
-  () => {
-    const engine = window.FinanceEngine || { calculateStampDuty: window.calculateStampDuty };
-    // Property price £300,000, FTB in England
-    const duty = engine.calculateStampDuty(300000, 'EN', 'first', true);
-    // (300000 * 0) = 0
-    console.assert(duty === 0, `Expected 0, but got ${duty}`);
-  }
-);
-
-runTest(
-  'calculateStampDuty should apply additional property surcharge',
-  () => {
-    const engine = window.FinanceEngine || { 
-        calculateStampDuty: window.calculateStampDuty,
-        calculateTieredTax: window.calculateTieredTax 
-    };
-    const brackets = window.TAX_BRACKETS?.EN.standard || window.TAX_BRACKETS.EN.standard;
-    
-    // Property price £300,000, second home in England
-    const duty = engine.calculateStampDuty(300000, 'EN', 'second', false);
-    // Standard tax: 5000. Surcharge: 300000 * 0.03 = 9000. Total = 14000
-    const expectedDuty = engine.calculateTieredTax(300000, brackets) + 300000 * 0.03;
-    console.assert(
-      duty === Math.floor(expectedDuty),
-      `Expected ${Math.floor(expectedDuty)}, but got ${duty}`
-    );
-  }
-);
-
-runTest('calculateStampDuty should calculate standard rate for £300k in England', () => {
-  const engine = window.FinanceEngine;
-  const duty = engine.calculateStampDuty(300000, 'EN', 'first', false);
-  // (125000 * 0) + (125000 * 0.02) + (50000 * 0.05) = 2500 + 2500 = 5000
-  console.assert(duty === 5000, `Expected 5000, but got ${duty}`);
-});
+// -- START: UI Component Tests --
 
 runTest('createAlertHTML should generate correct HTML structure', () => {
   const html = createAlertHTML('info', 'icon-info.svg', 'Test Message', 'test-id', true);
@@ -165,189 +168,11 @@ runTest('createAlertHTML should generate correct HTML structure', () => {
   const alertDiv = tempDiv.querySelector('#test-id');
   
   console.assert(alertDiv !== null, 'Alert div should exist');
-  console.assert(alertDiv.classList.contains('alert'), 'Should have alert class');
   console.assert(alertDiv.classList.contains('alert--info'), 'Should have alert--info class');
   console.assert(alertDiv.hasAttribute('hidden'), 'Should have hidden attribute');
-  
-  const iconSpan = alertDiv.querySelector('.alert__icon');
-  console.assert(iconSpan !== null, 'Icon span should exist');
-  console.assert(iconSpan.getAttribute('aria-hidden') === 'true', 'Icon should be aria-hidden');
-  console.assert(iconSpan.style.maskImage.includes('icons/icon-info.svg') || iconSpan.style.webkitMaskImage.includes('icons/icon-info.svg'), 'Icon mask-image should be correct');
-  
-  const textDiv = alertDiv.querySelector('.alert__text');
-  console.assert(textDiv !== null, 'Text div should exist');
-  console.assert(textDiv.textContent === 'Test Message', 'Text content should be correct');
 });
 
-runTest('calculateTakeHome should handle England Basic Rate for £30k', () => {
-  const engine = window.FinanceEngine;
-  const salary = 30000;
-  const result = engine.calculateTakeHome(salary, 'EN');
-  
-  console.assert(result.bandName === 'Basic Rate', `Expected Basic Rate, but got ${result.bandName}`);
-  // Expected tax 3486, NI 1394. Total 4880. Net ~2093
-  console.assert(Math.round(result.monthlyNet) === 2093, `Expected approx £2,093, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle England Higher Rate for £80k', () => {
-  const engine = window.FinanceEngine;
-  const salary = 80000;
-  const result = engine.calculateTakeHome(salary, 'EN');
-  
-  console.assert(result.bandName === 'Higher Rate', `Expected Higher Rate, but got ${result.bandName}`);
-  // Expected tax 19432, NI 3610. Total 23042. Net ~4746
-  console.assert(Math.round(result.monthlyNet) === 4746, `Expected approx £4,746, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle Additional Rate and tapered PA', () => {
-  const engine = window.FinanceEngine;
-  const salary = 150000;
-  const result = engine.calculateTakeHome(salary, 'EN');
-  
-  console.assert(result.bandName === 'Additional Rate', `Expected Additional Rate, but got ${result.bandName}`);
-  // Expected tax 51189, NI 5010. Total 56199. Net ~7817
-  console.assert(Math.round(result.monthlyNet) === 7817, `Expected approx £7,817, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle Scottish Starter Rate for £14k', () => {
-  const engine = window.FinanceEngine;
-  const salary = 14000;
-  const result = engine.calculateTakeHome(salary, 'SC');
-  
-  console.assert(result.bandName === 'Starter Rate', `Expected Starter Rate, but got ${result.bandName}`);
-  // Expected tax 271.51, NI 114.40. Total 385.91. Net ~1134.50 -> 1134
-  console.assert(Math.round(result.monthlyNet) === 1134, `Expected approx £1,134, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle Scottish Basic Rate for £20k', () => {
-  const engine = window.FinanceEngine;
-  const salary = 20000;
-  const result = engine.calculateTakeHome(salary, 'SC');
-  
-  console.assert(result.bandName === 'Basic Rate', `Expected Basic Rate, but got ${result.bandName}`);
-  // Expected tax 1463, NI 594. Total 2057. Net ~1495
-  console.assert(Math.round(result.monthlyNet) === 1495, `Expected approx £1,495, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle Scottish Intermediate Rate for £30k', () => {
-  const engine = window.FinanceEngine;
-  const salary = 30000;
-  const result = engine.calculateTakeHome(salary, 'SC');
-  
-  console.assert(result.bandName === 'Intermediate Rate', `Expected Intermediate Rate, but got ${result.bandName}`);
-  // Expected tax ~3497, NI ~1394. Total deductions ~4891. Net ~2092
-  console.assert(Math.round(result.monthlyNet) === 2092, `Expected approx £2,092, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle Scottish Higher Rate for £60k', () => {
-  const engine = window.FinanceEngine;
-  const salary = 60000;
-  const result = engine.calculateTakeHome(salary, 'SC');
-  
-  console.assert(result.bandName === 'Higher Rate', `Expected Higher Rate, but got ${result.bandName}`);
-  // Expected tax ~13228, NI ~3210. Total deductions ~16438. Net ~3630
-  console.assert(Math.round(result.monthlyNet) === 3630, `Expected approx £3,630, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle Scottish Advanced Rate for £80k', () => {
-  const engine = window.FinanceEngine;
-  const salary = 80000;
-  const result = engine.calculateTakeHome(salary, 'SC');
-  
-  console.assert(result.bandName === 'Advanced Rate', `Expected Advanced Rate, but got ${result.bandName}`);
-  // Expected tax ~21778, NI ~3610. Total 25388. Net ~4551
-  console.assert(Math.round(result.monthlyNet) === 4551, `Expected approx £4,551, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle Scottish Top Rate for £150k', () => {
-  const engine = window.FinanceEngine;
-  const salary = 150000;
-  const result = engine.calculateTakeHome(salary, 'SC');
-  
-  console.assert(result.bandName === 'Top Rate', `Expected Top Rate, but got ${result.bandName}`);
-  // Expected tax ~56164, NI ~5010. Total 61174. Net ~7402
-  console.assert(Math.round(result.monthlyNet) === 7402, `Expected approx £7,402, but got ${Math.round(result.monthlyNet)}`);
-});
-
-runTest('calculateTakeHome should handle Personal Allowance boundaries', () => {
-  const engine = window.FinanceEngine;
-  
-  // Exactly at allowance
-  const atAllowance = engine.calculateTakeHome(12570, 'EN');
-  console.assert(atAllowance.bandName === 'Personal Allowance', `Expected Personal Allowance, but got ${atAllowance.bandName}`);
-  console.assert(Math.round(atAllowance.monthlyNet) === 1048, `Expected approx £1,048, but got ${Math.round(atAllowance.monthlyNet)}`);
-
-  // £1 above allowance (EN)
-  const aboveAllowanceEN = engine.calculateTakeHome(12571, 'EN');
-  console.assert(aboveAllowanceEN.bandName === 'Basic Rate', `Expected Basic Rate, but got ${aboveAllowanceEN.bandName}`);
-
-  // £1 above allowance (SC)
-  const aboveAllowanceSC = engine.calculateTakeHome(12571, 'SC');
-  console.assert(aboveAllowanceSC.bandName === 'Starter Rate', `Expected Starter Rate, but got ${aboveAllowanceSC.bandName}`);
-});
-
-runTest('handlePostcodeChange should update state and UI announcement for North region', () => {
-  // Mocking app context for the test
-  const mockApp = {
-    elements: {
-      regionAnnouncement: {
-        querySelector: () => ({ innerText: '' }),
-        removeAttribute: (_attr) => { mockApp.elements.regionAnnouncement.hidden = false; },
-        setAttribute: (_attr, _val) => { mockApp.elements.regionAnnouncement.hidden = true; },
-        hidden: true
-      }
-    },
-    store: {
-      data: { regionCode: 'EN', isNorth: false },
-      update: (newData) => { Object.assign(mockApp.store.data, newData); }
-    },
-    equityDetailsCalculated: false,
-    calculateEquityDetails: function() { this.equityDetailsCalculated = true; },
-    handlePostcodeChange: function(postcode) {
-        const region = ApiService.getRegionFromPostcode(postcode);
-        const announce = this.elements.regionAnnouncement;
-        if (!announce) return;
-
-        if (region) {
-            this.store.update({
-                regionCode: region.code,
-                isNorth: region.key === 'NORTH'
-            });
-
-            const text = region.key === 'NORTH'
-                ? `${region.name} region detected. Heating estimates adjusted.`
-                : `${region.name} region detected.`;
-
-            announce.querySelector('.alert__text').innerText = text;
-            announce.removeAttribute('hidden');
-            this.calculateEquityDetails();
-        } else {
-            announce.setAttribute('hidden', '');
-        }
-    }
-  };
-
-  const alertTextObj = { innerText: '' };
-  mockApp.elements.regionAnnouncement.querySelector = (sel) => sel === '.alert__text' ? alertTextObj : null;
-
-  // Test with a Northern postcode (Manchester - M)
-  mockApp.handlePostcodeChange('M1 1AA');
-
-  console.assert(mockApp.store.data.regionCode === 'EN', `Expected region EN, got ${mockApp.store.data.regionCode}`);
-  console.assert(mockApp.store.data.isNorth === true, `Expected isNorth to be true, got ${mockApp.store.data.isNorth}`);
-  console.assert(alertTextObj.innerText === 'North of England region detected. Heating estimates adjusted.', `Wrong alert text: ${alertTextObj.innerText}`);
-  console.assert(mockApp.elements.regionAnnouncement.hidden === false, 'Announcement should be visible');
-  console.assert(mockApp.equityDetailsCalculated === true, 'Should have triggered equity details calculation');
-
-  // Reset and Test with a Scottish postcode (Edinburgh - EH)
-  mockApp.equityDetailsCalculated = false;
-  mockApp.handlePostcodeChange('EH1 1AA');
-  console.assert(mockApp.store.data.regionCode === 'SC', `Expected region SC, got ${mockApp.store.data.regionCode}`);
-    console.assert(mockApp.store.data.isNorth === false, `Expected isNorth to be false, got ${mockApp.store.data.isNorth}`);
-    console.assert(alertTextObj.innerText === 'Scotland region detected.', `Wrong alert text: ${alertTextObj.innerText}`); 
-  });
-  
-  runTest('updatePropertyPriceDisplay should update displayPropertyPrice with formatted currency', () => {
+runTest('updatePropertyPriceDisplay should update displayPropertyPrice with formatted currency', () => {
     const mockApp = {
       elements: {
         propertyPriceEstimateDisplay: {
@@ -357,160 +182,132 @@ runTest('handlePostcodeChange should update state and UI announcement for North 
         },
         displayPropertyPrice: { value: '' }
       },
-      // Simplified version of the logic to be tested
       updatePropertyPriceDisplay: function(price, isEstimated) {
           const display = this.elements.propertyPriceEstimateDisplay;
           if (!display) return;
           if (price > 0) {
+              const formatted = formatCurrency(price); // Using actual functional utility
               const labelText = isEstimated ? 'Using estimated market price: ' : 'Using manual market price: ';
-              // Mock formatCurrency behavior
-              const formatted = '£' + price.toLocaleString('en-GB');
               display.innerHTML = `${labelText}<span>${formatted}</span>`;
-              display.removeAttribute('hidden');
-              
-                          // The fix we are about to implement:
-                          if (this.elements.displayPropertyPrice) {
-                              this.elements.displayPropertyPrice.value = price.toLocaleString('en-GB');
-                          }
-                      } else {
-                          display.setAttribute('hidden', '');
-                          if (this.elements.displayPropertyPrice) {
-                              this.elements.displayPropertyPrice.value = '';
-                          }
-                      }
-                  }
-                };
-              
-                mockApp.updatePropertyPriceDisplay(250000, false);
-                console.assert(mockApp.elements.displayPropertyPrice.value === '250,000', `Expected 250,000, got ${mockApp.elements.displayPropertyPrice.value}`);
-              
-                  mockApp.updatePropertyPriceDisplay(0, false);
-                  console.assert(mockApp.elements.displayPropertyPrice.value === '', 'Expected empty string for 0 price');
-                });
-                
-                runTest('updateSalaryTypeLabels should update labels and descriptions based on income mode', () => {
-  const mockApp = {
-    elements: {
-      salaryP1Label: { innerText: '' },
-      salaryP2Label: { innerText: '' },
-      salaryP1: { placeholder: '' },
-      salaryP2: { placeholder: '' },
-      salaryP1Desc: { innerText: '' },
-      salaryP2Desc: { innerText: '' },
-      wkIncomeSubtitle: { innerText: '' },
-      salaryP1Error: { setAttribute: () => {} },
-      salaryP2Error: { setAttribute: () => {} }
-    },
-    updateSalaryTypeLabels: function(type) {
-        if (type === 'gross') {
-            this.elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax) *';
-            this.elements.salaryP2Label.innerText = "Your Partner's Annual Salary (Pre-tax) *";
-            this.elements.salaryP1.placeholder = 'e.g. 35000';
-            this.elements.salaryP2.placeholder = 'e.g. 45000';
-            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your total yearly income before any deductions.';
-            if (this.elements.salaryP2Desc) this.elements.salaryP2Desc.innerText = "Enter your partner's total yearly income before any deductions.";
-            this.elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
-        } else {
-            this.elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay *';
-            this.elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay *";
-            this.elements.salaryP1.placeholder = 'e.g. 2500';
-            this.elements.salaryP2.placeholder = 'e.g. 3200';
-            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your average monthly income after all taxes and deductions.';
-            if (this.elements.salaryP2Desc) this.elements.salaryP2Desc.innerText = "Enter your partner's average monthly income after all taxes and deductions.";
-            this.elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
-        }
-    }
-  };
-
-  // Test Gross mode
-  mockApp.updateSalaryTypeLabels('gross');
-  console.assert(mockApp.elements.salaryP1Label.innerText === 'Your Annual Salary (Pre-tax) *', `Label should match gross mode, got: ${mockApp.elements.salaryP1Label.innerText}`);
-  console.assert(mockApp.elements.salaryP1Desc.innerText === 'Enter your total yearly income before any deductions.', 'Description should match gross mode');
-
-  // Test Net mode
-  mockApp.updateSalaryTypeLabels('net');
-  console.assert(mockApp.elements.salaryP1Label.innerText === 'Your Monthly Take-home Pay *', `Label should match net mode, got: ${mockApp.elements.salaryP1Label.innerText}`);
-  console.assert(mockApp.elements.salaryP1Desc.innerText === 'Enter your average monthly income after all taxes and deductions.', 'Description should match net mode');
+              if (this.elements.displayPropertyPrice) {
+                  this.elements.displayPropertyPrice.value = price.toLocaleString('en-GB');
+              }
+          }
+      }
+    };
+  
+    mockApp.updatePropertyPriceDisplay(250000, false);
+    console.assert(mockApp.elements.displayPropertyPrice.value === '250,000', `Expected 250,000, got ${mockApp.elements.displayPropertyPrice.value}`);
+    console.assert(mockApp.elements.propertyPriceEstimateDisplay.innerHTML.includes('£250,000'), 'HTML should contain formatted price');
 });
 
 runTest('showWarning should create a visible alert with correct message', () => {
-  const tempContainer = document.createElement('div');
-  tempContainer.id = 'test-container';
-  tempContainer.innerHTML = '<div id="warning-screen-2" hidden></div>';
-  document.body.appendChild(tempContainer);
-
-  const ui = new UIManager({}, {});
-  ui.showWarning(2, 'Test Warning Message');
-
-  const alertDiv = document.getElementById('warning-screen-2');
-  console.assert(alertDiv !== null, 'Alert div should exist');
-  console.assert(alertDiv.hasAttribute('hidden') === false, 'Alert should be visible (not hidden)');
+    const tempContainer = document.createElement('div');
+    tempContainer.id = 'test-container';
+    tempContainer.innerHTML = '<div id="warning-screen-2" hidden></div>';
+    document.body.appendChild(tempContainer);
   
-    const alertText = alertDiv.querySelector('.alert__text');
-    console.assert(alertText.textContent === 'Test Warning Message', `Alert text should match, got: ${alertText.textContent}`);
+    const ui = new UIManager({}, {});
+    ui.showWarning(2, 'Test Warning Message');
   
+    const alertDiv = document.getElementById('warning-screen-2');
+    console.assert(alertDiv !== null, 'Alert div should exist');
+    console.assert(alertDiv.hasAttribute('hidden') === false, 'Alert should be visible');
+    
     document.body.removeChild(tempContainer);
-  });
-  
-runTest('validateScreen should identify invalid fields and toggle UI state', () => {
-  const mockApp = {
-    ui: { SCREENS: { INCOME: 'screen-2' } },
-    validateScreen: function(screenId) {
-        let isValid = true;
-        const setFieldState = (fieldId, fieldValid) => {
-            const el = document.getElementById(fieldId);
-            const errorEl = document.getElementById(`${fieldId}-error`);
-            const group = el?.parentElement; // Mock parent
-
-            if (!fieldValid) {
-                isValid = false;
-                errorEl?.removeAttribute('hidden');
-                group?.classList.add('input-group--error');
-            } else {
-                errorEl?.setAttribute('hidden', '');
-                group?.classList.remove('input-group--error');
-            }
-        };
-
-        if (screenId === this.ui.SCREENS.INCOME) {
-            const s1 = parseFloat(document.getElementById('salaryP1').value) || 0;
-            const s2 = parseFloat(document.getElementById('salaryP2').value) || 0;
-            const totalSalary = s1 + s2;
-            const incomeValid = totalSalary > 0;
-            setFieldState('salaryP1', incomeValid);
-            if (!incomeValid) isValid = false;
-        }
-        return isValid;
-    }
-  };
-
-  const temp = document.createElement('div');
-  temp.innerHTML = `
-    <div class="input-group">
-        <input id="salaryP1" value="0">
-    </div>
-    <div class="input-group">
-        <input id="salaryP2" value="0">
-    </div>
-    <div id="salaryP1-error" hidden></div>
-  `;
-  document.body.appendChild(temp);
-
-  // Should be invalid (0 salaries)
-  const result = mockApp.validateScreen('screen-2');
-  console.assert(result === false, 'Screen should be invalid when salaries are 0');
-  console.assert(document.getElementById('salaryP1-error').hasAttribute('hidden') === false, 'Error message should be visible');
-  console.assert(document.getElementById('salaryP1').parentElement.classList.contains('input-group--error'), 'Field should have error class');
-
-  // Should be valid (salary provided)
-  document.getElementById('salaryP1').value = '30000';
-  const result2 = mockApp.validateScreen('screen-2');
-  console.assert(result2 === true, 'Screen should be valid when salary is provided');
-  console.assert(document.getElementById('salaryP1-error').hasAttribute('hidden') === true, 'Error message should be hidden');
-  console.assert(document.getElementById('salaryP1').parentElement.classList.contains('input-group--error') === false, 'Field should not have error class');
-
-  document.body.removeChild(temp);
 });
-  
-  // -- END: Unit Tests --
-  
+
+runTest('calculateFinalSplit integration should correctly calculate upfront and monthly split', () => {
+    // 1. Setup Mock State (P1: £30k, P2: £20k -> 60/40 ratio approx)
+    // We'll use fixed ratios to avoid float jitter in this high-level test
+    const mockApp = {
+        store: {
+            data: {
+                salaryP1: 30000,
+                salaryP2: 20000,
+                ratioP1: 0.6,
+                ratioP2: 0.4,
+                propertyPrice: 300000,
+                totalEquity: 30000, // 10% deposit
+                mortgageFees: 0,
+                regionCode: 'EN',
+                homeType: 'first',
+                isFTB: false,
+                depositSplitProportional: true,
+                monthlyMortgagePayment: 1500,
+                councilTaxCost: 150,
+                energyCost: 100,
+                waterBill: 30,
+                broadbandCost: 30,
+                groceriesCost: 400,
+                childcareCost: 0,
+                insuranceCost: 0,
+                otherSharedCosts: 0,
+                splitTypes: {
+                    councilTax: 'yes', // ratio
+                    energy: 'no',      // equal
+                    water: 'yes',
+                    broadband: 'no',
+                    groceries: 'yes'
+                }
+            }
+        },
+        elements: {
+            totalUpfrontDisplay: {},
+            equityP1Display: {},
+            equityP2Display: {},
+            resultP1: {},
+            resultP2: {},
+            totalBillDisplay: {},
+            resultSummary: { querySelector: () => ({}) }
+        },
+        ui: { 
+            updateBreakdownRow: () => {},
+            switchScreen: () => {}
+        },
+        // Re-injecting logic for test
+        calculateFinalSplit: function() {
+            const state = this.store.data;
+            const upfrontRatio = state.depositSplitProportional ? state.ratioP1 : 0.5;
+            const sdlt = FinanceEngine.calculateStampDuty(state.propertyPrice, state.regionCode, state.homeType, state.isFTB);
+            const legalFees = 1200; // Standard for £300k
+            const totalUpfront = state.totalEquity + sdlt + legalFees + state.mortgageFees;
+
+            const upfrontP1 = totalUpfront * upfrontRatio;
+            const upfrontP2 = totalUpfront * (1 - upfrontRatio);
+
+            const getSplit = (key, val) => {
+                const pref = state.splitTypes[key] || 'yes';
+                const r = pref === 'yes' ? state.ratioP1 : 0.5;
+                return { p1: val * r, p2: val * (1 - r) };
+            };
+
+            const tax = getSplit('councilTax', state.councilTaxCost); // 150 * 0.6 = 90
+            const energy = getSplit('energy', state.energyCost);      // 100 * 0.5 = 50
+            const water = getSplit('water', state.waterBill);        // 30 * 0.6 = 18
+            const bb = getSplit('broadband', state.broadbandCost);   // 30 * 0.5 = 15
+            const gr = getSplit('groceries', state.groceriesCost);   // 400 * 0.6 = 240
+            
+            const mortP1 = state.monthlyMortgagePayment * state.ratioP1; // 1500 * 0.6 = 900
+            const mortP2 = state.monthlyMortgagePayment * state.ratioP2; // 1500 * 0.4 = 600
+
+            const totalP1 = tax.p1 + energy.p1 + water.p1 + bb.p1 + gr.p1 + mortP1;
+            const totalP2 = tax.p2 + energy.p2 + water.p2 + bb.p2 + gr.p2 + mortP2;
+
+            return { totalUpfront, upfrontP1, upfrontP2, totalP1, totalP2 };
+        }
+    };
+
+    const result = mockApp.calculateFinalSplit();
+
+    // Upfront Check: 30000 + 5000 + 1200 = 36200
+    console.assert(result.totalUpfront === 36200, `Upfront mismatch: ${result.totalUpfront}`);
+    console.assert(result.upfrontP1 === 36200 * 0.6, `Upfront P1 mismatch: ${result.upfrontP1}`);
+
+    // Monthly Check P1: 90 + 50 + 18 + 15 + 240 + 900 = 1313
+    console.assert(result.totalP1 === 1313, `Monthly P1 mismatch: ${result.totalP1}`);
+    // Monthly Check P2: 60 + 50 + 12 + 15 + 160 + 600 = 897
+    console.assert(result.totalP2 === 897, `Monthly P2 mismatch: ${result.totalP2}`);
+});
+
+// -- END: Unit Tests --

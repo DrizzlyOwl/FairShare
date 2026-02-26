@@ -1,8 +1,17 @@
+/**
+ * run_unit_tests.js
+ * Node-based CI runner for project unit tests.
+ * Orchestrates a JSDOM environment to execute browser-side JS in Node.
+ */
+
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
 const path = require('path');
 
-// 1. Setup JSDOM environment
+/**
+ * 1. Setup JSDOM environment
+ * Creates a browser-like context (window, document, localStorage) for the tests.
+ */
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
   url: 'http://localhost/',
   resources: 'usable',
@@ -20,7 +29,10 @@ global.localStorage = {
   clear: () => {},
 };
 
-// Mock console.assert to throw error on failure
+/**
+ * 2. Mock Global Assertions
+ * Redirects console.assert to track failures for CI/CD reporting.
+ */
 let failures = 0;
 console.assert = (condition, message) => {
   if (!condition) {
@@ -39,9 +51,13 @@ console.error = (...args) => {
   originalError(...args);
 };
 
-// 3. Load Core Modules (Simulating ES6 imports for JSDOM)
+/**
+ * 3. Load Core Modules (Simulating ES6 imports for JSDOM)
+ * Transforms ES6 exports/imports into global window properties for the JSDOM environment.
+ */
 const modules = [
     { path: 'src/core/FinanceEngine.js', global: 'FinanceEngine', type: 'class' },
+    { path: 'src/core/State.js', global: 'State', type: 'class' },
     { path: 'src/ui/Components.js', type: 'functional' },
     { path: 'src/services/ApiService.js', global: 'ApiService', type: 'class' },
     { path: 'src/ui/UIManager.js', global: 'UIManager', type: 'class' }
@@ -68,7 +84,10 @@ modules.forEach(mod => {
     document.body.appendChild(script);
 });
 
-// 4. Load and run unit/tests.js
+/**
+ * 4. Load and run unit/tests.js
+ * Executes the main test suite within the configured JSDOM environment.
+ */
 const testsJsCode = fs.readFileSync(path.join(__dirname, 'unit', 'tests.js'), 'utf8');
 const testsScript = document.createElement('script');
 testsScript.textContent = testsJsCode;
@@ -82,7 +101,10 @@ try {
 }
 console.log('--- Unit Tests Finished ---');
 
-// 5. Exit with appropriate code
+/**
+ * 5. Exit Process
+ * Terminates with exit code 1 if any assertions failed, otherwise 0.
+ */
 if (failures > 0) {
   console.error(`${failures} assertions failed.`);
   process.exit(1);
