@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A bill-splitting calculator that helps couples and housemates divide expenses fairly based on their income.">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1740503506">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1772109700">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="logo.svg?v=1740503506" as="image">
+    <link rel="preload" href="logo.svg?v=1772109700" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
 </head>
@@ -29,12 +29,12 @@
 <main id="main-content">
     <div class="app-container">
         <header class="header-brand" id="header-brand">
-            <img src="logo.svg?v=1740503506" alt="FairShare - Salary Proportion Calculator" width="280" height="70" class="header-brand__logo">
+            <img src="logo.svg?v=1772109700" alt="FairShare - Salary Proportion Calculator" width="280" height="70" class="header-brand__logo">
             <div class="header-brand__controls">
                 <button id="theme-toggle" class="header-brand__theme-toggle" aria-label="Toggle Night Mode">
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-lightning.svg'); mask-image: url('icons/icon-lightning.svg');" aria-hidden="true"></span>
                 </button>
-                <button id="start-over-button" aria-label="Start over and clear all data" class="header-brand__reset-btn">
+                <button id="start-over-button" aria-label="Start over and clear all data" class="header-brand__reset-btn" data-cy="start-over-button">
                     Start Over
                 </button>
             </div>
@@ -46,7 +46,7 @@
                     <span class="progress__text" aria-live="polite">Step 1 of 7: Welcome</span>
                 </div>
                 <div class="progress__track">
-                    <div class="progress__bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome"></div>
+                    <div class="progress__bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome" data-cy="progress-bar"></div>
                 </div>
             </div>
         </div>
@@ -103,9 +103,9 @@
             <fieldset class="form-group">
                 <legend class="form-label">How do you want to enter your income?</legend>
                 <div class="toggle">
-                    <input type="radio" name="salaryType" id="stGross" value="gross" checked class="toggle__input">
+                    <input type="radio" name="salaryType" id="stGross" value="gross" checked class="toggle__input" data-cy="salaryType-gross">
                     <label for="stGross" class="toggle__label">Annual Gross</label>
-                    <input type="radio" name="salaryType" id="stNet" value="net" class="toggle__input">
+                    <input type="radio" name="salaryType" id="stNet" value="net" class="toggle__input" data-cy="salaryType-net">
                     <label for="stNet" class="toggle__label">Monthly Net</label>
                     <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
@@ -200,28 +200,28 @@
                     <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-external-link.svg'); mask-image: url('icons/icon-external-link.svg');" aria-hidden="true"></span>
                 </a>
                 <div class="segmented-control">
-                    <input type="radio" name="taxBand" id="bA" value="A" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bA" value="A" class="segmented-control__input" data-cy="taxBand-A">
                     <label for="bA" class="segmented-control__label">A</label>
                     
-                    <input type="radio" name="taxBand" id="bB" value="B" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bB" value="B" class="segmented-control__input" data-cy="taxBand-B">
                     <label for="bB" class="segmented-control__label">B</label>
                     
-                    <input type="radio" name="taxBand" id="bC" value="C" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bC" value="C" class="segmented-control__input" data-cy="taxBand-C">
                     <label for="bC" class="segmented-control__label">C</label>
                     
-                    <input type="radio" name="taxBand" id="bD" value="D" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bD" value="D" class="segmented-control__input" data-cy="taxBand-D">
                     <label for="bD" class="segmented-control__label">D</label>
                     
-                    <input type="radio" name="taxBand" id="bE" value="E" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bE" value="E" class="segmented-control__input" data-cy="taxBand-E">
                     <label for="bE" class="segmented-control__label">E</label>
                     
-                    <input type="radio" name="taxBand" id="bF" value="F" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bF" value="F" class="segmented-control__input" data-cy="taxBand-F">
                     <label for="bF" class="segmented-control__label">F</label>
                     
-                    <input type="radio" name="taxBand" id="bG" value="G" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bG" value="G" class="segmented-control__input" data-cy="taxBand-G">
                     <label for="bG" class="segmented-control__label">G</label>
                     
-                    <input type="radio" name="taxBand" id="bH" value="H" class="segmented-control__input">
+                    <input type="radio" name="taxBand" id="bH" value="H" class="segmented-control__input" data-cy="taxBand-H">
                     <label for="bH" class="segmented-control__label">H</label>
                 </div>
                 <div id="taxBand-error" class="alert alert--error" aria-live="assertive" hidden>
@@ -281,9 +281,9 @@
             <fieldset class="form-group">
                 <legend class="form-label">How do you want to set your deposit?</legend>
                 <div class="toggle">
-                    <input type="radio" name="depositType" id="dtPerc" value="percentage" checked class="toggle__input">
+                    <input type="radio" name="depositType" id="dtPerc" value="percentage" checked class="toggle__input" data-cy="depositType-percentage">
                     <label for="dtPerc" class="toggle__label">Percentage</label>
-                    <input type="radio" name="depositType" id="dtAmt" value="amount" class="toggle__input">
+                    <input type="radio" name="depositType" id="dtAmt" value="amount" class="toggle__input" data-cy="depositType-amount">
                     <label for="dtAmt" class="toggle__label">Fixed Amount</label>
                     <span class="toggle__slider" aria-hidden="true"></span>
                 </div>
@@ -731,7 +731,7 @@
                 <p class="text-center total-bill-row" id="total-bill-row">
                     Total Shared Monthly Budget: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display">£0</span>
                 </p>
-                <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden>
+                <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden data-cy="result-summary">
                     <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
@@ -852,11 +852,11 @@
 </main>
 
 <footer>
-    Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.22 • 2026-02-25 17:11:46 GMT
+    Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.25 • 2026-02-26 12:41:40 GMT
 </footer>
 
-<link rel="stylesheet" href="style.css?v=1740503506">
-<script type="module" src="src/main.js?v=1740503506"></script>
+<link rel="stylesheet" href="style.css?v=1772109700">
+<script type="module" src="src/main.js?v=1772109700"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
