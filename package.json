@@ -8,7 +8,7 @@
     "test": "npm run test:unit && npm run test:cypress && npm run test:a11y",
     "test:unit": "node run_unit_tests.js && nyc report",
     "test:coverage": "node run_unit_tests.js && nyc report --reporter=html",
-    "test:cypress": "cypress run --spec 'cypress/integration/*.js'",
+    "test:cypress": "cypress run",
     "test:a11y": "cypress run --spec cypress/integration/accessibility_spec.js",
     "cypress:open": "cypress open",
     "lint": "eslint src unit run_unit_tests.js service-worker.js"
