@@ -7,6 +7,9 @@
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
 const path = require('path');
+const { createInstrumenter } = require('istanbul-lib-instrument');
+
+const instrumenter = createInstrumenter();
 
 /**
  * 1. Setup JSDOM environment
@@ -85,6 +88,10 @@ modules.forEach(mod => {
     // Final cleanup: just remove "export " if any remain
     code = code.replace(/export /g, '');
 
+    // Instrument for coverage
+    const fullPath = path.resolve(__dirname, mod.path);
+    code = instrumenter.instrumentSync(code, fullPath);
+
     const script = document.createElement('script');
     script.textContent = code;
     document.body.appendChild(script);
@@ -108,7 +115,22 @@ try {
 console.log('--- Unit Tests Finished ---');
 
 /**
- * 5. Exit Process
+ * 5. Collect Coverage
+ * If coverage was collected in the JSDOM window, write it to .nyc_output
+ */
+if (window.__coverage__) {
+  const coverageDir = path.join(__dirname, '.nyc_output');
+  if (!fs.existsSync(coverageDir)) {
+    fs.mkdirSync(coverageDir);
+  }
+  fs.writeFileSync(
+    path.join(coverageDir, 'out.json'),
+    JSON.stringify(window.__coverage__)
+  );
+}
+
+/**
+ * 6. Exit Process
  * Terminates with exit code 1 if any assertions failed, otherwise 0.
  */
 if (failures > 0) {
