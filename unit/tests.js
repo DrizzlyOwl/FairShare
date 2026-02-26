@@ -220,17 +220,6 @@ runTest('ApiService.getRegionFromPostcode should return null for invalid formats
 
 // -- START: UI Component Tests --
 
-runTest('createAlertHTML should generate correct HTML structure', () => {
-  const html = createAlertHTML('info', 'icon-info.svg', 'Test Message', 'test-id', true);
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = html;
-  const alertDiv = tempDiv.querySelector('#test-id');
-  
-  console.assert(alertDiv !== null, 'Alert div should exist');
-  console.assert(alertDiv.classList.contains('alert--info'), 'Should have alert--info class');
-  console.assert(alertDiv.hasAttribute('hidden'), 'Should have hidden attribute');
-});
-
 runTest('updatePropertyPriceDisplay should update displayPropertyPrice with formatted currency', () => {
     const mockApp = {
       elements: {
@@ -478,6 +467,32 @@ runTest('State.clear should reset to INITIAL_STATE', () => {
     const store = new State({ salaryP1: 99999, salaryP2: 99999 });
     store.clear();
     console.assert(store.data.salaryP1 === 0, 'State should reset to default');
+});
+
+// -- START: Helpers Tests --
+
+runTest('formatCurrency should handle different decimal places', () => {
+    console.assert(window.formatCurrency(1234) === '£1,234', `Expected £1,234, got ${window.formatCurrency(1234)}`);
+    console.assert(window.formatCurrency(1234.56, 2) === '£1,234.56', `Expected £1,234.56, got ${window.formatCurrency(1234.56, 2)}`);
+});
+
+runTest('createAlertHTML should generate valid BEM structure', () => {
+    const html = window.createAlertHTML('error', 'icon.svg', 'Error Message', 'err-id');
+    console.assert(html.includes('class="alert alert--error"'), 'Missing variant class');
+    console.assert(html.includes('id="err-id"'), 'Missing ID attribute');
+    console.assert(html.includes('alert__text'), 'Missing text class');
+});
+
+runTest('debounce should execute immediately when in testing mode', () => {
+    let callCount = 0;
+    const fn = () => callCount++;
+    const debounced = window.debounce(fn, 1000);
+    
+    // Simulate testing environment
+    globalThis.Cypress = true;
+    debounced();
+    console.assert(callCount === 1, 'Debounce should bypass delay in tests');
+    delete globalThis.Cypress;
 });
 
 // -- START: Export Tests --

@@ -66,7 +66,7 @@ const modules = [
     { path: 'src/core/Calculations.js', global: 'CalculationEngine', type: 'class' },
     { path: 'src/core/State.js', global: 'State', type: 'class' },
     { path: 'src/core/Validator.js', global: 'Validator', type: 'class' },
-    { path: 'src/ui/Components.js', type: 'functional' },
+    { path: 'src/utils/Helpers.js', type: 'functional' },
     { path: 'src/services/ApiService.js', global: 'ApiService', type: 'class' },
     { path: 'src/ui/UIManager.js', global: 'UIManager', type: 'class' },
     { path: 'src/ui/Export.js', global: 'CSV', type: 'class' },
