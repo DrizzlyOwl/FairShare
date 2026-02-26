@@ -1,11 +1,8 @@
-# FairShare: Utility Consolidation (Complete)
+# FairShare: Coverage Increase (ApiService & Validator) (Complete)
 
 ## TODO
-- [x] Execution: Create `src/utils/Helpers.js` with `formatCurrency`, `createAlertHTML`, and `debounce`
-- [x] Execution: Update `src/main.js` to use consolidated helpers
-- [x] Execution: Update `src/ui/UIManager.js` to use consolidated helpers
-- [x] Execution: Update `src/ui/Export.js` to use consolidated helpers
-- [x] Execution: Update `src/ui/Components.js` (or decommission if empty)
-- [x] Execution: Add unit tests for `src/utils/Helpers.js`
-- [x] Verification: Run all tests and verify coverage
+- [x] Execution: Add ApiService edge case tests (Empty postcode, unknown region, price fallback)
+- [x] Execution: Add Validator edge case tests (Undefined rules, required failures, boundary conditions)
+- [x] Execution: Add unit tests for screen-4, 5, 6 validation branches
+- [x] Verification: Run unit tests and verify coverage jump
 - [x] Verification: Update build number and datetime in `index.html`
