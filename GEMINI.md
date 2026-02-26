@@ -35,7 +35,7 @@ A high-performance, framework-less web utility for proportionate bill splitting 
 
 ## 🧪 Testing & Validation
 - **Unit Tests:** `unit/tests.js` (runs in `unit/test-runner.html` or `npm run test:unit`). Verifies logic in isolation from the DOM.
-- **Integration Tests:** Cypress (`npm run test:cypress`).
+- **Integration Tests:** Cypress (`npm run test:cypress`). **IMPORTANT:** Ensure the local web server is running before executing Cypress tests.
 - **Accessibility Tests:** Cypress + Axe (`npm run test:a11y`). Target: WCAG 2.1 AA.
 - **Performance:** Maintain FCP < 1.0s. Use font preloading and non-blocking CSS.
 
