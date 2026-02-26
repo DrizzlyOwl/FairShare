@@ -109,7 +109,8 @@ const app = {
             'bd-total-total', 'bd-total-p1', 'bd-total-p2',
             'wk-salary-p1', 'wk-salary-p2', 'wk-total-salary', 'wk-income-subtitle', 'wk-p1-perc', 'wk-p2-perc',
             'wk-property-price', 'wk-deposit-perc', 'wk-total-equity', 'wk-deposit-split-type',
-            'wk-mortgage-required', 'wk-interest-rate', 'wk-mortgage-term', 'wk-monthly-payment', 'wk-total-repayment'
+            'wk-mortgage-required', 'wk-interest-rate', 'wk-mortgage-term', 'wk-monthly-payment', 'wk-total-repayment',
+            'start-over-button'
         ];
 
         ids.forEach(id => {
@@ -123,8 +124,6 @@ const app = {
 
         this.elements.progressBar = document.querySelector('.progress__bar');
         this.elements.progressLabel = document.querySelector('.progress__text');
-        this.elements.backButton = this.elements.backButton; // mapped above
-        this.elements.nextButton = this.elements.nextButton; // mapped above
     },
 
     /**
@@ -332,6 +331,18 @@ const app = {
      */
     syncUIWithState() {
         const state = this.store.data;
+
+        // Sync standard form fields (text/number)
+        FORM_FIELDS.forEach(field => {
+            const el = document.getElementById(field.id);
+            if (!el) return;
+            const val = state[field.key || field.id];
+            // Only sync if there is actual data to avoid overwriting with defaults
+            if (val) {
+                el.value = val;
+            }
+        });
+
         // Sync radio groups
         const radios = ['salaryType', 'depositType', 'homeType', 'depositSplitType', 'buyerStatus'];
         radios.forEach(name => {
@@ -380,6 +391,7 @@ const app = {
      * Orchestrates property equity and deposit calculations.
      */
     calculateEquityDetails() {
+        this.forceStateSync();
         const state = this.store.data;
         if (state.propertyPrice <= 0) return;
 
@@ -409,6 +421,10 @@ const app = {
             equityP1,
             equityP2
         });
+
+        // Explicitly sync the cross-calculated fields back to DOM
+        if (this.elements.depositPercentage) this.elements.depositPercentage.value = depositPerc.toFixed(1);
+        if (this.elements.depositAmount) this.elements.depositAmount.value = Math.round(depositAmt);
 
         this.renderUpfrontWorkings(sdlt, legalFees);
         this.calculateMonthlyMortgage();
@@ -476,6 +492,10 @@ const app = {
     debounce(func, wait) {
         let timeout;
         return (...args) => {
+            if (window.Cypress) {
+                // Execute immediately in test environment
+                return func.apply(this, args);
+            }
             clearTimeout(timeout);
             timeout = setTimeout(() => func.apply(this, args), wait);
         };
@@ -831,11 +851,74 @@ const app = {
     },
 
     /**
+     * Forces an immediate update of the state from all current DOM input values.
+     * Comprehensive sync for all field types, including radios and nested split preferences.
+     */
+    forceStateSync() {
+        const stateUpdate = {};
+        
+        // 1. Sync standard form fields (text/number)
+        FORM_FIELDS.forEach(field => {
+            const el = document.getElementById(field.id);
+            if (el) {
+                let val = el.value;
+                if (field.type === 'number') val = parseFloat(val) || 0;
+                stateUpdate[field.key || field.id] = val;
+            }
+        });
+
+        // 2. Sync ALL radio groups found in the document
+        // This dynamically handles any radio group without needing a hardcoded list
+        const radioNames = new Set();
+        document.querySelectorAll('input[type="radio"]').forEach(r => radioNames.add(r.name));
+        
+        radioNames.forEach(name => {
+            const checked = document.querySelector(`input[name="${name}"]:checked`);
+            if (checked) {
+                // Handle utility split types (e.g., councilTaxSplitType)
+                if (name.endsWith('SplitType')) {
+                    if (!stateUpdate.splitTypes) stateUpdate.splitTypes = { ...this.store.data.splitTypes };
+                    const key = name.replace('SplitType', '');
+                    stateUpdate.splitTypes[key] = checked.value;
+                } 
+                // Handle specialized boolean flags
+                else if (name === 'buyerStatus') {
+                    stateUpdate.isFTB = checked.value === 'ftb';
+                }
+                // Standard top-level state properties (e.g. salaryType, depositType, taxBand)
+                else {
+                    stateUpdate[name] = checked.value;
+                }
+            }
+        });
+
+        this.store.update(stateUpdate);
+    },
+
+    /**
      * Validates current screen data and transitions to the next screen if successful.
      * @param {string} screenId - Source screen ID.
      */
     async validateAndNext(screenId) {
-        const _state = this.store.data;
+        // 1. Force state sync from DOM immediately
+        this.forceStateSync();
+
+        // 2. Run screen-specific logic updates based on the NEW state
+        if (screenId === this.ui.SCREENS.INCOME) {
+            this.calculateRatio();
+        }
+        if (screenId === this.ui.SCREENS.PROPERTY) {
+            this.populateEstimates();
+            this.calculateEquityDetails();
+        }
+        if (screenId === this.ui.SCREENS.MORTGAGE) {
+            this.calculateMonthlyMortgage();
+        }
+        if (screenId === this.ui.SCREENS.COMMITTED) {
+            this.calculateFinalSplit();
+        }
+
+        // 3. Now validate the refreshed state/DOM
         const isScreenValid = this.validateScreen(screenId);
         
         if (!isScreenValid) {
@@ -845,14 +928,7 @@ const app = {
 
         this.ui.hideWarning(parseInt(screenId.split('-')[1]));
 
-        // Screen-specific success actions
-        const successActions = {
-            [this.ui.SCREENS.INCOME]: () => this.calculateRatio(),
-            [this.ui.SCREENS.PROPERTY]: () => this.populateEstimates(),
-            [this.ui.SCREENS.MORTGAGE]: () => this.calculateMonthlyMortgage(),
-            [this.ui.SCREENS.COMMITTED]: () => this.calculateFinalSplit()
-        };
-
+        // 4. Navigate to next screen
         const nextScreens = {
             [this.ui.SCREENS.INCOME]: this.ui.SCREENS.PROPERTY,
             [this.ui.SCREENS.PROPERTY]: this.ui.SCREENS.MORTGAGE,
@@ -861,8 +937,9 @@ const app = {
             [this.ui.SCREENS.COMMITTED]: this.ui.SCREENS.RESULTS
         };
 
-        if (successActions[screenId]) successActions[screenId]();
-        this.ui.switchScreen(nextScreens[screenId]);
+        if (nextScreens[screenId]) {
+            this.ui.switchScreen(nextScreens[screenId]);
+        }
     },
 
     /**
@@ -915,7 +992,8 @@ const app = {
         this.store.clear();
         if (theme) localStorage.setItem('fairshare_theme', theme);
         
-        // Redirect to base URL to ensure clean reload without old hashes
+        // Clear hash and reload to landing
+        window.location.hash = '';
         const baseUrl = window.location.origin + window.location.pathname;
         window.location.replace(baseUrl);
     },

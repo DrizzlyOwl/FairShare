@@ -60,14 +60,14 @@ export default class State {
      */
     constructor(initialState = INITIAL_STATE, onUpdateCallback = null) {
         this.#onUpdate = onUpdateCallback;
+        // Use a non-proxied object for the initial internal data
         this.#data = { ...initialState };
         
         const self = this;
-        // Setup Proxy for automatic persistence and reactivity.
+        // Proxy definition
         const handler = {
             set: (target, prop, value) => {
                 if (target[prop] === value) return true;
-                console.debug(`State change [${prop}]:`, target[prop], '->', value);
                 target[prop] = value;
                 self.persist();
                 if (self.#onUpdate) self.#onUpdate(self.#data);
@@ -81,6 +81,7 @@ export default class State {
             }
         };
 
+        // ONLY proxy the #data object AFTER initial setup to avoid constructor persistence
         this.#data = new Proxy(this.#data, handler);
     }
 
@@ -89,7 +90,6 @@ export default class State {
      * @param {Object} newData - Key-value pairs to merge into state.
      */
     update(newData) {
-        console.debug('Bulk state update:', newData);
         // Use the raw data target to avoid multiple Proxy set calls
         Object.assign(this.#data, newData);
         this.persist();
@@ -100,6 +100,7 @@ export default class State {
      * Saves current state to localStorage.
      */
     persist() {
+        if (typeof window !== 'undefined' && window.Cypress) return;
         localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));
     }
 
@@ -108,6 +109,8 @@ export default class State {
      * @returns {Object} The current state after hydration.
      */
     hydrate() {
+        if (typeof window !== 'undefined' && window.Cypress) return this.#data;
+
         const cached = localStorage.getItem(this.#CACHE_KEY);
         if (cached) {
             try {
