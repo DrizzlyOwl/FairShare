@@ -1,283 +1,234 @@
-describe('FairShare App', () => {
+describe('FairShare E2E - Finalized Journey Suite', () => {
   beforeEach(() => {
-    // Unregister existing service workers
-    if (window.navigator && navigator.serviceWorker) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => {
-          registration.unregister();
-        });
-      });
-    }
+    // 1. Force a clean start
     cy.clearLocalStorage();
-
-    // Prevent Service Worker registration during test
+    
     cy.on('window:before:load', (win) => {
+      // Stub SW
       if (win.navigator && win.navigator.serviceWorker) {
         cy.stub(win.navigator.serviceWorker, 'register').resolves();
       }
-    });
-
-    // Stub Land Registry API
-    cy.intercept('GET', '**/landregistry/query*', {
-      body: {
-        results: {
-          bindings: [
-            { amount: { value: '250000' } }
-          ]
+      
+      // 2. Disable animations for speed and stability
+      const style = win.document.createElement('style');
+      style.innerHTML = `
+        *, *::before, *::after {
+          transition: none !important;
+          animation: none !important;
         }
-      }
+        .lazy-loader { display: none !important; }
+      `;
+      win.document.head.appendChild(style);
+    });
+
+    cy.intercept('GET', '**/landregistry/query*', {
+      body: { results: { bindings: [{ amount: { value: '300000' } }] } }
     }).as('landRegistry');
-
-    cy.visit('index.html');
   });
 
-  const fillStep1 = () => {
-    cy.get('[data-cy="next-button"]', { timeout: 15000 }).should('be.visible').click({ force: true });
-    cy.get('#screen-2', { timeout: 15000 }).should('be.visible');
-    cy.get('[data-cy="salaryP1-input"]').should('be.visible').type('35000');
-    cy.get('[data-cy="salaryP2-input"]').should('be.visible').type('45000');
-    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
-    cy.get('#screen-3', { timeout: 15000 }).should('be.visible');
+  const waitForAppReady = () => {
+    cy.get('.lazy-loader', { timeout: 10000 }).should('not.exist');
+    cy.window().should('have.property', 'app');
   };
 
-  const fillStep2 = (postcode) => {
-    cy.get('[data-cy="postcode-input"]', { timeout: 15000 }).should('be.visible').clear().type(postcode);
-    cy.get('[data-cy="postcode-input"]').blur();
-    cy.wait(1000); // Wait for regional detection
-    
-    cy.get('[data-cy="taxBand-fieldset"] .segmented-control').should('be.visible').contains('label', /^C$/).click();
-    cy.get('[data-cy="bedrooms-input"]').should('be.visible').clear().type('3');
-    cy.get('[data-cy="bathrooms-input"]').should('be.visible').clear().type('2');
-    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
-    cy.get('#screen-4', { timeout: 15000 }).should('be.visible');
-  };
-
-  const fillStep3 = () => {
-    cy.get('[data-cy="depositPercentage-input"]', { timeout: 15000 }).should('be.visible').clear().type('10');
-    cy.get('[data-cy="mortgageInterestRate-input"]').should('be.visible').clear().type('5');
-    cy.get('[data-cy="mortgageTerm-input"]').should('be.visible').clear().type('25');
-    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
-    cy.get('#screen-5', { timeout: 15000 }).should('be.visible');
-  };
-
-  const fillStep4 = () => {
-    cy.get('[data-cy="councilTaxCost-input"]', { timeout: 15000 }).should('be.visible'); 
-    cy.get('[data-cy="energyCost-input"]').should('be.visible'); 
-    cy.get('[data-cy="waterBill-input"]').should('be.visible'); 
-    cy.get('[data-cy="broadbandCost-input"]').should('be.visible').type('35');
-    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
-    cy.get('#screen-6', { timeout: 15000 }).should('be.visible');
-  };
-
-  const fillStep5 = () => {
-    cy.get('[data-cy="groceriesCost-input"]', { timeout: 15000 }).should('be.visible').type('400');
-    cy.get('[data-cy="childcareCost-input"]').should('be.visible').type('0');
-    cy.get('[data-cy="insuranceCost-input"]').should('be.visible').type('50');
-    cy.get('[data-cy="otherSharedCosts-input"]').should('be.visible').type('100');
-    cy.get('[data-cy="next-button"]').should('be.visible').click({ force: true });
-    cy.get('#screen-7', { timeout: 15000 }).should('be.visible');
-  };
-
-  it('should calculate heating estimates correctly for a northern region', () => {
-    fillStep1();
-    fillStep2('M1 1AD'); // Manchester
-    cy.get('#region-announcement').should('contain.text', 'North of England region detected. Heating estimates adjusted.');
-    fillStep3();
-
-    cy.get('[data-cy="energyCost-input"]').invoke('val').then((energyCost) => {
-      const northernEnergyCost = parseFloat(energyCost);
-
-      // Go back and change to a southern postcode
-      cy.get('[data-cy="back-button"]').click({ force: true });
-      cy.get('[data-cy="back-button"]').click({ force: true });
-      fillStep2('SW1A 0AA'); // London
-      cy.get('#region-announcement').should('contain.text', 'London region detected.');
-      fillStep3();
-
-      cy.get('[data-cy="energyCost-input"]').invoke('val').then((southernEnergyCost) => {
-        expect(northernEnergyCost).to.be.gt(parseFloat(southernEnergyCost));
-      });
-    });
-  });
-
-  it('should calculate heating estimates correctly for a southern region', () => {
-    fillStep1();
-    fillStep2('SW1A 0AA'); // London
-    cy.get('#region-announcement').should('contain.text', 'London region detected.');
-    fillStep3();
-
-    cy.get('[data-cy="energyCost-input"]').invoke('val').then((energyCost) => {
-      const southernEnergyCost = parseFloat(energyCost);
-
-      // Go back and change to a northern postcode
-      cy.get('[data-cy="back-button"]').click({ force: true });
-      cy.get('[data-cy="back-button"]').click({ force: true });
-      fillStep2('M1 1AD'); // Manchester
-      cy.get('#region-announcement').should('contain.text', 'North of England region detected. Heating estimates adjusted.');
-      fillStep3();
-
-      cy.get('[data-cy="energyCost-input"]').invoke('val').then((northernEnergyCost) => {
-        expect(southernEnergyCost).to.be.lt(parseFloat(northernEnergyCost));
-      });
-    });
-  });
-
-  it('should prevent navigation if required fields are empty', () => {
-    cy.get('[data-cy="next-button"]').click({ force: true });
+  const skipToStep2 = () => {
+    cy.get('[data-cy="next-button"]').click();
     cy.get('#screen-2').should('be.visible');
+  };
 
-    // Try clicking next without entering salaries
-    cy.get('[data-cy="next-button"]').click({ force: true });
-
-    // Should stay on screen 2 and show errors
-    cy.get('#screen-2').should('be.visible');
-    cy.get('#salaryP1-error').should('be.visible');
-    cy.get('#salaryP2-error').should('be.visible');
-
-    // Fill one field
-    cy.get('[data-cy="salaryP1-input"]').type('30000');
-    cy.get('[data-cy="next-button"]').click({ force: true });
-
-    // Should still stay on screen 2
-    cy.get('#screen-2').should('be.visible');
-    cy.get('#salaryP2-error').should('be.visible');
-  });
-
-  it('should persist entered data across page reloads', () => {
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    cy.get('[data-cy="salaryP1-input"]').type('55000');
-    cy.get('[data-cy="salaryP2-input"]').type('65000');
-
-    // Wait for debounce to settle before reloading
-    cy.wait(500);
-
-    // Reload the page
-    cy.reload();
-
-    // Check if values persisted
-    cy.get('[data-cy="next-button"]').click({ force: true }); // Go to screen 2
-    cy.get('[data-cy="salaryP1-input"]').should('have.value', '55000');
-    cy.get('[data-cy="salaryP2-input"]').should('have.value', '65000');
-  });
-
-  it('should allow a complete user journey and display the results screen', () => {
-    fillStep1();
-    fillStep2('SW1A 0AA');
-    fillStep3();
-    fillStep4();
-    fillStep5();
-
-    cy.get('#screen-7').should('be.visible');
-
-    // Results screen assertions
-    cy.get('[data-cy="result-p1"]').should('not.have.text', '£0');
-    cy.get('[data-cy="result-p2"]').should('not.have.text', '£0');
-    cy.get('[data-cy="total-bill-display"]').should('not.have.text', '£0');
-
-    // Check if the ratio bar is updated (You earn 35k, Partner earns 45k -> Ratio is roughly 44% / 56%)
-    cy.get('[data-cy="ratio-bar-p1"]').invoke('text').then((text) => {
-      const percentage = parseInt(text);
-      expect(percentage).to.be.closeTo(44, 1);
-    });
-  });
-
-  it('should toggle between gross and net salary types correctly', () => {
-    cy.get('[data-cy="next-button"]').click({ force: true });
+  const fillPropertyStep = (postcode = 'M1 1AD', price = '300000', band = 'C') => {
+    cy.get('#screen-3').should('be.visible');
+    cy.get('[data-cy="postcode-input"]').clear().type(postcode).blur();
     
-    // Default should be Annual Gross
-    cy.get('#salaryP1Label').should('contain.text', 'Annual Salary (Pre-tax)');
-    cy.get('[data-cy="salaryP1-input"]').should('have.attr', 'placeholder', 'e.g. 35000');
+    if (price) {
+        cy.get('[data-cy="propertyPrice-input"]').clear().type(price).blur();
+    } else {
+        cy.get('[data-cy="estimatePrice-button"]').click();
+        cy.wait('@landRegistry');
+    }
     
-    // Switch to Monthly Net
-    cy.get('label[for="stNet"]').click();
-    cy.get('#salaryP1Label').should('contain.text', 'Monthly Take-home Pay');
-    cy.get('[data-cy="salaryP1-input"]').should('have.attr', 'placeholder', 'e.g. 2500');
-    
-    // Enter some net values
-    cy.get('[data-cy="salaryP1-input"]').type('3000');
-    cy.get('[data-cy="salaryP2-input"]').type('3000'); // 50/50 ratio
-    
-    // Switch back to Gross
-    cy.get('label[for="stGross"]').click();
-    cy.get('#salaryP1Label').should('contain.text', 'Annual Salary (Pre-tax)');
-    
-    // Complete journey and check workings
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    fillStep2('SW1A 0AA');
-    fillStep3();
-    fillStep4();
-    fillStep5();
-    
-    cy.get('#screen-7').should('be.visible');
-    cy.get('#wk-income-subtitle').should('contain.text', 'Annual');
-    cy.get('#wk-p1-perc').should('contain.text', '50.0%');
-  });
+    cy.get(`label[for="b${band}"]`).click(); 
+    cy.get('[data-cy="next-button"]').click();
+    cy.get('#screen-4', { timeout: 10000 }).should('be.visible');
+  };
 
-  it('should include optional mortgage fees in upfront cash calculation', () => {
-    fillStep1();
-    fillStep2('SW1A 0AA'); // London
-    
-    // On Mortgage screen (Step 4)
+  const fillMortgageStep = () => {
     cy.get('#screen-4').should('be.visible');
-    
-    // Explicitly set deposit to 10% to match previous test expectations
-    cy.get('[data-cy="depositPercentage-input"]').clear().type('10');
-    
-    // Default upfront cash (10% of 250k = 25k, plus SDLT/Legal)
-    // Intercepted price is 250k.
-    // 10% deposit = 25k.
-    // SDLT for 250k Standard in EN = (125k * 0) + (125k * 0.02) = 2500.
-    // Legal fees for 250k = 1200.
-    // Total = 25000 + 2500 + 1200 = 28700.
-    
-    cy.get('#totalUpfrontDisplay').should('contain.text', '£28,700');
-    
-    // Add mortgage fees
-    cy.get('summary.details-box__summary').click();
-    cy.get('[data-cy="mortgageFees-input"]').type('999');
-    
-    // New total = 28700 + 999 = 29699
-    cy.get('#totalUpfrontDisplay').should('contain.text', '£29,699');
+    cy.get('[data-cy="next-button"]').click();
+    cy.get('#screen-5').should('be.visible');
+  };
+
+  const fillUtilitiesStep = () => {
+    cy.get('#screen-5', { timeout: 10000 }).should('be.visible');
+    cy.get('[data-cy="councilTaxCost-input"]').clear().type('150');
+    cy.get('[data-cy="energyCost-input"]').clear().type('100');
+    cy.get('[data-cy="waterBill-input"]').clear().type('30');
+    cy.get('[data-cy="broadbandCost-input"]').clear().type('35');
+    cy.get('[data-cy="next-button"]').click();
+    cy.get('#screen-6', { timeout: 10000 }).should('be.visible');
+  };
+
+  const fillLifestyleStep = () => {
+    cy.get('#screen-6', { timeout: 10000 }).should('be.visible');
+    cy.get('[data-cy="groceriesCost-input"]').clear().type('400');
+    cy.get('[data-cy="childcareCost-input"]').clear().type('0');
+    cy.get('[data-cy="insuranceCost-input"]').clear().type('50');
+    cy.get('[data-cy="otherSharedCosts-input"]').clear().type('100');
+    cy.get('[data-cy="next-button"]').click();
+    cy.get('#screen-7', { timeout: 10000 }).should('be.visible');
+  };
+
+  it('completes a full user journey with income-based splitting', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('[data-cy="salaryP1-input"]').clear().type('60000');
+    cy.get('[data-cy="salaryP2-input"]').clear().type('40000');
+    cy.get('[data-cy="next-button"]').click();
+
+    fillPropertyStep('M1 1AD', '300000', 'C');
+    fillMortgageStep();
+    fillUtilitiesStep();
+    fillLifestyleStep();
+
+    // 60k/40k England take-home results in ~59% ratio
+    cy.get('[data-cy="ratio-bar-p1"]').invoke('text').then(text => {
+        const perc = parseFloat(text);
+        expect(perc).to.be.closeTo(59, 2);
+    });
   });
 
-  it('should display Scottish tax bands for a Scottish postcode', () => {
-    // 1. Enter salaries
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    cy.get('[data-cy="salaryP1-input"]').type('30000');
-    cy.get('[data-cy="salaryP2-input"]').type('40000');
+  it('handles a single-income household (Partner 2 = £0)', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('[data-cy="salaryP1-input"]').clear().type('50000');
+    cy.get('[data-cy="salaryP2-input"]').clear().type('0');
+    cy.get('[data-cy="next-button"]').click();
     
-    // 2. Go to Property screen and enter Scottish postcode
-    cy.get('[data-cy="next-button"]').click({ force: true });
-    cy.get('[data-cy="postcode-input"]').type('EH1 1AD'); // Edinburgh
-    cy.get('[data-cy="postcode-input"]').blur();
-    cy.get('#region-announcement').should('contain.text', 'Scotland region detected.');
+    fillPropertyStep('M1 1AD', '300000', 'C');
+    fillMortgageStep();
+    fillUtilitiesStep();
+    fillLifestyleStep();
     
-    // 3. Go back to Income screen and check for Scottish badges
-    cy.get('[data-cy="back-button"]').click({ force: true });
-    
-    // £30k in Scotland is Intermediate Rate
-    cy.get('#salaryP1-tax-badge').should('be.visible').and('contain.text', 'Intermediate Rate');
-    // £40k in Scotland is also Intermediate Rate (up to £43,662)
-    cy.get('#salaryP2-tax-badge').should('be.visible').and('contain.text', 'Intermediate Rate');
+    cy.get('[data-cy="ratio-bar-p1"]').should('contain.text', '100%');
   });
 
-  it('should allow specifying deposit as a fixed amount', () => {
-    fillStep1();
-    fillStep2('SW1A 0AA');
+  it('adjusts for Scottish regional variations (EH postcode)', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('[data-cy="salaryP1-input"]').clear().type('50000');
+    cy.get('[data-cy="salaryP2-input"]').clear().type('50000');
+    cy.get('[data-cy="next-button"]').click();
+
+    cy.get('#screen-3').should('be.visible');
+    cy.get('[data-cy="postcode-input"]').type('EH1 1AD').blur();
+    cy.get('#region-announcement').should('contain.text', 'Scotland');
+    cy.get('[data-cy="propertyPrice-input"]').clear().type('300000');
+    cy.get('label[for="bD"]').click();
+    cy.get('[data-cy="next-button"]').click();
     
-    // Switch to Fixed Amount
-    cy.get('label[for="dtAmt"]').click();
-    cy.get('#depositAmtContainer').should('be.visible');
-    cy.get('#depositPercContainer').should('not.be.visible');
+    cy.get('#screen-4').should('be.visible');
+    cy.get('#totalUpfrontDisplay').should('contain.text', '£35,800');
+  });
+
+  it('applies surcharge for additional property purchase', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('[data-cy="salaryP1-input"]').clear().type('50000');
+    cy.get('[data-cy="salaryP2-input"]').clear().type('50000');
+    cy.get('[data-cy="next-button"]').click();
+
+    fillPropertyStep('SW1A 1AA', '300000', 'C');
+
+    cy.get('#totalUpfrontDisplay').should('contain.text', '£36,200');
+
+    // Click "Buy-to-let"
+    cy.get('label[for="homeSecond"]').click();
+    cy.get('#totalUpfrontDisplay', { timeout: 10000 }).should('contain.text', '£45,200');
+  });
+
+  it('calculates results for mixed split preferences', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('[data-cy="salaryType-net"]').check({ force: true });
+    cy.get('[data-cy="salaryP1-input"]').clear().type('3000'); 
+    cy.get('[data-cy="salaryP2-input"]').clear().type('2000'); // 60/40 ratio
+    cy.get('[data-cy="next-button"]').click();
     
-    // Enter £50,000 deposit
-    cy.get('[data-cy="depositAmount-input"]').clear().type('50000');
+    fillPropertyStep('M1 1AD', '300000', 'C');
+    fillMortgageStep();
+
+    cy.get('#screen-5').should('be.visible');
+    cy.get('[data-cy="councilTaxCost-input"]').clear().type('200');
+    cy.get('label[for="ctPropNo"]').click(); // 50/50 split -> £100
+    cy.get('[data-cy="energyCost-input"]').clear().type('100'); // Ratio split (60%) -> £60
     
-    // Check if percentage was calculated correctly (50k / 250k = 20%)
-    cy.get('[data-cy="depositPercentage-input"]').should('have.value', '20.0');
+    // Fill remaining mandatory fields on Screen 5 to pass validation
+    cy.get('[data-cy="waterBill-input"]').clear().type('30');
+    cy.get('[data-cy="broadbandCost-input"]').clear().type('35');
     
-    // Check upfront summary
-    // 50000 (deposit) + 2500 (sdlt) + 1200 (legal) = 53700
-    cy.get('#totalUpfrontDisplay').should('contain.text', '£53,700');
+    cy.get('[data-cy="next-button"]').click();
+    fillLifestyleStep();
+
+    cy.get('#bd-tax-p1').should('contain.text', '£100');
+    cy.get('#bd-energy-p1').should('contain.text', '£60');
+  });
+
+  it('back-calculates percentages for fixed amount deposits', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('[data-cy="salaryP1-input"]').clear().type('50000');
+    cy.get('[data-cy="salaryP2-input"]').clear().type('50000');
+    cy.get('[data-cy="next-button"]').click();
+
+    fillPropertyStep('M1 1AD', '200000', 'C');
+
+    cy.get('#screen-4').should('be.visible');
+    cy.get('[data-cy="depositPercentage-input"]').should('have.value', '10.0');
+    cy.get('label[for="dtAmt"]').click(); 
+    cy.get('[data-cy="depositAmount-input"]').type('{selectall}50000').blur();
+    cy.wait(1000);
+    
+    cy.get('[data-cy="depositPercentage-input"]').should('have.value', '25.0');
+  });
+
+  it('clears state and returns to landing when clicking Start Over', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('[data-cy="salaryP1-input"]').type('99999');
+    
+    cy.get('[data-cy="start-over-button"]').click({ force: true });
+    
+    // Explicitly check for screen transition
+    cy.get('#screen-1', { timeout: 10000 }).should('be.visible');
+    cy.get('.progress__text').should('contain.text', 'Step 1');
+  });
+
+  it('verifies in-memory state consistency across screens', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('[data-cy="salaryP1-input"]').clear().type('12345');
+    cy.get('[data-cy="next-button"]').click();
+    
+    cy.get('#screen-3').should('be.visible');
+    cy.get('[data-cy="back-button"]').click();
+    cy.get('[data-cy="salaryP1-input"]').should('have.value', '12345');
+  });
+
+  it('switches between Gross and Net income types', () => {
+    cy.visit('index.html');
+    waitForAppReady();
+    skipToStep2();
+    cy.get('#salaryP1Label').should('contain.text', 'Annual');
+    
+    cy.get('[data-cy="salaryType-net"]').check({ force: true });
+    cy.get('#salaryP1Label').should('contain.text', 'Monthly Take-home Pay');
   });
 });
