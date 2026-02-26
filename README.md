@@ -30,6 +30,29 @@ This application adheres to a "naked" but highly polished architectural philosop
 - **Testing**: Robust suite including Node.js (JSDOM) unit tests, Cypress integration tests, and Axe-core accessibility audits.
 - **Storage**: `localStorage` for automatic progress persistence.
 
+## 🏗️ Technical Architecture
+
+FairShare is built using a **Decoupled Modular Design** powered by ES6 modules, ensuring high maintainability and testability without a framework.
+
+### 1. Specialized Controllers
+The application logic is decomposed into specialized controllers to separate concerns:
+- **`NavigationController`**: Manages the screen-to-screen lifecycle, hash-based routing, and global keyboard navigation.
+- **`FormController`**: Handles complex input life-cycles, real-time formatting, and screen-level validation.
+- **`UIManager`**: Orchestrates view state transitions, progress tracking, and BEM-compliant DOM updates.
+
+### 2. Core Logic & State
+- **`State.js`**: A reactive state container using a **JS Proxy** to intercept changes. It automatically triggers UI renders and handles throttled persistence to `localStorage`.
+- **`FinanceEngine.js`**: A pure functional engine for UK-specific financial calculations (Tax, NI, SDLT, Mortgages), completely isolated from the DOM.
+- **`FinanceOrchestrator.js`**: Coordinates complex flows between the engine and the state, acting as a middle layer for business logic.
+
+### 3. Service Layer
+- **`ApiService.js`**: Manages external data fetching (UK Land Registry SPARQL) and regional heuristic lookups, decoupled from the UI.
+
+### 4. Utility Patterns
+- **Declarative Validation**: Centralized schema-based validation in `Validator.js`.
+- **Functional Exports**: `Export.js` provides utility for generating and downloading dynamic CSV reports.
+- **BEM Styling**: Strict adherence to the Block-Element-Modifier pattern for modular, collision-free CSS.
+
 ## 🚀 Installation
 
 ### Prerequisites
