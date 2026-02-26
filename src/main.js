@@ -10,6 +10,7 @@ import UIManager from './ui/UIManager.js';
 import { formatCurrency } from './ui/Components.js';
 import CSV from './ui/Export.js';
 import Validator from './core/Validator.js';
+import CalculationEngine from './core/Calculations.js';
 import { FORM_FIELDS, BAND_PRICES } from './core/Constants.js';
 
 const app = {
@@ -565,111 +566,36 @@ const app = {
      * Calculates the final bill splitting breakdown and transitions to results.
      */
     calculateFinalSplit() {
-        const state = this.store.data;
-        const upfrontRatio = state.depositSplitProportional ? state.ratioP1 : 0.5;
+        const summary = CalculationEngine.getSummary(this.store.data);
+        const { upfront, monthly } = summary;
+        const { costs } = monthly;
+
+        if (this.elements.totalUpfrontDisplay) this.elements.totalUpfrontDisplay.innerText = formatCurrency(upfront.total);
+        if (this.elements.equityP1Display) this.elements.equityP1Display.innerText = formatCurrency(upfront.p1);
+        if (this.elements.equityP2Display) this.elements.equityP2Display.innerText = formatCurrency(upfront.p2);
+
+        if (this.elements.resultP1) this.elements.resultP1.innerText = formatCurrency(monthly.p1, 2);
+        if (this.elements.resultP2) this.elements.resultP2.innerText = formatCurrency(monthly.p2, 2);
+        if (this.elements.totalBillDisplay) this.elements.totalBillDisplay.innerText = formatCurrency(monthly.total, 2);
+
+        // Update Breakdown Table via UI Manager
+        this.ui.updateBreakdownRow('Mortgage', costs.mortgage.total, costs.mortgage.p1, costs.mortgage.p2);
+        this.ui.updateBreakdownRow('Tax', costs.councilTax.total, costs.councilTax.p1, costs.councilTax.p2);
+        this.ui.updateBreakdownRow('Energy', costs.energy.total, costs.energy.p1, costs.energy.p2);
+        this.ui.updateBreakdownRow('Water', costs.water.total, costs.water.p1, costs.water.p2);
+        this.ui.updateBreakdownRow('Broadband', costs.broadband.total, costs.broadband.p1, costs.broadband.p2);
+        this.ui.updateBreakdownRow('Groceries', costs.groceries.total, costs.groceries.p1, costs.groceries.p2);
         
-        // Ported calculation logic
-        const sdlt = FinanceEngine.calculateStampDuty(state.propertyPrice, state.regionCode, state.homeType, state.isFTB);
-        const legalFees = state.propertyPrice > 1000000 ? 2500 : (state.propertyPrice > 500000 ? 1800 : 1200);
-        const totalUpfront = state.totalEquity + sdlt + legalFees + state.mortgageFees;
-
-        const upfrontP1 = totalUpfront * upfrontRatio;
-        const upfrontP2 = totalUpfront * (1 - upfrontRatio);
-
-        if (this.elements.totalUpfrontDisplay) this.elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
-        if (this.elements.equityP1Display) this.elements.equityP1Display.innerText = formatCurrency(upfrontP1);
-        if (this.elements.equityP2Display) this.elements.equityP2Display.innerText = formatCurrency(upfrontP2);
-
-        // Monthly cost splitting logic
-        const getSplit = (key, val) => {
-            const pref = state.splitTypes[key] || 'yes';
-            const r = pref === 'yes' ? state.ratioP1 : 0.5;
-            return { p1: val * r, p2: val * (1 - r) };
-        };
-
-        const tax = getSplit('councilTax', state.councilTaxCost);
-        const energy = getSplit('energy', state.energyCost);
-        const water = getSplit('water', state.waterBill);
-        const broadband = getSplit('broadband', state.broadbandCost);
-        const groceries = getSplit('groceries', state.groceriesCost);
-        const childcare = getSplit('childcare', state.childcareCost);
-        const insurance = getSplit('insurance', state.insuranceCost);
-        const otherShared = getSplit('otherShared', state.otherSharedCosts);
-
-        const mort = { p1: state.monthlyMortgagePayment * state.ratioP1, p2: state.monthlyMortgagePayment * state.ratioP2 };
-
-        const committedTotal = state.childcareCost + state.insuranceCost + state.otherSharedCosts;
-        const committedP1 = childcare.p1 + insurance.p1 + otherShared.p1;
-        const committedP2 = childcare.p2 + insurance.p2 + otherShared.p2;
-
-        const totalP1 = tax.p1 + energy.p1 + water.p1 + broadband.p1 + groceries.p1 + committedP1 + mort.p1;
-        const totalP2 = tax.p2 + energy.p2 + water.p2 + broadband.p2 + groceries.p2 + committedP2 + mort.p2;
-        const total = totalP1 + totalP2;
-
-        if (this.elements.resultP1) this.elements.resultP1.innerText = formatCurrency(totalP1, 2);
-        if (this.elements.resultP2) this.elements.resultP2.innerText = formatCurrency(totalP2, 2);
-        if (this.elements.totalBillDisplay) this.elements.totalBillDisplay.innerText = formatCurrency(total, 2);
-
-        // Update Breakdown Table
-        this.ui.updateBreakdownRow('Mortgage', state.monthlyMortgagePayment, mort.p1, mort.p2);
-        this.ui.updateBreakdownRow('Tax', state.councilTaxCost, tax.p1, tax.p2);
-        this.ui.updateBreakdownRow('Energy', state.energyCost, energy.p1, energy.p2);
-        this.ui.updateBreakdownRow('Water', state.waterBill, water.p1, water.p2);
-        this.ui.updateBreakdownRow('Broadband', state.broadbandCost, broadband.p1, broadband.p2);
-        this.ui.updateBreakdownRow('Groceries', state.groceriesCost, groceries.p1, groceries.p2);
+        const committedTotal = costs.childcare.total + costs.insurance.total + costs.otherShared.total;
+        const committedP1 = costs.childcare.p1 + costs.insurance.p1 + costs.otherShared.p1;
+        const committedP2 = costs.childcare.p2 + costs.insurance.p2 + costs.otherShared.p2;
         this.ui.updateBreakdownRow('Committed', committedTotal, committedP1, committedP2);
-        this.ui.updateBreakdownRow('Total', total, totalP1, totalP2);
+        
+        this.ui.updateBreakdownRow('Total', monthly.total, monthly.p1, monthly.p2);
 
-        this.renderResultsSummary(totalP1, totalP2, total, committedTotal);
-        this.renderCalculationWorkings();
+        this.ui.renderResultsSummary(summary);
+        this.ui.renderCalculationWorkings(this.store.data);
         this.ui.switchScreen('screen-7');
-    },
-
-    /**
-     * Renders text summaries of the results to the results screen.
-     * @param {number} p1 - Partner 1 monthly total.
-     * @param {number} p2 - Partner 2 monthly total.
-     * @param {number} total - Overall monthly total.
-     * @param {number} committedTotal - Total committed/lifestyle costs.
-     */
-    renderResultsSummary(p1, p2, total, committedTotal) {
-        const diff = Math.abs(p1 - p2);
-        const summaryText = this.elements.resultSummary?.querySelector('.alert__text');
-        if (summaryText) {
-            const moreP = p1 > p2 ? 'You' : 'Your Partner';
-            const verb = moreP === 'You' ? 'pay' : 'pays';
-            summaryText.innerText = diff < 0.01 ? "Both partners contribute equally." : `${moreP} ${verb} ${formatCurrency(diff, 2)} more per month.`;
-            this.elements.resultSummary.removeAttribute('hidden');
-        }
-
-        if (this.elements.breakdownSummary) {
-            const state = this.store.data;
-            const mainCosts = state.monthlyMortgagePayment + state.councilTaxCost + state.energyCost + state.waterBill;
-            const lifestyleCosts = state.broadbandCost + state.groceriesCost + committedTotal;
-            this.elements.breakdownSummary.innerText = `Out of the £${total.toLocaleString('en-GB', {minimumFractionDigits: 2})} total monthly spend, £${mainCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} is dedicated to the property and utilities, while £${lifestyleCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} covers shared lifestyle and committed costs.`;
-        }
-    },
-
-    /**
-     * Renders detailed calculation workings to the hidden workings panel.
-     */
-    renderCalculationWorkings() {
-        const state = this.store.data;
-        const wk = this.elements;
-        if (wk.wkSalaryP1) wk.wkSalaryP1.innerText = formatCurrency(state.salaryP1);
-        if (wk.wkSalaryP2) wk.wkSalaryP2.innerText = formatCurrency(state.salaryP2);
-        if (wk.wkTotalSalary) wk.wkTotalSalary.innerText = formatCurrency(state.salaryP1 + state.salaryP2);
-        if (wk.wkP1Perc) wk.wkP1Perc.innerText = (state.ratioP1 * 100).toFixed(1) + '%';
-        if (wk.wkP2Perc) wk.wkP2Perc.innerText = (state.ratioP2 * 100).toFixed(1) + '%';
-        if (wk.wkPropertyPrice) wk.wkPropertyPrice.innerText = formatCurrency(state.propertyPrice);
-        if (wk.wkDepositPerc) wk.wkDepositPerc.innerText = state.depositPercentage.toFixed(1) + '%';
-        if (wk.wkTotalEquity) wk.wkTotalEquity.innerText = formatCurrency(state.totalEquity);
-        if (wk.wkDepositSplitType) wk.wkDepositSplitType.innerText = state.depositSplitProportional ? 'Income Ratio' : '50/50';
-        if (wk.wkMortgageRequired) wk.wkMortgageRequired.innerText = formatCurrency(state.mortgageRequired);
-        if (wk.wkInterestRate) wk.wkInterestRate.innerText = state.mortgageInterestRate + '%';
-        if (wk.wkMortgageTerm) wk.wkMortgageTerm.innerText = state.mortgageTerm;
-        if (wk.wkMonthlyPayment) wk.wkMonthlyPayment.innerText = formatCurrency(state.monthlyMortgagePayment, 2);
-        if (wk.wkTotalRepayment) wk.wkTotalRepayment.innerText = formatCurrency(state.totalRepayment, 2);
     },
 
     /**

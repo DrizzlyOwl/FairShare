@@ -194,11 +194,57 @@ export default class UIManager {
     }
 
     /**
+     * Renders text summaries of the results to the results screen.
+     * @param {Object} summary - Unified calculation summary.
+     */
+    renderResultsSummary(summary) {
+        const { monthly } = summary;
+        const diff = Math.abs(monthly.p1 - monthly.p2);
+        const summaryText = this.elements.resultSummary?.querySelector('.alert__text');
+        
+        if (summaryText) {
+            const moreP = monthly.p1 > monthly.p2 ? 'You' : 'Your Partner';
+            const verb = moreP === 'You' ? 'pay' : 'pays';
+            summaryText.innerText = diff < 0.01 ? "Both partners contribute equally." : `${moreP} ${verb} ${formatCurrency(diff, 2)} more per month.`;
+            this.elements.resultSummary.removeAttribute('hidden');
+        }
+
+        if (this.elements.breakdownSummary) {
+            const { costs } = monthly;
+            const mainCosts = costs.mortgage.total + costs.councilTax.total + costs.energy.total + costs.water.total;
+            const lifestyleCosts = costs.broadband.total + costs.groceries.total + costs.childcare.total + costs.insurance.total + costs.otherShared.total;
+            
+            this.elements.breakdownSummary.innerText = `Out of the £${monthly.total.toLocaleString('en-GB', {minimumFractionDigits: 2})} total monthly spend, £${mainCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} is dedicated to the property and utilities, while £${lifestyleCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} covers shared lifestyle and committed costs.`;
+        }
+    }
+
+    /**
+     * Renders detailed calculation workings to the hidden workings panel.
+     * @param {Object} state - Current application state.
+     */
+    renderCalculationWorkings(state) {
+        const wk = this.elements;
+        if (wk.wkSalaryP1) wk.wkSalaryP1.innerText = formatCurrency(state.salaryP1);
+        if (wk.wkSalaryP2) wk.wkSalaryP2.innerText = formatCurrency(state.salaryP2);
+        if (wk.wkTotalSalary) wk.wkTotalSalary.innerText = formatCurrency(state.salaryP1 + state.salaryP2);
+        if (wk.wkP1Perc) wk.wkP1Perc.innerText = (state.ratioP1 * 100).toFixed(1) + '%';
+        if (wk.wkP2Perc) wk.wkP2Perc.innerText = (state.ratioP2 * 100).toFixed(1) + '%';
+        if (wk.wkPropertyPrice) wk.wkPropertyPrice.innerText = formatCurrency(state.propertyPrice);
+        if (wk.wkDepositPerc) wk.wkDepositPerc.innerText = state.depositPercentage.toFixed(1) + '%';
+        if (wk.wkTotalEquity) wk.wkTotalEquity.innerText = formatCurrency(state.totalEquity);
+        if (wk.wkDepositSplitType) wk.wkDepositSplitType.innerText = state.depositSplitProportional ? 'Income Ratio' : '50/50';
+        if (wk.wkMortgageRequired) wk.wkMortgageRequired.innerText = formatCurrency(state.mortgageRequired);
+        if (wk.wkInterestRate) wk.wkInterestRate.innerText = state.mortgageInterestRate + '%';
+        if (wk.wkMortgageTerm) wk.wkMortgageTerm.innerText = state.mortgageTerm;
+        if (wk.wkMonthlyPayment) wk.wkMonthlyPayment.innerText = formatCurrency(state.monthlyMortgagePayment, 2);
+        if (wk.wkTotalRepayment) wk.wkTotalRepayment.innerText = formatCurrency(state.totalRepayment, 2);
+    }
+
+    /**
      * Full UI refresh based on application state.
      * @param {Object} state - The current application state.
      */
     render(state) {
         this.updateRatioBar(state.ratioP1, state.ratioP2);
-        // Additional selective render logic can be added here
     }
 }
