@@ -234,6 +234,7 @@ body::before {
 /* --- Layout --- */
 .app-container {
     max-width: 37.5rem;
+    min-height: 31.25rem; /* Reserve space for common form heights (500px) */
     margin: 0 auto;
     background-color: var(--color-bg-app);
     padding: 1.5rem; /* Mobile padding */
@@ -248,6 +249,7 @@ body::before {
     .app-container {
         padding: 2.5rem;
         margin: 2rem auto;
+        min-height: 40rem; /* Stable height for desktop screens (640px) */
     }
 }
 
@@ -268,6 +270,7 @@ body::before {
     width: 100%;
     max-width: 30rem;
     height: auto;
+    aspect-ratio: 4 / 1; /* Reserve space (280/70) before image loads */
     border-radius: 0.5rem;
     display: block;
     margin: 0 auto;
@@ -481,6 +484,7 @@ fieldset {
     margin-bottom: var(--spacing-sm);
     flex-wrap: wrap; /* Ensure they wrap if space is tight */
     gap: 0.5rem;
+    min-height: 1.5rem; /* Reserve space for badges to prevent CLS */
 }
 
 .field-header label { margin-bottom: 0; flex: 1 1 10rem; min-width: 0; }
