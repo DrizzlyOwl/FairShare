@@ -1,43 +1,45 @@
 :root {
+    color-scheme: light dark;
+
     /* Brand & Functional Colors */
-    --color-primary: #2C3E63;
-    --color-text: #2d3436;
-    --color-text-light: #4b5563; /* Darkened for better WCAG AA contrast */
-    --color-border: #dcdde1;
-    --color-input-bg: #ffffff;
+    --color-primary: light-dark(#2C3E63, #8bb9fe);
+    --color-text: light-dark(#2d3436, #e2e8f0);
+    --color-text-light: light-dark(#4b5563, #cbd5e1);
+    --color-border: light-dark(#dcdde1, #64748b);
+    --color-input-bg: light-dark(#ffffff, #1e293b);
 
     /* Partner Specific Colors (Neutral Pairing to avoid bias) */
-    --color-p1: #2C3E63;    /* Professional Navy */
-    --color-p2: #345f57;    /* Darkened Teal for WCAG 2.0 AA Compliance */
+    --color-p1: light-dark(#2C3E63, #8bb9fe);
+    --color-p2: light-dark(#345f57, #4fd1c5);
 
     /* Backgrounds */
-    --color-bg-body: #E9EDF0;    /* Soft Slate */
-    --color-bg-app: #FFFFFF;     /* Pure White */
+    --color-bg-body: light-dark(#E9EDF0, #0f172a);
+    --color-bg-app: light-dark(#FFFFFF, #1e293b);
     
     /* Semantic Colors */
-    --color-info-bg: #EBF5FF;
-    --color-info-text: #1E429F;
-    --color-info-border: #C3DDFD;
-    --color-info-icon: #3F83F8;
+    --color-info-bg: light-dark(#EBF5FF, #1e3a8a);
+    --color-info-text: light-dark(#1E429F, #bfdbfe);
+    --color-info-border: light-dark(#C3DDFD, #1e40af);
+    --color-info-icon: light-dark(#3F83F8, #60a5fa);
 
-    --color-warning-bg: #FFFBEB;
-    --color-warning-text: #92400E;
-    --color-warning-border: #FDE68A;
-    --color-warning-icon: #F59E0B;
+    --color-warning-bg: light-dark(#FFFBEB, #451a03);
+    --color-warning-text: light-dark(#92400E, #fef3c7);
+    --color-warning-border: light-dark(#FDE68A, #78350f);
+    --color-warning-icon: light-dark(#F59E0B, #fbbf24);
 
-    --color-error-bg: #FEF2F2;
-    --color-error-text: #991B1B;
-    --color-error-border: #FEE2E2;
-    --color-error-icon: #EF4444;
+    --color-error-bg: light-dark(#FEF2F2, #450a0a);
+    --color-error-text: light-dark(#991B1B, #fee2e2);
+    --color-error-border: light-dark(#FEE2E2, #7f1d1d);
+    --color-error-icon: light-dark(#EF4444, #f87171);
 
     /* Interface Accents & Utility Colors */
-    --color-bg-alt: #f1f2f6;
-    --color-bg-hover: #e8eaed;
-    --color-bg-card: #f8fafc;
-    --color-bg-track: #e2e8f0;
-    --color-bg-track-light: #e9ecef;
-    --color-progress: #B2D8D0;
-    --color-workings-bg: #F9FAFB;
+    --color-bg-alt: light-dark(#f1f2f6, #334155);
+    --color-bg-hover: light-dark(#e8eaed, #475569);
+    --color-bg-card: light-dark(#f8fafc, #1e293b);
+    --color-bg-track: light-dark(#e2e8f0, #334155);
+    --color-bg-track-light: light-dark(#e9ecef, #0f172a);
+    --color-progress: light-dark(#B2D8D0, #4fd1c5);
+    --color-workings-bg: light-dark(#F9FAFB, #0f172a);
 
     --color-alert-bg: var(--color-info-bg);
     --color-alert-text: var(--color-info-text);
@@ -61,101 +63,61 @@
     --spacing-header: 2.5rem;
 }
 
-/* --- Dark Theme Variables --- */
+/* --- Thematic Overrides (Consolidated) --- */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme='light']) {
-        --color-primary: #8bb9fe;
-        --color-text: #e2e8f0;
-        --color-text-light: #cbd5e1;
-        --color-border: #64748b; /* Even higher contrast for borders */
-        --color-input-bg: #1e293b;
-
-        --color-p1: #8bb9fe;
-        --color-p2: #4fd1c5;
-
-        --color-bg-body: #0f172a;
-        --color-bg-app: #1e293b;
-        
-        --color-info-bg: #1e3a8a;
-        --color-info-text: #bfdbfe;
-        --color-info-border: #1e40af;
-        --color-info-icon: #60a5fa;
-
-        --color-warning-bg: #451a03;
-        --color-warning-text: #fef3c7;
-        --color-warning-border: #78350f;
-        --color-warning-icon: #fbbf24;
-
-        --color-error-bg: #450a0a;
-        --color-error-text: #fee2e2;
-        --color-error-border: #7f1d1d;
-        --color-error-icon: #f87171;
-
-        --color-bg-alt: #334155;
-        --color-bg-hover: #475569;
-        --color-bg-card: #1e293b;
-        --color-bg-track: #334155;
-        --color-bg-track-light: #0f172a;
-        --color-progress: #4fd1c5;
-        --color-workings-bg: #0f172a;
+        color-scheme: dark;
     }
 
     :root:not([data-theme='light']) .btn-primary,
     :root:not([data-theme='light']) .btn-success {
-        color: #0f172a; /* Dark text on light buttons for contrast */
+        color: #0f172a;
     }
 
     :root:not([data-theme='light']) .btn-secondary {
         border-color: var(--color-primary);
         color: var(--color-primary);
     }
+
+    :root:not([data-theme='light']) .header-brand__theme-toggle,
+    :root:not([data-theme='light']) .header-brand__reset-btn {
+        background-color: var(--color-bg-alt);
+        color: var(--color-primary);
+        border-color: var(--color-border);
+    }
+
+    :root:not([data-theme='light']) .progress__text {
+        color: var(--color-p1);
+    }
+}
+
+[data-theme='light'] {
+    color-scheme: light;
 }
 
 [data-theme='dark'] {
-    --color-primary: #8bb9fe;
-    --color-text: #e2e8f0;
-    --color-text-light: #cbd5e1;
-    --color-border: #64748b; /* Even higher contrast for borders */
-    --color-input-bg: #1e293b;
-
-    --color-p1: #8bb9fe;
-    --color-p2: #4fd1c5;
-
-    --color-bg-body: #0f172a;
-    --color-bg-app: #1e293b;
-    
-    --color-info-bg: #1e3a8a;
-    --color-info-text: #bfdbfe;
-    --color-info-border: #1e40af;
-    --color-info-icon: #60a5fa;
-
-    --color-warning-bg: #451a03;
-    --color-warning-text: #fef3c7;
-    --color-warning-border: #78350f;
-    --color-warning-icon: #fbbf24;
-
-    --color-error-bg: #450a0a;
-    --color-error-text: #fee2e2;
-    --color-error-border: #7f1d1d;
-    --color-error-icon: #f87171;
-
-    --color-bg-alt: #334155;
-    --color-bg-hover: #475569;
-    --color-bg-card: #1e293b;
-    --color-bg-track: #334155;
-    --color-bg-track-light: #0f172a;
-    --color-progress: #4fd1c5;
-    --color-workings-bg: #0f172a;
+    color-scheme: dark;
 }
 
 [data-theme='dark'] .btn-primary,
 [data-theme='dark'] .btn-success {
-    color: #0f172a; /* Dark text on light buttons for contrast */
+    color: #0f172a;
 }
 
 [data-theme='dark'] .btn-secondary {
     border-color: var(--color-primary);
     color: var(--color-primary);
+}
+
+[data-theme='dark'] .header-brand__theme-toggle,
+[data-theme='dark'] .header-brand__reset-btn {
+    background-color: var(--color-bg-alt);
+    color: var(--color-primary);
+    border-color: var(--color-border);
+}
+
+[data-theme='dark'] .progress__text {
+    color: var(--color-p1);
 }
 
 /* --- CSS Reset --- */

@@ -32,6 +32,18 @@ const app = {
         
         // 3. Setup Initial State
         this.store.hydrate();
+
+        // 4. Initialize Theme
+        const theme = localStorage.getItem('fairshare_theme');
+        if (theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const logoImg = this.elements.headerBrand?.querySelector('.header-brand__logo');
+            if (logoImg) {
+                const buster = logoImg.src.match(/\?v=\d+/) || '';
+                logoImg.src = `${theme === 'dark' ? 'logo-dark.svg' : 'logo.svg'}${buster}`;
+            }
+        }
+
         this.bindGlobalEvents();
         this.syncUIWithState();
         
