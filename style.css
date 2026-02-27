@@ -195,12 +195,21 @@ body::before {
     position: relative;
     margin-block-end: 2rem;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    text-align: center;
     padding-block-start: 1rem;
-    flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
     transition: margin-block-end var(--transition-bounce);
+}
+
+@media (min-width: 480px) {
+    .header-brand {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+        gap: 1rem;
+    }
 }
 
 .header-brand--compact {
@@ -209,12 +218,21 @@ body::before {
 
 .header-brand__content {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     text-decoration: none;
     color: inherit;
     flex: 1;
     min-width: 0;
+}
+
+@media (min-width: 480px) {
+    .header-brand__content {
+        flex-direction: row;
+        gap: 1rem;
+        align-items: center;
+    }
 }
 
 .header-brand__icon {
@@ -440,6 +458,12 @@ li, .type-li {
     line-height: 1.4;
 }
 
+.tax-hint {
+    color: var(--color-p2);
+    font-weight: 600;
+    font-style: italic;
+}
+
 @media (min-width: 768px) {
     .help-text { font-size: var(--font-size-base); }
 }
@@ -539,15 +563,37 @@ fieldset {
 
 .field-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch; /* Stretch to allow full width alignment */
     margin-block-end: var(--spacing-sm);
-    flex-wrap: wrap; /* Ensure they wrap if space is tight */
     gap: 0.5rem;
-    min-height: 1.5rem; /* Reserve space for badges to prevent CLS */
+    min-height: 1.5rem;
 }
 
-.field-header label { margin-block-end: 0; flex: 1 1 10rem; min-width: 0; }
+@media (min-width: 480px) {
+    .field-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}
+
+.field-header label { margin-block-end: 0; flex: 1 1 auto; min-width: 0; }
+
+.badge {
+    align-self: flex-start; /* Prevent stretching on mobile */
+    max-width: 100%;
+    white-space: normal; /* Allow wrap if container is extremely narrow */
+    text-align: left;
+}
+
+@media (min-width: 480px) {
+    .badge {
+        white-space: nowrap;
+        text-align: center;
+    }
+}
 
 .form-label {
     display: block;
@@ -650,9 +696,9 @@ input[type=number] {
 }
 
 .segmented-control__label {
-    min-width: 40px; /* Minimum width as per design spec */
+    min-width: 48px; /* Increased for mobile touch target */
     width: auto; /* Allow width to adjust based on content */
-    padding-inline: 10px; /* Consistent padding as per design spec */
+    padding-inline: 12px;
     text-align: center;
     box-sizing: border-box;
     cursor: pointer;
@@ -666,7 +712,7 @@ input[type=number] {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
+    height: 48px; /* Increased for mobile touch target */
 }
 
 @media (min-width: 768px) {
@@ -728,7 +774,7 @@ input[type=number] {
     flex: 1;
     z-index: 2;
     text-align: center;
-    padding-block: 0.75rem;
+    padding-block: 0.5rem; /* Reduced slightly to allow for wrap */
     padding-inline: 0.5rem;
     font-size: var(--font-size-base);
     font-weight: 800;
@@ -739,21 +785,25 @@ input[type=number] {
     border: none;
     background: transparent;
     text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1; /* Tighter line height for wrapped text */
+    min-height: 2.5rem;
 }
 
 .toggle--mini .toggle__label {
-    padding-block: 6px;
+    padding-block: 4px;
     padding-inline: 0.25rem;
     font-size: var(--font-size-base);
+    min-height: 2rem;
 }
 
 @media (min-width: 768px) {
     .toggle:not(.toggle--mini) .toggle__label {
         padding-block: 0.875rem;
         padding-inline: 0.5rem;
+        white-space: nowrap; /* Keep nowrap on desktop */
     }
 }
 
@@ -1401,41 +1451,6 @@ button, .btn {
 
 
 /* --- Global Utils & System --- */
-
-.lazy-loader {
-    position: fixed;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--color-bg-body);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-    transition: opacity var(--transition-smooth), visibility var(--transition-smooth);
-}
-
-.lazy-loader[hidden] {
-    display: none !important;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(44, 62, 99, 0.2);
-    border-block-start-color: var(--color-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@media (min-width: 768px) {
-    .spinner { width: 50px; height: 50px; }
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
 
 .sr-only {
     position: absolute;
