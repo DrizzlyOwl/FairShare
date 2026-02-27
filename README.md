@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo-icon.svg" alt="FairShare Logo" width="120" height="120">
+</p>
+
 # FairShare - Fair Bill Splitting Calculator
 
 [![Static Badge](https://img.shields.io/badge/A11y-WCAG%202.1%20AA-success)](https://github.com/DrizzlyOwl/FairShare)
