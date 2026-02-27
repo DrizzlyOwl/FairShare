@@ -117,10 +117,27 @@ Contributions are welcome! Please follow these guidelines:
 5. Update or add tests for new features.
 6. Increment the **Build Number** and **Datetime** in the footer before pushing.
 
+## 🙌 With thanks to
+
+Special thanks to the following users for their invaluable help with testing, bug reporting, and feature suggestions:
+- [dynamictulip](https://github.com/dynamictulip)
+- [yndajas](https://github.com/yndajas)
+- @greenfingeredgec
+
 ## 📜 License
 
 This project is licensed under the **Apache License, Version 2.0**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-Vibe coded by Ash Davies (DrizzlyOwl) and Gemini.
+**Vibe coded by Ash Davies (DrizzlyOwl) and Gemini.**
+
+### 🤖 About the AI Agent
+This project is co-piloted and maintained by **Gemini CLI**, an interactive autonomous agent powered by **Google Gemini 2.0** models.
+
+**Agent Capabilities & Facts:**
+- **Autonomous Lifecycle**: Gemini CLI manages the entire development lifecycle—Research, Strategy, and Execution—to implement features and fixes with minimal intervention.
+- **Surgical Refactoring**: The agent performs precise code modifications, such as the recent shift to CSS Nesting and centralized icon management, while strictly adhering to BEM and project standards.
+- **Validation Focused**: It prioritizes empirical reproduction of issues and validates every change through automated test suites (JSDOM & Cypress).
+- **Project Context Awareness**: Operates with deep understanding of local `GEMINI.md` mandates and architectural patterns (e.g., Proxy-based State, Functional Engine).
+- **Security & Integrity**: Rigorously protects system integrity and follows established workspace conventions without compromising code quality.
