@@ -1,76 +1,75 @@
 # FairShare - Fair Bill Splitting Calculator
 
+[![Static Badge](https://img.shields.io/badge/A11y-WCAG%202.1%20AA-success)](https://github.com/DrizzlyOwl/FairShare)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Built with Gemini](https://img.shields.io/badge/Built%20with-Gemini%202.0-orange)](https://deepmind.google/technologies/gemini/)
+
 **FairShare** is a modern, high-performance web utility designed to help couples determine a fair and proportionate way to split household expenses. By moving beyond the standard 50/50 split—which can be inequitable when salaries differ significantly—this tool calculates contributions based on each partner's relative earning power.
+
+> [!TIP]
+> **[🚀 Try the Live Demo](https://drizzlyowl.github.io/FairShare/)**
+
+---
+
+## 📍 Table of Contents
+- [🌟 Project Overview](#-project-overview)
+- [🏗️ Technical Architecture](#%EF%B8%8F-technical-architecture)
+- [📁 Project Structure](#-project-structure)
+- [🚀 Installation](#-installation)
+- [📖 Usage](#-usage)
+- [🤝 Contribution](#-contribution)
+- [🙌 Acknowledgments](#-with-thanks-to)
+
+---
 
 ## 🌟 Project Overview
 
-FairShare automates household budgeting by establishing a contribution ratio based on relative income. It ensures both partners retain a fair share of disposable income, removing financial friction. The application guides users through a 7-step process to estimate property values, regional running costs, and shared lifestyle expenses, resulting in a detailed proportionate split report.
+FairShare automates household budgeting by establishing a contribution ratio based on relative income. It ensures both partners retain a fair share of disposable income, removing financial friction. 
 
-### Key Features
-- **Smart Ratio Calculation**: Automatically estimates net monthly take-home pay (after tax and NI) to ensure contribution ratios are truly fair, even when providing annual gross figures.
-- **Flexible Income Input**: Toggle between **Annual Gross** or **Monthly Net** salary modes.
-- **Tax & Take-Home Preview**: Provides real-time estimates of your UK Tax Band and monthly take-home pay as you type.
-- **Comprehensive Upfront Planning**:
-    - Specify deposits as either a **Percentage** or a **Fixed Amount**.
-    - Include optional **Mortgage Product Fees** in your initial cash requirements.
-    - Automatic estimates for **Stamp Duty (SDLT)** and **Legal Fees**.
-- **Detailed Financial Roadmap**: A final report that clearly separates **Initial Upfront Costs** from **Ongoing Monthly Shares**.
-- **Real-World Data Integration**: Fetches estimated property values via the UK Land Registry SPARQL endpoint.
-- **Regional cost Adjustments**: Automates utility and Council Tax estimates based on your specific postcode and property size.
-- **Accessibility First**: Fully **WCAG 2.1 AA** compliant with dark mode support and a focus on legible typography (min 16px).
-- **PWA Ready**: Works offline and is installable as a standalone utility.
+### ✨ Key Features
+- **🧠 Smart Ratio Calculation**: Automatically estimates net monthly take-home pay (after tax and NI) to ensure contribution ratios are truly fair.
+- **🌗 Dark Mode & Themes**: Fully themed UI with native support for system preferences and manual overrides.
+- **📊 Detailed Roadmap**: Generates a final report separating **Initial Upfront Costs** from **Ongoing Monthly Shares**.
+- **🌐 Real-World Data**: Fetches estimated property values via the UK Land Registry SPARQL endpoint.
+- **⚡ PWA Ready**: Fully installable on iOS and Android with offline functionality.
+- **♿ Accessibility First**: Strictly **WCAG 2.1 AA** compliant with legible typography and keyboard navigation.
+
+---
 
 ## 🏗️ Technical Architecture
 
 FairShare is built using a **Decoupled Modular Design** powered by ES6 modules. This architecture ensures high maintainability and testability without the overhead of a framework.
 
 ### 1. Core Concepts & Design Patterns
-
-- **Reactive State (Proxy Pattern)**: The application state in `State.js` is wrapped in a Javascript Proxy. Any modification to the state automatically triggers a UI render and a throttled persistence write to `localStorage`.
-- **Pure Functional Logic**: All financial calculations in `FinanceEngine.js` are pure functions. They take inputs and return outputs with zero side effects or DOM dependencies, making them highly testable via JSDOM.
-- **Orchestration Layer**: `FinanceOrchestrator.js` serves as the "brain" of the application, coordinating complex flows between the state and the engine.
+- **Reactive State (Proxy Pattern)**: State in `State.js` is wrapped in a Javascript Proxy, triggering UI renders and `localStorage` sync automatically.
+- **Pure Functional Logic**: All financial logic in `FinanceEngine.js` consists of side-effect-free pure functions.
 - **Specialized Controllers**:
-    - **`NavigationController`**: Manages the screen-to-screen lifecycle, hash-based routing, and global keyboard navigation.
-    - **`FormController`**: Handles complex input life-cycles, real-time formatting, and screen-level validation.
-    - **`UIManager`**: Orchestrates view state transitions, progress tracking, and BEM-compliant DOM updates.
+    - **`NavigationController`**: Manages hash-based routing and keyboard navigation.
+    - **`FormController`**: Handles input life-cycles and real-time validation.
+    - **`UIManager`**: Orchestrates BEM-compliant DOM updates.
 
-### 2. Developer Workflow: Adding a New Feature
+### 📁 Project Structure
+```text
+fairshare/
+├── src/                # Application Source
+│   ├── core/           # Business Logic & State
+│   ├── services/       # External API Integrations
+│   ├── ui/             # View Orchestration
+│   └── utils/          # Formatting & Helpers
+├── scripts/            # Build & Automation Utilities
+├── cypress/            # E2E & A11y Tests
+├── unit/               # Logic Unit Tests
+├── icons/              # SVG Asset Library
+├── style.css           # Modern CSS (Nesting, Variables)
+└── index.html          # Application Entry Point
+```
 
-To maintain architectural integrity, follow this lifecycle when adding new functionality:
-
-1.  **Define State**: Add new keys to `INITIAL_STATE` in `src/core/State.js`.
-2.  **Update Constants**: If the feature requires new fields or screen IDs, update `src/core/Constants.js`.
-3.  **Implement Pure Logic**: Add necessary calculation methods to `src/core/FinanceEngine.js`.
-4.  **Update Orchestrator**: Create a method in `src/core/FinanceOrchestrator.js` to bridge the new logic with the application state.
-5.  **Declare Validation**: Add field or screen-level rules to `src/core/Validator.js`.
-6.  **Update UI**:
-    - Add HTML structure in `index.html` using **BEM** selectors.
-    - Add styling in `style.css`.
-    - Implement rendering logic in `src/ui/UIManager.js`.
-7.  **Bind Events**: Connect the new UI elements in `src/ui/FormController.js` or `src/main.js`.
-8.  **Verify**: Add unit tests in `unit/tests.js` and integration tests in `cypress/integration/`.
-
-### 3. Coding Standards & Conventions
-
-- **BEM Styling**: Strictly adhere to the Block-Element-Modifier pattern (e.g., `.card`, `.card__title`, `.card--highlighted`). Avoid context-dependent nested selectors.
-- **Icon Implementation**: Use the CSS `mask-image` pattern on `<span>` tags for icons. This allows for dynamic coloring via `background-color: currentColor`.
-- **Accessibility**: All interactive elements must be keyboard accessible. Maintain **WCAG 2.1 AA** compliance. Typography must be at least **1rem (16px)**.
-- **Documentation**: All classes and methods must include **DocBlock** comments detailing parameters and return types.
-- **Build Process**: Increment the Build Number and update the GMT timestamp in the `index.html` footer before every push. This also refreshes static asset cache busters.
-
-### 4. Technical Stack Summary
-
-- **Engine**: Vanilla JavaScript (ES6+)
-- **Styling**: Modern CSS (Variables, Flexbox, Grid)
-- **Persistence**: `localStorage` via State Proxy
-- **Testing**: Node.js/JSDOM (Unit), Cypress (Integration/A11y)
-- **API**: UK Land Registry SPARQL Endpoint
+---
 
 ## 🚀 Installation
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- npm (comes with Node.js)
 
 ### Setup
 1. Clone the repository:
@@ -83,39 +82,32 @@ To maintain architectural integrity, follow this lifecycle when adding new funct
    npm install
    ```
 
+---
+
 ## 📖 Usage
 
 ### Running Locally
-To start a local development server:
 ```sh
 npm start
 ```
 The application will be available at `http://localhost:8080`.
 
-### Workflow
-1. **Income**: Input annual gross or monthly net income. Ratios are calculated on **estimated net earnings** for maximum fairness. Supports one zero-income partner.
-2. **Property**: Enter postcode and size; use "Estimate" for Land Registry market data.
-3. **Mortgage**: Set your deposit (percentage or amount) and interest rates. Optionally add arrangement fees.
-4. **Utilities**: Review regional estimates for Council Tax, Energy, and Water.
-5. **Committed**: Add optional shared lifestyle costs (Groceries, Insurances, etc.).
-6. **Results**: Review the comprehensive breakdown of both upfront cash and monthly budget.
+### Build & Versioning
+This project uses an automated build stamp utility. Before pushing any changes:
+```sh
+npm run bump
+```
+This automatically increments the build version, updates the GMT footer timestamp, and refreshes asset cache busters.
 
-### Running Tests
-- **All Tests**: `npm test`
-- **Unit Tests**: `npm run test:unit`
-- **Integration Tests**: `npm run test:cypress`
-- **Accessibility Audits**: `npm run test:a11y`
-- **Cypress UI**: `npm run cypress:open`
+---
 
 ## 🤝 Contribution
 
 Contributions are welcome! Please follow these guidelines:
-1. Ensure all changes adhere to the **BEM** naming convention for CSS.
-2. Maintain **WCAG 2.1 AA** compliance (validated via Axe).
-3. All text must maintain a minimum font size of **1rem (16px)**.
-4. Document all new functions with **DocBlock** style comments.
-5. Update or add tests for new features.
-6. Increment the **Build Number** and **Datetime** in the footer before pushing.
+1. **BEM Naming**: Ensure all changes adhere to the Block-Element-Modifier convention.
+2. **A11y**: Maintain **WCAG 2.1 AA** compliance (validated via `npm run test:a11y`).
+3. **Docs**: All new functions must include **DocBlock** style comments.
+4. **Validation**: Execute `npm run bump` before pushing to ensure version integrity.
 
 ## 🙌 With thanks to
 
@@ -126,7 +118,7 @@ Special thanks to the following users for their invaluable help with testing, bu
 
 ## 📜 License
 
-This project is licensed under the **Apache License, Version 2.0**. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Apache License, Version 2.0**.
 
 ---
 
@@ -136,8 +128,7 @@ This project is licensed under the **Apache License, Version 2.0**. See the [LIC
 This project is co-piloted and maintained by **Gemini CLI**, an interactive autonomous agent powered by **Google Gemini 2.0** models.
 
 **Agent Capabilities & Facts:**
-- **Autonomous Lifecycle**: Gemini CLI manages the entire development lifecycle—Research, Strategy, and Execution—to implement features and fixes with minimal intervention.
-- **Surgical Refactoring**: The agent performs precise code modifications, such as the recent shift to CSS Nesting and centralized icon management, while strictly adhering to BEM and project standards.
-- **Validation Focused**: It prioritizes empirical reproduction of issues and validates every change through automated test suites (JSDOM & Cypress).
-- **Project Context Awareness**: Operates with deep understanding of local `GEMINI.md` mandates and architectural patterns (e.g., Proxy-based State, Functional Engine).
-- **Security & Integrity**: Rigorously protects system integrity and follows established workspace conventions without compromising code quality.
+- **Autonomous Lifecycle**: Gemini CLI manages the entire development lifecycle—Research, Strategy, and Execution.
+- **Surgical Refactoring**: The agent performs precise code modifications while strictly adhering to architectural mandates.
+- **Validation Focused**: It prioritizes empirical reproduction of issues and validates every change through automated test suites.
+- **Project Context Awareness**: Operates with deep understanding of local project standards and engineering constraints.
