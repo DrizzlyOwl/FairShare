@@ -54,7 +54,6 @@ export default class UIManager {
         if (!isInitialLoad) target.focus();
 
         this.updateProgress(id);
-        this.updateLogoVisibility(id);
         this.updateBackgroundImage(id);
         
         // Notify via callback instead of global object
@@ -86,23 +85,6 @@ export default class UIManager {
         }
         if (this.elements.progressLabel) {
             this.elements.progressLabel.innerText = stepData.text;
-        }
-    }
-
-    /**
-     * Toggles visibility of the brand logo based on the screen.
-     * @param {string} id - Current screen ID.
-     */
-    updateLogoVisibility(id) {
-        const logo = this.elements.headerBrand?.querySelector('.header-brand__icon');
-        if (!logo) return;
-        
-        if (id === this.SCREENS.LANDING) {
-            logo.removeAttribute('hidden');
-            this.elements.headerBrand.classList.remove('header-brand--compact');
-        } else {
-            logo.setAttribute('hidden', '');
-            this.elements.headerBrand.classList.add('header-brand--compact');
         }
     }
 

@@ -217,17 +217,17 @@ export default class FormController {
      */
     updateTaxEstimate(p) {
         const val = parseFloat(this.elements[`salary${p}`].value) || 0;
-        const badge = document.getElementById(`salary${p}-tax-badge`);
-        if (!badge) return;
+        const hint = document.getElementById(`salary${p}-tax-hint`);
+        if (!hint) return;
 
         if (this.store.data.salaryType !== 'gross' || val <= 0) {
-            badge.setAttribute('hidden', '');
+            hint.setAttribute('hidden', '');
             return;
         }
 
         const { bandName, monthlyNet } = FinanceEngine.calculateTakeHome(val, this.store.data.regionCode);
-        badge.innerText = `${bandName} • Est. £${Math.round(monthlyNet).toLocaleString()}/mo take-home`;
-        badge.removeAttribute('hidden');
+        hint.innerText = `${bandName} • Est. £${Math.round(monthlyNet).toLocaleString()}/mo take-home`;
+        hint.removeAttribute('hidden');
     }
 
     /**
