@@ -37,10 +37,10 @@ const app = {
         const theme = localStorage.getItem('fairshare_theme');
         if (theme) {
             document.documentElement.setAttribute('data-theme', theme);
-            const logoImg = this.elements.headerBrand?.querySelector('.header-brand__logo');
+            const logoImg = this.elements.headerBrand?.querySelector('.header-brand__icon');
             if (logoImg) {
                 const buster = logoImg.src.match(/\?v=\d+/) || '';
-                logoImg.src = `${theme === 'dark' ? 'logo-dark.svg' : 'logo.svg'}${buster}`;
+                logoImg.src = `${theme === 'dark' ? 'logo-icon-dark.svg' : 'logo-icon.svg'}${buster}`;
             }
         }
 
@@ -354,10 +354,10 @@ const app = {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('fairshare_theme', theme);
         
-        const logoImg = this.elements.headerBrand?.querySelector('.header-brand__logo');
+        const logoImg = this.elements.headerBrand?.querySelector('.header-brand__icon');
         if (logoImg) {
             const buster = logoImg.src.match(/\?v=\d+/) || '';
-            logoImg.src = `${theme === 'dark' ? 'logo-dark.svg' : 'logo.svg'}${buster}`;
+            logoImg.src = `${theme === 'dark' ? 'logo-icon-dark.svg' : 'logo-icon.svg'}${buster}`;
         }
     },
 

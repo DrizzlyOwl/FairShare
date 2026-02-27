@@ -1,0 +1,23 @@
+<svg width="300" height="300" viewBox="250 50 300 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .navy { fill: #e2e8f0; }
+      .red { fill: #f87171; }
+      .green { fill: #4fd1c5; }
+    </style>
+  </defs>
+  <g>
+    <!-- Roof -->
+    <path d="M250 200 L400 70 L550 200" stroke="#e2e8f0" stroke-width="25" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="460" y="100" width="40" height="60" class="navy" />
+    <!-- Walls and Floor -->
+    <path d="M280 200 V340 H390" stroke="#f87171" stroke-width="25" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M520 200 V340 H410" stroke="#4fd1c5" stroke-width="25" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Symbols inside -->
+    <g transform="translate(400, 250)" text-anchor="middle">
+      <text x="-40" y="-30" class="green" font-size="80" font-weight="900" font-family="Arial, sans-serif">%</text>
+      <text x="0" y="20" class="green" font-size="120" font-weight="300" font-family="Arial, sans-serif">/</text>
+      <text x="45" y="60" class="green" font-size="80" font-weight="900" font-family="Arial, sans-serif">£</text>
+    </g>
+  </g>
+</svg>
