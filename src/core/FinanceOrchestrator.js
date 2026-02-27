@@ -97,7 +97,8 @@ export default class FinanceOrchestrator {
         return {
             councilTaxCost: councilTax,
             energyCost: Math.round(energy),
-            waterBill: Math.round(water)
+            waterBill: Math.round(water),
+            broadbandCost: 35
         };
     }
 

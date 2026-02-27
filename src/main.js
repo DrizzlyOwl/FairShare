@@ -181,6 +181,16 @@ const app = {
             this.elements.monthlyMortgageDisplay.innerText = formatCurrency(update.monthlyMortgagePayment);
         if (this.elements.totalRepaymentDisplay && update.totalRepayment !== undefined) 
             this.elements.totalRepaymentDisplay.innerText = formatCurrency(update.totalRepayment);
+
+        // Utility and regional estimate sync
+        if (update.councilTaxCost !== undefined && this.elements.councilTaxCost) 
+            this.elements.councilTaxCost.value = update.councilTaxCost;
+        if (update.energyCost !== undefined && this.elements.energyCost) 
+            this.elements.energyCost.value = update.energyCost;
+        if (update.waterBill !== undefined && this.elements.waterBill) 
+            this.elements.waterBill.value = update.waterBill;
+        if (update.broadbandCost !== undefined && this.elements.broadbandCost) 
+            this.elements.broadbandCost.value = update.broadbandCost;
     },
 
     /**
