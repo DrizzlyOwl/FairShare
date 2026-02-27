@@ -196,10 +196,14 @@ runTest('getRegionFromPostcode should identify a Scottish postcode', () => {
   console.assert(result.key === 'SCOTLAND', `Expected 'SCOTLAND', but got '${result.key}'`);
 });
 
-runTest('estimateWaterCost should scale with bathrooms', () => {
-    const cost1 = ApiService.estimateWaterCost('SW1A 1AA', 1);
-    const cost2 = ApiService.estimateWaterCost('SW1A 1AA', 3);
+runTest('estimateWaterCost should scale with bathrooms and beds', () => {
+    const cost1 = ApiService.estimateWaterCost('SW1A 1AA', 1, 1); // 18 + 12 + 0 = 30
+    const cost2 = ApiService.estimateWaterCost('SW1A 1AA', 1, 3); // 18 + 12 + 10 = 40
     console.assert(cost2 > cost1, '3 bathrooms should cost more than 1');
+    console.assert(cost1 === 30, `Expected 30, got ${cost1}`);
+
+    const cost3 = ApiService.estimateWaterCost('SW1A 1AA', 3, 1); // 18 + 36 + 0 = 54
+    console.assert(cost3 > cost1, '3 beds should cost more than 1 bed');
 });
 
 runTest('ApiService.getRegionFromPostcode should map multiple UK regions', () => {
@@ -578,8 +582,9 @@ runTest('ApiService.getRegionFromPostcode edge cases', () => {
 });
 
 runTest('ApiService.estimateWaterCost unknown region fallback', () => {
-    const cost = window.ApiService.estimateWaterCost('XYZ123', 1);
-    console.assert(cost === 50, `Expected default 50 for unknown region, got ${cost}`);
+    // 1 bed, 1 bath fallback: 18 (standing) + 12 (1 bed) + 0 (1 bath) = 30
+    const cost = window.ApiService.estimateWaterCost('XYZ123', 1, 1);
+    console.assert(cost === 30, `Expected default 30 for unknown region, got ${cost}`);
 });
 
 runTest('ApiService.getEstimatedPropertyPrice fallback logic', async () => {
