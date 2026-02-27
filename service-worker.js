@@ -12,9 +12,9 @@ const CACHE_NAME = 'fairshare-v3';
  */
 const STATIC_ASSETS = [
     './',
-    './index.html?v=1772205158',
-    './style.css?v=1772205158',
-    './src/main.js?v=1772205158',
+    './index.html?v=1772205269',
+    './style.css?v=1772205269',
+    './src/main.js?v=1772205269',
     './src/core/State.js',
     './src/core/FinanceEngine.js',
     './src/core/FinanceOrchestrator.js',
@@ -28,9 +28,9 @@ const STATIC_ASSETS = [
     './src/ui/Export.js',
     './src/services/ApiService.js',
     './src/utils/Helpers.js',
-    './logo-icon.svg?v=1772205158',
-    './logo-icon-dark.svg?v=1772205158',
-    './favicon.svg?v=1772205158',
+    './logo-icon.svg?v=1772205269',
+    './logo-icon-dark.svg?v=1772205269',
+    './favicon.svg?v=1772205269',
     './manifest.json',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional'
 ];
@@ -51,17 +51,46 @@ self.addEventListener('install', event => {
 
 /**
  * 'activate' event listener.
- * Cleans up old cache versions and claims clients.
+ * Cleans up old cache versions, prunes stale assets in the current cache, and claims clients.
  */
 self.addEventListener('activate', event => {
     event.waitUntil(
-        caches.keys().then(keys => Promise.all(
-            keys.map(key => {
-                if (key !== CACHE_NAME) {
-                    return caches.delete(key);
-                }
+        Promise.all([
+            // 1. Clean up old cache storage versions
+            caches.keys().then(keys => Promise.all(
+                keys.map(key => {
+                    if (key !== CACHE_NAME) {
+                        console.log('[ServiceWorker] Removing old cache:', key);
+                        return caches.delete(key);
+                    }
+                })
+            )),
+            // 2. Prune stale assets within the current cache
+            caches.open(CACHE_NAME).then(cache => {
+                return cache.keys().then(requests => {
+                    return Promise.all(
+                        requests.map(request => {
+                            const url = new URL(request.url);
+                            const relativePath = url.pathname.replace(new URL(self.registration.scope).pathname, './');
+                            
+                            // Check if the cached request matches any of our current static assets
+                            const isCurrentAsset = STATIC_ASSETS.some(asset => {
+                                // Direct match (e.g., './src/core/State.js')
+                                if (asset === relativePath) return true;
+                                // Match with query string (e.g., './style.css?v=123')
+                                if (asset.startsWith(relativePath) && (asset === relativePath + url.search || asset === './' + url.search)) return true;
+                                return false;
+                            });
+
+                            if (!isCurrentAsset) {
+                                console.log('[ServiceWorker] Pruning stale asset:', request.url);
+                                return cache.delete(request);
+                            }
+                        })
+                    );
+                });
             })
-        )).then(() => self.clients.claim())
+        ]).then(() => self.clients.claim())
     );
 });
 
