@@ -23,15 +23,23 @@ export default class ApiService {
     }
 
     /**
-     * Estimates monthly water cost based on region and number of bathrooms.
+     * Estimates monthly water cost based on region, occupancy (beds), and number of bathrooms.
+     * Heuristic: Standing Charge + (£12 per person) + (£5 per extra bathroom).
      * @param {string} postcode - The property postcode.
-     * @param {number} bathrooms - Number of bathrooms in the property.
+     * @param {number} beds - Number of bedrooms (used to estimate people).
+     * @param {number} baths - Number of bathrooms.
      * @returns {number} Estimated monthly water cost in GBP.
      */
-    static estimateWaterCost(postcode, bathrooms) {
+    static estimateWaterCost(postcode, beds, baths) {
         const region = this.getRegionFromPostcode(postcode);
-        const baseCost = region ? region.cost : 50;
-        return baseCost + (Math.max(0, bathrooms - 1) * 5);
+        if (region && region.code === 'NI') return 0; // NI water is funded through rates
+
+        const standingCharge = region ? region.cost : 18;
+        const estimatedPeople = Math.max(1, beds); // Assume at least 1 person per bedroom
+        const consumptionCost = estimatedPeople * 12;
+        const extraBathCost = Math.max(0, baths - 1) * 5;
+
+        return standingCharge + consumptionCost + extraBathCost;
     }
 
     /**

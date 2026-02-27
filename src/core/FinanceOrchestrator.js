@@ -92,7 +92,7 @@ export default class FinanceOrchestrator {
         if (state.isNorth) energy *= 1.1;
         if (['E', 'F', 'G', 'H'].includes(state.taxBand || state.band)) energy *= 1.15;
 
-        const water = ApiService.estimateWaterCost(state.postcode, state.baths);
+        const water = ApiService.estimateWaterCost(state.postcode, state.beds, state.baths);
 
         return {
             councilTaxCost: councilTax,
