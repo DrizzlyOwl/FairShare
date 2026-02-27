@@ -12,9 +12,9 @@ const CACHE_NAME = 'fairshare-v3';
  */
 const STATIC_ASSETS = [
     './',
-    './index.html?v=1772210046',
-    './style.css?v=1772210046',
-    './src/main.js?v=1772210046',
+    './index.html?v=1772210350',
+    './style.css?v=1772210350',
+    './src/main.js?v=1772210350',
     './src/core/State.js',
     './src/core/FinanceEngine.js',
     './src/core/FinanceOrchestrator.js',
@@ -28,9 +28,9 @@ const STATIC_ASSETS = [
     './src/ui/Export.js',
     './src/services/ApiService.js',
     './src/utils/Helpers.js',
-    './logo-icon.svg?v=1772210046',
-    './logo-icon-dark.svg?v=1772210046',
-    './favicon.svg?v=1772210046',
+    './logo-icon.svg?v=1772210350',
+    './logo-icon-dark.svg?v=1772210350',
+    './favicon.svg?v=1772210350',
     './manifest.json',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional'
 ];
@@ -77,7 +77,7 @@ self.addEventListener('activate', event => {
                             const isCurrentAsset = STATIC_ASSETS.some(asset => {
                                 // Direct match (e.g., './src/core/State.js')
                                 if (asset === relativePath) return true;
-                                // Match with query string (e.g., './style.css?v=1772210046')
+                                // Match with query string (e.g., './style.css?v=1772210350')
                                 if (asset.startsWith(relativePath) && (asset === relativePath + url.search || asset === './' + url.search)) return true;
                                 return false;
                             });

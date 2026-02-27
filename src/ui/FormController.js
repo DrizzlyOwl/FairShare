@@ -345,7 +345,40 @@ export default class FormController {
         (screenFields[screenId] || []).forEach(f => setFieldState(f, true));
         errors.forEach(f => setFieldState(f, false));
 
+        if (!isValid) {
+            this.scrollToFirstError(screenId);
+        }
+
         return isValid;
+    }
+
+    /**
+     * Finds the first visible error on the current screen and scrolls it into view.
+     * @param {string} screenId - The active screen ID.
+     */
+    scrollToFirstError(screenId) {
+        const activeScreen = document.getElementById(screenId);
+        if (!activeScreen) return;
+
+        // Find first visible alert or error group
+        const firstError = activeScreen.querySelector('.alert--error:not([hidden]), .input-group--error, .segmented-control.input-group--error');
+        if (!firstError) return;
+
+        // Check if already in viewport
+        const rect = firstError.getBoundingClientRect();
+        const isInViewport = (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+
+        if (!isInViewport) {
+            firstError.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }
     }
 
     /**
