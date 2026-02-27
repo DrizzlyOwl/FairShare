@@ -43,5 +43,5 @@ A high-performance, framework-less web utility for proportionate bill splitting 
 1. **Research:** Map BEM impacts before changing CSS.
 2. **Execute:** Apply surgical updates to `index.html`, `style.css`, and relevant modules in `/src` simultaneously.
 3. **Task Tracking:** Agents MUST define a list of TODOs in the `TODO.md` file in order to keep track of actions. Once actions have been completed, the `TODO.md` file must be truncated.
-4. **Build Tracking:** Increment the build number and update the build datetime in the `index.html` footer before EVERY push to GitHub. Always ensure the timestamp is representative of the system's current time at the moment of the update. Bumping the build number must also update the static asset cache buster tokens in `index.html` (e.g., `?v=1740478179`) to the current Unix timestamp.
+4. **Build Tracking:** Increment the build number and update the build datetime in the `index.html` footer before EVERY push to GitHub. Always ensure the timestamp is representative of the system's current time at the moment of the update. Bumping the build number must also update the static asset cache buster tokens in `index.html` (e.g., `?v=1740478179`) to the current Unix timestamp. Every build bump MUST also be published as a corresponding GitHub Tag (e.g., `v1.1.57`).
 5. **Verify:** Update `unit/tests.js` if component structures change.
