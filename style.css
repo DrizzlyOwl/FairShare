@@ -79,11 +79,6 @@
         color-scheme: dark;
     }
 
-    :root:not([data-theme='light']) .btn-primary,
-    :root:not([data-theme='light']) .btn-success {
-        color: #0f172a;
-    }
-
     :root:not([data-theme='light']) .btn-secondary {
         border-color: var(--color-primary);
         color: var(--color-primary);
@@ -107,11 +102,6 @@
 
 [data-theme='dark'] {
     color-scheme: dark;
-}
-
-[data-theme='dark'] .btn-primary,
-[data-theme='dark'] .btn-success {
-    color: #0f172a;
 }
 
 [data-theme='dark'] .btn-secondary {
@@ -652,7 +642,7 @@ input[type=number] {
 /* Checked/Active State */
 .segmented-control__input:checked + .segmented-control__label {
     background-color: var(--color-primary);
-    color: white;
+    color: light-dark(white, #0f172a);
     border-color: var(--color-primary);
     box-shadow: 0 4px 10px rgba(44, 62, 99, 0.2);
     transform: translateY(-2px);
@@ -719,7 +709,7 @@ input[type=number] {
 }
 
 .toggle__input:checked + .toggle__label {
-    color: white !important;
+    color: light-dark(white, #0f172a) !important;
 }
 
 .toggle__slider {
@@ -1023,7 +1013,7 @@ button, .btn {
     line-height: 1;
 }
 
-.btn-primary { background-color: var(--color-primary); color: white; padding-block: 0.875rem; padding-inline: 1.5rem; }
+.btn-primary { background-color: var(--color-primary); color: light-dark(white, #0f172a); padding-block: 0.875rem; padding-inline: 1.5rem; }
 .btn-primary:hover {
     filter: brightness(1.1);
     transform: translateY(-1px);
@@ -1035,7 +1025,7 @@ button, .btn {
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
-.btn-success { background-color: var(--color-p2); color: white; padding-block: 0.875rem; padding-inline: 1.5rem; }
+.btn-success { background-color: var(--color-p2); color: light-dark(white, #0f172a); padding-block: 0.875rem; padding-inline: 1.5rem; }
 .btn-success:hover {
     filter: brightness(1.1);
     transform: translateY(-1px);

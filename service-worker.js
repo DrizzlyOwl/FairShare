@@ -12,9 +12,9 @@ const CACHE_NAME = 'fairshare-v3';
  */
 const STATIC_ASSETS = [
     './',
-    './index.html?v=1772205269',
-    './style.css?v=1772205269',
-    './src/main.js?v=1772205269',
+    './index.html?v=1772205954',
+    './style.css?v=1772205954',
+    './src/main.js?v=1772205954',
     './src/core/State.js',
     './src/core/FinanceEngine.js',
     './src/core/FinanceOrchestrator.js',
@@ -28,9 +28,9 @@ const STATIC_ASSETS = [
     './src/ui/Export.js',
     './src/services/ApiService.js',
     './src/utils/Helpers.js',
-    './logo-icon.svg?v=1772205269',
-    './logo-icon-dark.svg?v=1772205269',
-    './favicon.svg?v=1772205269',
+    './logo-icon.svg?v=1772205954',
+    './logo-icon-dark.svg?v=1772205954',
+    './favicon.svg?v=1772205954',
     './manifest.json',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional'
 ];
