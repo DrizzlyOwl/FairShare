@@ -193,13 +193,18 @@ body::before {
 
 .header-brand {
     position: relative;
-    margin-block-end: 2.5rem;
+    margin-block-end: 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-block-start: 1rem;
     flex-wrap: wrap;
     gap: 1rem;
+    transition: margin-block-end var(--transition-bounce);
+}
+
+.header-brand--compact {
+    margin-block-end: 3rem;
 }
 
 .header-brand__content {
@@ -338,9 +343,9 @@ body::before {
 }
 
 
-/* --- Typography --- */
+/* --- Typography & Global Elements --- */
 
-h2 {
+h2, .type-h2 {
     font-size: var(--font-size-h2);
     color: var(--color-primary);
     margin-block-end: var(--spacing-lg);
@@ -352,12 +357,12 @@ h2 {
 }
 
 @media (min-width: 768px) {
-    h2 {
+    h2, .type-h2 {
         margin-block-end: var(--spacing-header);
     }
 }
 
-h3 { 
+h3, .type-h3 { 
     font-size: var(--font-size-h3); 
     margin-block-start: var(--spacing-xl); 
     margin-block-end: var(--spacing-md);
@@ -367,35 +372,35 @@ h3 {
 }
 
 @media (min-width: 768px) {
-    h3 { margin-block-start: 2rem; }
+    h3, .type-h3 { margin-block-start: 2rem; }
 }
 
-p { 
+p, .type-p { 
     margin-block-end: var(--spacing-lg); 
     font-size: var(--font-size-base); 
     line-height: var(--line-height-base);
 }
 
 @media (min-width: 768px) {
-    p { margin-block-end: 1.5rem; }
+    p, .type-p { margin-block-end: 1.5rem; }
 }
 
-ul, ol {
+ul, .type-ul, ol, .type-ol {
     margin-block-end: var(--spacing-lg);
     padding-inline-start: var(--spacing-lg);
 }
 
 @media (min-width: 768px) {
-    ul, ol {
+    ul, .type-ul, ol, .type-ol {
         margin-block-end: 1.5rem;
         padding-inline-start: 1.5rem;
     }
 }
 
-ul { list-style-type: disc; }
-ol { list-style-type: decimal; }
+ul, .type-ul { list-style-type: disc; }
+ol, .type-ol { list-style-type: decimal; }
 
-li {
+li, .type-li {
     margin-block-end: var(--spacing-sm);
     font-size: var(--font-size-base);
     line-height: var(--line-height-base);

@@ -94,15 +94,15 @@ export default class UIManager {
      * @param {string} id - Current screen ID.
      */
     updateLogoVisibility(id) {
-        const logo = this.elements.headerBrand?.querySelector('.header-brand__logo');
+        const logo = this.elements.headerBrand?.querySelector('.header-brand__icon');
         if (!logo) return;
         
         if (id === this.SCREENS.LANDING) {
             logo.removeAttribute('hidden');
-            this.elements.headerBrand.style.marginBottom = '2rem';
+            this.elements.headerBrand.classList.remove('header-brand--compact');
         } else {
             logo.setAttribute('hidden', '');
-            this.elements.headerBrand.style.marginBottom = '3rem';
+            this.elements.headerBrand.classList.add('header-brand--compact');
         }
     }
 
