@@ -65,6 +65,12 @@
     /* Accessibility */
     --focus-ring: 3px solid var(--color-p2);
     --focus-offset: 2px;
+
+    /* Transitions */
+    --transition-base: 0.2s ease;
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-long: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* --- Thematic Overrides (Consolidated) --- */
@@ -172,7 +178,7 @@ body::before {
     opacity: 0.12;
     z-index: -1;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    transition: opacity var(--transition-bounce);
     display: none; /* Hidden on mobile */
 }
 
@@ -193,7 +199,7 @@ body::before {
 
 /* --- Screen Transitions --- */
 .screen:not([hidden]) {
-    animation: screenIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: screenIn var(--transition-bounce) forwards;
 }
 
 @keyframes screenIn {
@@ -279,7 +285,7 @@ body::before {
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: all 0.2s;
+    transition: all var(--transition-base);
     padding: 0;
 }
 
@@ -506,7 +512,7 @@ input[type=number] {
     border: 2px solid var(--color-border);
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .input-group:focus-within {
@@ -537,7 +543,7 @@ input[type=number] {
     font-weight: 500;
     color: var(--color-text);
     background-color: var(--color-input-bg);
-    transition: background-color 0.2s;
+    transition: background-color var(--transition-base);
 }
 
 .input-group__control:read-only {
@@ -575,7 +581,7 @@ input[type=number] {
     background-color: var(--color-bg-alt);
     border: 2px solid transparent;
     border-radius: 0.5rem;
-    transition: all 0.2s ease-in-out;
+    transition: all var(--transition-base);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -648,7 +654,7 @@ input[type=number] {
     font-weight: 800;
     cursor: pointer;
     color: var(--color-text-light);
-    transition: color 0.3s ease;
+    transition: color var(--transition-smooth);
     margin-bottom: 0;
     border: none;
     background: transparent;
@@ -681,7 +687,7 @@ input[type=number] {
     height: calc(100% - 8px);
     background-color: var(--color-primary);
     border-radius: 2rem;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform var(--transition-smooth);
     z-index: 1;
     box-shadow: 0 4px 10px rgba(44, 62, 99, 0.2);
 }
@@ -838,7 +844,7 @@ input[type=number] {
     transform: translateX(-50%);
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: slideDown 0.3s ease-out;
+    animation: slideDown var(--transition-smooth);
 }
 
 @keyframes slideDown {
@@ -921,7 +927,7 @@ input[type=number] {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: background-color 0.2s;
+    transition: background-color var(--transition-base);
 }
 
 .details-box__summary::-webkit-details-marker {
@@ -969,7 +975,7 @@ button, .btn {
     border-radius: 0.5rem;
     font-weight: 700;
     font-size: var(--font-size-base);
-    transition: transform 0.1s, filter 0.2s, background-color 0.2s, border-color 0.2s;
+    transition: transform 0.1s, filter var(--transition-base), background-color var(--transition-base), border-color var(--transition-base);
     text-decoration: none;
     line-height: 1;
 }
@@ -1123,7 +1129,7 @@ button, .btn {
     color: white;
     font-weight: 800;
     font-size: var(--font-size-base);
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width var(--transition-long);
 }
 
 .bar-p1 { background-color: var(--color-p1); }
@@ -1168,7 +1174,7 @@ button, .btn {
     text-align: center;
     border: 1px solid var(--color-border);
     background-color: var(--color-bg-app);
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+    transition: transform var(--transition-bounce), box-shadow var(--transition-base);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1337,7 +1343,7 @@ button, .btn {
     height: 100%;
     width: 0%;
     background: linear-gradient(90deg, var(--color-p1), var(--color-p2));
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width var(--transition-long);
     position: relative;
     z-index: 1;
 }
