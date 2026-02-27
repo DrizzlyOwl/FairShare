@@ -61,6 +61,10 @@
     --spacing-lg: 1.5rem;
     --spacing-xl: 2rem;
     --spacing-header: 2.5rem;
+
+    /* Accessibility */
+    --focus-ring: 3px solid var(--color-p2);
+    --focus-offset: 2px;
 }
 
 /* --- Thematic Overrides (Consolidated) --- */
@@ -120,14 +124,24 @@
     color: var(--color-p1);
 }
 
-/* --- CSS Reset --- */
+/* --- Reset & Base --- */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-html { font-size: 16px; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+/* Enhanced Focus Outline Strategy (WCAG 2.1 Compliance) */
+:focus {
+    outline: none; /* Reset standard focus */
+}
+
+:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+}
 
 body {
     line-height: 1.6;
@@ -522,13 +536,8 @@ input[type=number] {
     font-size: var(--font-size-base);
     font-weight: 500;
     color: var(--color-text);
-    outline: none;
     background-color: var(--color-input-bg);
     transition: background-color 0.2s;
-}
-
-.input-group__control:focus {
-    outline: none;
 }
 
 .input-group__control:read-only {
@@ -601,12 +610,6 @@ input[type=number] {
     border-color: var(--color-primary);
     box-shadow: 0 4px 10px rgba(44, 62, 99, 0.2);
     transform: translateY(-2px);
-}
-
-/* Focus State */
-.segmented-control__input:focus + .segmented-control__label {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(61, 82, 127, 0.2);
 }
 
 /* Toggle Controls (Switches) */
@@ -972,19 +975,19 @@ button, .btn {
 }
 
 .btn-primary { background-color: var(--color-primary); color: white; padding: 0.875rem 1.5rem; }
-.btn-primary:hover, .btn-primary:focus {
+.btn-primary:hover {
     filter: brightness(1.1);
     transform: translateY(-1px);
 }
 .btn-secondary { background-color: var(--color-bg-app); color: var(--color-primary); border: 2px solid var(--color-primary); padding: 0.875rem 1.5rem; }
-.btn-secondary:hover, .btn-secondary:focus {
+.btn-secondary:hover {
     background-color: var(--color-primary);
     color: white;
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 .btn-success { background-color: var(--color-p2); color: white; padding: 0.875rem 1.5rem; }
-.btn-success:hover, .btn-success:focus {
+.btn-success:hover {
     filter: brightness(1.1);
     transform: translateY(-1px);
 }
