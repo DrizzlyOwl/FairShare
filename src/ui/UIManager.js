@@ -233,11 +233,21 @@ export default class UIManager {
     }
 
     /**
-     * Renders text summaries of the results to the results screen.
+     * Renders text summaries and card totals of the results to the results screen.
      * @param {Object} summary - Unified calculation summary.
      */
     renderResultsSummary(summary) {
-        const { monthly } = summary;
+        const { monthly, upfront } = summary;
+        
+        // Update Monthly Summary Cards
+        if (this.elements.resultP1) this.elements.resultP1.innerText = formatCurrency(monthly.p1, 2);
+        if (this.elements.resultP2) this.elements.resultP2.innerText = formatCurrency(monthly.p2, 2);
+        if (this.elements.totalBillDisplay) this.elements.totalBillDisplay.innerText = formatCurrency(monthly.total, 2);
+
+        // Update Upfront Summary Cards
+        if (this.elements.equityP1Display) this.elements.equityP1Display.innerText = formatCurrency(upfront.p1, 2);
+        if (this.elements.equityP2Display) this.elements.equityP2Display.innerText = formatCurrency(upfront.p2, 2);
+
         const diff = Math.abs(monthly.p1 - monthly.p2);
         const summaryText = this.elements.resultSummary?.querySelector('.alert__text');
         

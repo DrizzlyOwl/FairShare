@@ -249,7 +249,6 @@ const app = {
 
         this.ui.renderResultsSummary(summary);
         this.ui.renderCalculationWorkings(this.store.data);
-        this.ui.switchScreen('screen-7');
     },
 
     /**
