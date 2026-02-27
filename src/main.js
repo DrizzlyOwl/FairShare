@@ -86,7 +86,10 @@ const app = {
             'breakdown-summary', 'bd-mortgage-total', 'bd-mortgage-p1', 'bd-mortgage-p2',
             'bd-tax-total', 'bd-tax-p1', 'bd-tax-p2', 'bd-energy-total', 'bd-energy-p1', 'bd-energy-p2',
             'bd-water-total', 'bd-water-p1', 'bd-water-p2', 'bd-broadband-total', 'bd-broadband-p1', 'bd-broadband-p2',
-            'bd-groceries-total', 'bd-groceries-p1', 'bd-groceries-p2', 'bd-committed-total', 'bd-committed-p1', 'bd-committed-p2',
+            'bd-groceries-total', 'bd-groceries-p1', 'bd-groceries-p2', 
+            'bd-childcare-total', 'bd-childcare-p1', 'bd-childcare-p2',
+            'bd-insurance-total', 'bd-insurance-p1', 'bd-insurance-p2',
+            'bd-other-total', 'bd-other-p1', 'bd-other-p2',
             'bd-total-total', 'bd-total-p1', 'bd-total-p2',
             'wk-salary-p1', 'wk-salary-p2', 'wk-total-salary', 'wk-income-subtitle', 'wk-p1-perc', 'wk-p2-perc',
             'wk-property-price', 'wk-deposit-perc', 'wk-total-equity', 'wk-deposit-split-type',
@@ -243,17 +246,15 @@ const app = {
             ['Energy', costs.energy],
             ['Water', costs.water],
             ['Broadband', costs.broadband],
-            ['Groceries', costs.groceries]
+            ['Groceries', costs.groceries],
+            ['Childcare', costs.childcare],
+            ['Insurance', costs.insurance],
+            ['Other', costs.otherShared]
         ];
 
         rows.forEach(([label, cost]) => {
             this.ui.updateBreakdownRow(label, cost.total, cost.p1, cost.p2);
         });
-        
-        const committedTotal = costs.childcare.total + costs.insurance.total + costs.otherShared.total;
-        const committedP1 = costs.childcare.p1 + costs.insurance.p1 + costs.otherShared.p1;
-        const committedP2 = costs.childcare.p2 + costs.insurance.p2 + costs.otherShared.p2;
-        this.ui.updateBreakdownRow('Committed', committedTotal, committedP1, committedP2);
         
         this.ui.updateBreakdownRow('Total', monthly.total, monthly.p1, monthly.p2);
 
