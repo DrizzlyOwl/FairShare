@@ -50,70 +50,86 @@ describe('Accessibility CI Test', () => {
     cy.injectAxe();
   });
 
-  it('should be WCAG 2.1 AA compliant on all screens', () => {
-    const checkA11yOptions = { 
-        runOnly: { type: 'tag', values: ['wcag21aa', 'wcag2aa'] } 
-    };
+  ['light', 'dark'].forEach((theme) => {
+    it(`should be WCAG 2.1 AA compliant on all screens in ${theme} mode`, () => {
+      // Set theme
+      if (theme === 'dark') {
+        cy.get('#theme-toggle').click();
+        cy.get('html').should('have.attr', 'data-theme', 'dark');
+      } else {
+        // Ensure light mode (default or toggle back)
+        cy.get('html').then(($html) => {
+          if ($html.attr('data-theme') === 'dark') {
+            cy.get('#theme-toggle').click();
+          }
+        });
+        cy.get('html').should('not.have.attr', 'data-theme', 'dark');
+      }
 
-    // 1. Landing Screen
-    cy.log('Checking Landing Screen');
-    cy.get('#screen-1').should('be.visible');
-    cy.checkA11y(null, checkA11yOptions, terminalLog);
+      const checkA11yOptions = { 
+          runOnly: { type: 'tag', values: ['wcag21aa', 'wcag2aa'] } 
+      };
 
-    // 2. Income Screen
-    cy.log('Checking Income Screen');
-    cy.get('[data-cy="next-button"]').click();
-    cy.get('#screen-2').should('be.visible');
-    cy.checkA11y(null, checkA11yOptions, terminalLog);
+      // 1. Landing Screen
+      cy.log('Checking Landing Screen');
+      cy.get('#screen-1').should('be.visible');
+      cy.checkA11y(null, checkA11yOptions, terminalLog);
 
-    // 3. Property Screen
-    cy.log('Checking Property Screen');
-    cy.get('[data-cy="salaryP1-input"]').type('35000').blur();
-    cy.get('[data-cy="salaryP2-input"]').type('45000').blur();
-    cy.get('[data-cy="next-button"]').click();
-    cy.get('#screen-3').should('be.visible');
-    cy.checkA11y(null, checkA11yOptions, terminalLog);
+      // 2. Income Screen
+      cy.log('Checking Income Screen');
+      cy.get('[data-cy="next-button"]').click();
+      cy.get('#screen-2').should('be.visible');
+      cy.checkA11y(null, checkA11yOptions, terminalLog);
 
-    // 4. Mortgage Screen
-    cy.log('Checking Mortgage Screen');
-    cy.get('[data-cy="postcode-input"]').type('SW1A 1AA').blur();
-    cy.get('[data-cy="taxBand-C"]').check({ force: true }).should('be.checked');
-    cy.get('[data-cy="estimatePrice-button"]').click();
-    cy.wait('@landRegistry');
-    cy.get('[data-cy="propertyPrice-input"]').should('have.value', '300000');
-    
-    cy.get('[data-cy="bedrooms-input"]').clear().type('3');
-    cy.get('[data-cy="bathrooms-input"]').clear().type('2');
-    cy.get('[data-cy="next-button"]').click();
-    cy.get('#screen-4').should('be.visible');
-    cy.checkA11y(null, checkA11yOptions, terminalLog);
+      // 3. Property Screen
+      cy.log('Checking Property Screen');
+      cy.get('[data-cy="salaryP1-input"]').type('35000').blur();
+      cy.get('[data-cy="salaryP2-input"]').type('45000').blur();
+      cy.get('[data-cy="next-button"]').click();
+      cy.get('#screen-3').should('be.visible');
+      cy.checkA11y(null, checkA11yOptions, terminalLog);
 
-    // 5. Utilities Screen
-    cy.log('Checking Utilities Screen');
-    cy.get('[data-cy="next-button"]').click();
-    cy.get('#screen-5').should('be.visible');
+      // 4. Mortgage Screen
+      cy.log('Checking Mortgage Screen');
+      cy.get('[data-cy="postcode-input"]').type('SW1A 1AA').blur();
+      cy.get('[data-cy="taxBand-C"]').check({ force: true }).should('be.checked');
+      cy.get('[data-cy="estimatePrice-button"]').click();
+      cy.wait('@landRegistry');
+      cy.get('[data-cy="propertyPrice-input"]').should('have.value', '300000');
+      
+      cy.get('[data-cy="bedrooms-input"]').clear().type('3');
+      cy.get('[data-cy="bathrooms-input"]').clear().type('2');
+      cy.get('[data-cy="next-button"]').click();
+      cy.get('#screen-4').should('be.visible');
+      cy.checkA11y(null, checkA11yOptions, terminalLog);
 
-    cy.get('[data-cy="councilTaxCost-input"]').clear().type('150');
-    cy.get('[data-cy="energyCost-input"]').clear().type('100');
-    cy.get('[data-cy="waterBill-input"]').clear().type('30');
-    cy.get('[data-cy="broadbandCost-input"]').clear().type('35');
-    cy.checkA11y(null, checkA11yOptions, terminalLog);
+      // 5. Utilities Screen
+      cy.log('Checking Utilities Screen');
+      cy.get('[data-cy="next-button"]').click();
+      cy.get('#screen-5').should('be.visible');
 
-    // 6. Committed Screen
-    cy.log('Checking Committed Screen');
-    cy.get('[data-cy="next-button"]').click();
-    cy.get('#screen-6').should('be.visible');
+      cy.get('[data-cy="councilTaxCost-input"]').clear().type('150');
+      cy.get('[data-cy="energyCost-input"]').clear().type('100');
+      cy.get('[data-cy="waterBill-input"]').clear().type('30');
+      cy.get('[data-cy="broadbandCost-input"]').clear().type('35');
+      cy.checkA11y(null, checkA11yOptions, terminalLog);
 
-    cy.get('[data-cy="groceriesCost-input"]').clear().type('400');
-    cy.get('[data-cy="childcareCost-input"]').clear().type('0');
-    cy.get('[data-cy="insuranceCost-input"]').clear().type('50');
-    cy.get('[data-cy="otherSharedCosts-input"]').clear().type('100');
-    cy.checkA11y(null, checkA11yOptions, terminalLog);
+      // 6. Committed Screen
+      cy.log('Checking Committed Screen');
+      cy.get('[data-cy="next-button"]').click();
+      cy.get('#screen-6').should('be.visible');
 
-    // 7. Results Screen
-    cy.log('Checking Results Screen');
-    cy.get('[data-cy="next-button"]').click();
-    cy.get('#screen-7').should('be.visible');
-    cy.checkA11y(null, checkA11yOptions, terminalLog);
+      cy.get('[data-cy="groceriesCost-input"]').clear().type('400');
+      cy.get('[data-cy="childcareCost-input"]').clear().type('0');
+      cy.get('[data-cy="insuranceCost-input"]').clear().type('50');
+      cy.get('[data-cy="otherSharedCosts-input"]').clear().type('100');
+      cy.checkA11y(null, checkA11yOptions, terminalLog);
+
+      // 7. Results Screen
+      cy.log('Checking Results Screen');
+      cy.get('[data-cy="next-button"]').click();
+      cy.get('#screen-7').should('be.visible');
+      cy.checkA11y(null, checkA11yOptions, terminalLog);
+    });
   });
 });
