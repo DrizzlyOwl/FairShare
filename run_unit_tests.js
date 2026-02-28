@@ -26,6 +26,27 @@ global.window = window;
 global.document = window.document;
 global.navigator = window.navigator;
 
+// Mock window.scrollTo
+window.scrollTo = () => {};
+
+// Mock fetch
+global.fetch = async (url, options) => {
+  if (url.includes('landregistry')) {
+    return {
+      ok: true,
+      json: async () => ({
+        results: {
+          bindings: [
+            { amount: { value: '300000' } },
+            { amount: { value: '310000' } }
+          ]
+        }
+      })
+    };
+  }
+  return { ok: false, status: 404 };
+};
+
 const lsStore = {};
 global.localStorage = {
   getItem: (key) => lsStore[key] || null,

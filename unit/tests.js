@@ -628,4 +628,297 @@ runTest('Validator screen validation branches', () => {
     console.assert(s6.isValid === true, 'Screen 6 valid data should pass');
 });
 
+// -- START: FinanceOrchestrator Tests --
+
+runTest('FinanceOrchestrator.calculateRatio should handle gross salary', () => {
+    const state = { salaryP1: 30000, salaryP2: 20000, salaryType: 'gross', regionCode: 'EN' };
+    const result = window.FinanceOrchestrator.calculateRatio(state);
+    // P1: £2093, P2: £1493 approx. Total: 3586. Ratio P1: 2093/3586 = 0.58
+    console.assert(result.ratioP1 > 0.58 && result.ratioP1 < 0.59, `Expected ~0.58, got ${result.ratioP1}`);
+});
+
+runTest('FinanceOrchestrator.calculateRatio should handle 0 salaries', () => {
+    const state = { salaryP1: 0, salaryP2: 0, salaryType: 'net' };
+    const result = window.FinanceOrchestrator.calculateRatio(state);
+    console.assert(result.ratioP1 === 0.5, 'Should fallback to 0.5');
+});
+
+runTest('FinanceOrchestrator.calculateEquityDetails should handle amount type', () => {
+    const state = { 
+        propertyPrice: 200000, 
+        depositType: 'amount', 
+        depositAmount: 40000,
+        depositSplitProportional: false,
+        ratioP1: 0.6,
+        mortgageInterestRate: 4,
+        mortgageTerm: 25,
+        regionCode: 'EN',
+        homeType: 'first',
+        isFTB: true
+    };
+    const res = window.FinanceOrchestrator.calculateEquityDetails(state);
+    console.assert(res.totalEquity === 40000, 'Total equity mismatch');
+    console.assert(res.depositPercentage === 20, 'Deposit percentage mismatch');
+    console.assert(res.equityP1 === 20000, 'Equity P1 should be 50/50');
+});
+
+runTest('FinanceOrchestrator.populateEstimates should scale with beds/isNorth', () => {
+    const state = { postcode: 'M1 1AD', beds: 3, baths: 2, isNorth: true, taxBand: 'D' };
+    const res = window.FinanceOrchestrator.populateEstimates(state);
+    // base energy: 40 + 3*25 + 2*15 = 40+75+30 = 145. North: 145 * 1.1 = 159.5 (160)
+    console.assert(res.energyCost === 160, `Expected 160, got ${res.energyCost}`);
+    console.assert(res.broadbandCost === 35, 'Broadband cost should be 35');
+});
+
+runTest('FinanceOrchestrator.getFinalSummary should return summary', () => {
+    const state = { 
+        propertyPrice: 200000, totalEquity: 20000, ratioP1: 0.5, splitTypes: {}, 
+        monthlyMortgagePayment: 1000, regionCode: 'EN', homeType: 'first', isFTB: true
+    };
+    const summary = window.FinanceOrchestrator.getFinalSummary(state);
+    console.assert(summary.upfront.total > 20000, 'Should include legal fees');
+});
+
+// -- START: CalculationEngine Branch Tests --
+
+runTest('CalculationEngine.getSummary branch coverage', () => {
+    const state = {
+        propertyPrice: 600000, // > 500k
+        regionCode: 'EN',
+        homeType: 'first',
+        isFTB: false,
+        totalEquity: 60000,
+        mortgageFees: 500,
+        ratioP1: 0.7,
+        depositSplitProportional: false, // 50/50
+        monthlyMortgagePayment: 2500,
+        splitTypes: {
+            councilTax: 'no', // equal
+            energy: 'yes'     // proportional
+        }
+    };
+    const summary = window.CalculationEngine.getSummary(state);
+    // Legal fees for 600k should be 1800
+    console.assert(summary.upfront.legalFees === 1800, `Expected 1800 legal fees, got ${summary.upfront.legalFees}`);
+    // Upfront total: 60000 + SDLT + 1800 + 500
+    // SDLT 600k standard: 125k*0 + 125k*0.02 + 350k*0.05 = 0 + 2500 + 17500 = 20000
+    console.assert(summary.upfront.sdlt === 20000, `SDLT 600k mismatch: ${summary.upfront.sdlt}`);
+    console.assert(summary.upfront.total === 60000 + 20000 + 1800 + 500, `Total upfront mismatch: ${summary.upfront.total}`);
+    // Upfront P1 should be 50%
+    console.assert(summary.upfront.p1 === summary.upfront.total / 2, 'Upfront P1 should be 50/50');
+
+    // 1M+ test
+    state.propertyPrice = 1200000;
+    const summary2 = window.CalculationEngine.getSummary(state);
+    console.assert(summary2.upfront.legalFees === 2500, 'Legal fees for 1M+ should be 2500');
+});
+
+// -- START: UIManager Branch Tests --
+
+runTest('UIManager.switchScreen successful transition', () => {
+    const main = document.createElement('main');
+    const screen1 = document.createElement('section');
+    screen1.id = 'screen-1';
+    screen1.className = 'screen';
+    const h2 = document.createElement('h2');
+    h2.id = 'heading-1';
+    screen1.appendChild(h2);
+    main.appendChild(screen1);
+    document.body.appendChild(main);
+
+    let callbackId = null;
+    const ui = new window.UIManager({}, {}, (id) => { callbackId = id; });
+    ui.switchScreen('screen-1');
+
+    console.assert(screen1.hasAttribute('hidden') === false, 'Screen should be visible');
+    console.assert(callbackId === 'screen-1', 'Callback should be called with screen ID');
+    
+    document.body.removeChild(main);
+});
+
+runTest('UIManager.updateBackgroundImage and updateRatioBar', () => {
+    const barP1 = { style: {} };
+    const barP2 = { style: {} };
+    const ratioTextDesc = { innerText: '' };
+    const ui = new window.UIManager({ barP1, barP2, ratioTextDesc }, {});
+
+    ui.updateBackgroundImage('screen-2');
+    console.assert(document.body.style.getPropertyValue('--bg-image').includes('bg-income.svg'), 'Background image mismatch');
+
+    ui.updateRatioBar(0.6, 0.4);
+    console.assert(barP1.style.width === '60%', 'Bar P1 width mismatch');
+    console.assert(ratioTextDesc.innerText.includes('60% You'), 'Ratio text mismatch');
+});
+
+runTest('UIManager.renderResultsSummary breakdown and render', () => {
+    const breakdownSummary = { innerText: '' };
+    const mockElements = {
+        breakdownSummary,
+        barP1: { style: {} },
+        barP2: { style: {} },
+        ratioTextDesc: { innerText: '' }
+    };
+    const ui = new window.UIManager(mockElements, {});
+
+    const summary = {
+        monthly: {
+            p1: 1000, p2: 1000, total: 2000,
+            costs: {
+                mortgage: { total: 1000, p1: 500, p2: 500 },
+                councilTax: { total: 200, p1: 100, p2: 100 },
+                energy: { total: 100, p1: 50, p2: 50 },
+                water: { total: 50, p1: 25, p2: 25 },
+                broadband: { total: 30, p1: 15, p2: 15 },
+                groceries: { total: 400, p1: 200, p2: 200 },
+                childcare: { total: 100, p1: 50, p2: 50 },
+                insurance: { total: 20, p1: 10, p2: 10 },
+                otherShared: { total: 100, p1: 50, p2: 50 }
+            }
+        },
+        upfront: { p1: 5000, p2: 5000, total: 10000 }
+    };
+
+    ui.renderResultsSummary(summary);
+    console.assert(breakdownSummary.innerText.includes('Out of the £2,000.00'), 'Breakdown summary text mismatch');
+
+    ui.render({ ratioP1: 0.7, ratioP2: 0.3 });
+    console.assert(mockElements.barP1.style.width === '70%', 'Render should update ratio bar');
+});
+
+runTest('UIManager.updateAlert variant removal', () => {
+    const alertEl = document.createElement('div');
+    alertEl.id = 'variant-test';
+    alertEl.classList.add('alert', 'alert--info');
+    document.body.appendChild(alertEl);
+
+    const ui = new window.UIManager({}, {});
+    ui.updateAlert('variant-test', { variant: 'error' });
+
+    console.assert(alertEl.classList.contains('alert--error'), 'Should have error class');
+    console.assert(!alertEl.classList.contains('alert--info'), 'Should NOT have info class');
+
+    document.body.removeChild(alertEl);
+});
+
+runTest('UIManager.updateProgress unknown ID', () => {
+    const mockElements = {
+        progressBar: { style: {}, setAttribute: () => {} },
+        progressLabel: { innerText: '' }
+    };
+    const ui = new window.UIManager(mockElements, {});
+    ui.updateProgress('unknown');
+    console.assert(mockElements.progressBar.style.width === '0%', 'Should fallback to 0%');
+});
+
+runTest('UIManager.renderResultsSummary edge cases', () => {
+    const summaryText = { innerText: '' };
+    const mockElements = {
+        resultSummary: { 
+            querySelector: () => summaryText,
+            removeAttribute: () => {}
+        },
+        resultP1: {}, resultP2: {}, totalBillDisplay: {},
+        equityP1Display: {}, equityP2Display: {}
+    };
+    const ui = new window.UIManager(mockElements, {});
+
+    // Equal contribution
+    ui.renderResultsSummary({
+        monthly: { p1: 1000, p2: 1000, total: 2000, costs: { mortgage: { total: 0 }, councilTax: { total: 0 }, energy: { total: 0 }, water: { total: 0 }, broadband: { total: 0 }, groceries: { total: 0 }, childcare: { total: 0 }, insurance: { total: 0 }, otherShared: { total: 0 } } },
+        upfront: { p1: 5000, p2: 5000 }
+    });
+    console.assert(summaryText.innerText === 'Both partners contribute equally.', 'Equal contribution text mismatch');
+
+    // P2 pays more
+    ui.renderResultsSummary({
+        monthly: { p1: 1000, p2: 1500, total: 2500, costs: { mortgage: { total: 0 }, councilTax: { total: 0 }, energy: { total: 0 }, water: { total: 0 }, broadband: { total: 0 }, groceries: { total: 0 }, childcare: { total: 0 }, insurance: { total: 0 }, otherShared: { total: 0 } } },
+        upfront: { p1: 5000, p2: 5000 }
+    });
+    console.assert(summaryText.innerText.includes('Your Partner pays'), 'P2 pays more text mismatch');
+});
+
+runTest('UIManager.updateAlert missing elements', () => {
+    const ui = new window.UIManager({}, {});
+    // Should return early if element not found
+    ui.updateAlert('missing-alert', { text: 'test' });
+});
+
+runTest('UIManager.updatePricePreview', () => {
+    const temp = document.createElement('div');
+    temp.id = 'band-price-display';
+    temp.innerHTML = '<div class="alert__text"></div><div class="alert__icon"></div>';
+    document.body.appendChild(temp);
+
+    const ui = new window.UIManager({}, { 'A': 100 });
+    ui.updatePricePreview('A');
+    
+    console.assert(temp.textContent.includes('Band A selected'), 'Alert text mismatch');
+    document.body.removeChild(temp);
+});
+
+runTest('ApiService.getEstimatedPropertyPrice success path', async () => {
+    // This will now use our global mock fetch
+    const result = await window.ApiService.getEstimatedPropertyPrice('SW1A 1AA', 2);
+    // Average of 300k and 310k is 305k
+    console.assert(result === 305000, `Expected 305000, got ${result}`);
+});
+
+runTest('FinanceOrchestrator.calculateEquityDetails percentage type', () => {
+    const state = { 
+        propertyPrice: 300000, 
+        depositType: 'percentage', 
+        depositPercentage: 10,
+        depositSplitProportional: true,
+        ratioP1: 0.6,
+        mortgageInterestRate: 4,
+        mortgageTerm: 25,
+        regionCode: 'EN',
+        homeType: 'first',
+        isFTB: true
+    };
+    const res = window.FinanceOrchestrator.calculateEquityDetails(state);
+    console.assert(res.totalEquity === 30000, 'Total equity should be 10%');
+    console.assert(res.equityP1 === 18000, 'Equity P1 mismatch (0.6 of 30k)');
+});
+runTest('ApiService.getEstimatedPropertyPrice no data path', async () => {
+    // Mock fetch once for this test to return empty
+    const originalFetch = global.fetch;
+    global.fetch = async () => ({
+        ok: true,
+        json: async () => ({ results: { bindings: [] } })
+    });
+    const result = await window.ApiService.getEstimatedPropertyPrice('SW1A 1AA', 2);
+    console.assert(result.isEstimated === true, 'Should fallback on no data');
+    global.fetch = originalFetch;
+});
+
+runTest('ApiService.getEstimatedPropertyPrice error path', async () => {
+    // Mock fetch once for this test to return error
+    const originalFetch = global.fetch;
+    global.fetch = async () => ({
+        ok: false,
+        status: 500
+    });
+    const result = await window.ApiService.getEstimatedPropertyPrice('SW1A 1AA', 2);
+    console.assert(result.isEstimated === true, 'Should fallback on HTTP error');
+    global.fetch = originalFetch;
+});
+runTest('app.cacheElements should populate elements object', () => {
+    const p1 = document.createElement('input');
+    p1.id = 'salaryP1';
+    document.body.appendChild(p1);
+
+    window.app.cacheElements();
+    console.assert(window.app.elements.salaryP1 === p1, 'salaryP1 element should be cached');
+    
+    document.body.removeChild(p1);
+});
+
+runTest('app.toggleTheme should update data-theme', () => {
+    document.documentElement.setAttribute('data-theme', 'light');
+    window.app.toggleTheme();
+    console.assert(document.documentElement.getAttribute('data-theme') === 'dark', 'Should toggle to dark');
+    window.app.toggleTheme();
+    console.assert(document.documentElement.getAttribute('data-theme') === 'light', 'Should toggle back to light');
+});
 // -- END: Unit Tests --
