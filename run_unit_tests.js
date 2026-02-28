@@ -83,6 +83,7 @@ console.error = (...args) => {
  */
 const modules = [
     { path: 'src/utils/Helpers.js', type: 'functional' },
+    { path: 'src/ui/Components.js', type: 'functional' },
     { path: 'src/core/Constants.js', type: 'functional' },
     { path: 'src/core/FinanceEngine.js', global: 'FinanceEngine', type: 'class' },
     { path: 'src/core/FinanceOrchestrator.js', global: 'FinanceOrchestrator', type: 'class' },

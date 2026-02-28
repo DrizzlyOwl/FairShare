@@ -45,10 +45,44 @@ export default class NavigationController {
     }
 
     /**
+     * Handles browser back/forward buttons via hash changes.
+     */
+    handlePopState() {
+        const initialScreen = window.location.hash.replace('#', '') || this.ui.SCREENS.LANDING;
+        const targetId = this.findScreenByHeadingId(initialScreen) || this.ui.SCREENS.LANDING;
+        this.ui.switchScreen(targetId, true);
+    }
+
+    /**
+     * Intercepts global keyboard events for accessibility navigation.
+     * @param {KeyboardEvent} e 
+     */
+    handleGlobalKeydown(e) {
+        const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+        if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && isInput) return;
+        
+        if (e.key === 'ArrowRight' || e.key === 'Enter') {
+            this.elements.nextButton?.click();
+        } else if (e.key === 'ArrowLeft') {
+            this.elements.backButton?.click();
+        }
+    }
+
+    /**
      * Helper to get current active screen ID.
      */
     getActiveScreenId() {
         return document.querySelector('section.screen:not([hidden])')?.id;
+    }
+
+    /**
+     * Attempts to resolve a screen ID from a section heading ID.
+     * @param {string} id - Hash fragment or heading ID.
+     * @returns {string|undefined} Section ID.
+     */
+    findScreenByHeadingId(id) {
+        const heading = document.getElementById(id);
+        return heading?.closest('section')?.id;
     }
 
     /**

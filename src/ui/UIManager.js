@@ -3,7 +3,8 @@
  * Manages the application's view state, screen transitions, and DOM updates.
  */
 
-import { createAlertHTML, formatCurrency } from '../utils/Helpers.js';
+import { formatCurrency } from '../utils/Helpers.js';
+import { createAlertHTML } from './Components.js';
 import { SCREEN_MAP } from '../core/Constants.js';
 
 export default class UIManager {
