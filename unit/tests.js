@@ -1115,4 +1115,123 @@ runTest('ApiService.estimateWaterCost extra bathrooms', () => {
     // Standing: 18. People: 1*12=12. Extra Baths: (3-1)*5=10. Total: 18+12+10 = 40
     console.assert(cost === 40, `Expected 40, got ${cost}`);
 });
+// -- START: Validator Coverage Expansion --
+
+runTest('Validator.validateScreen screen-4 percentage failure', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-4', {
+        depositType: 'percentage',
+        depositPercentage: -1,
+        mortgageInterestRate: 5,
+        mortgageTerm: 25
+    });
+    console.assert(res.isValid === false, 'Negative percentage should fail screen-4');
+    console.assert(res.errors.includes('depositPercentage'), 'Should report depositPercentage error');
+});
+
+runTest('Validator.validateScreen screen-4 amount failure', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-4', {
+        depositType: 'amount',
+        depositAmount: -100,
+        mortgageInterestRate: 5,
+        mortgageTerm: 25
+    });
+    console.assert(res.isValid === false, 'Negative amount should fail screen-4');
+    console.assert(res.errors.includes('depositAmount'), 'Should report depositAmount error');
+});
+
+runTest('Validator.validateField required undefined', () => {
+    console.assert(window.Validator.validateField('salaryP1', undefined) === false, 'Required undefined should fail');
+});
+
+runTest('Validator.validateScreen unknown screen', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('unknown-screen', {});
+    console.assert(res.isValid === true, 'Unknown screen should be valid by default');
+    console.assert(res.errors.length === 0, 'Unknown screen should have no errors');
+});
+
+runTest('Validator.validateScreen screen-2 both salaries zero', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-2', { salaryP1: 0, salaryP2: 0 });
+    console.assert(res.isValid === false, 'Both zero should fail');
+    console.assert(res.errors.includes('salaryP1'), 'salaryP1 should be in errors');
+    console.assert(res.errors.includes('salaryP2'), 'salaryP2 should be in errors');
+});
+
+runTest('Validator.validateScreen screen-2 individual field failures', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-2', { salaryP1: -1, salaryP2: -500 });
+    console.assert(res.isValid === false, 'Negative salaries should fail');
+    console.assert(res.errors.includes('salaryP1'), 'salaryP1 should be in errors');
+    console.assert(res.errors.includes('salaryP2'), 'salaryP2 should be in errors');
+});
+
+runTest('Validator.validateScreen screen-4 mortgage detail failures', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-4', { 
+        depositType: 'percentage', 
+        depositPercentage: 10,
+        mortgageInterestRate: -1, // invalid
+        mortgageTerm: 0 // invalid
+    });
+    console.assert(res.isValid === false, 'Invalid mortgage details should fail');
+    console.assert(res.errors.includes('mortgageInterestRate'), 'Interest rate error missing');
+    console.assert(res.errors.includes('mortgageTerm'), 'Term error missing');
+});
+
+runTest('Validator.validateScreen screen-5 utility failures', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-5', { 
+        councilTaxCost: -1,
+        energyCost: 'invalid',
+        waterBill: null,
+        broadbandCost: undefined
+    });
+    console.assert(res.isValid === false, 'Invalid utilities should fail');
+    console.assert(res.errors.length === 4, `Expected 4 errors, got ${res.errors.length}`);
+});
+
+runTest('Validator.validateScreen screen-6 lifestyle failures', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-6', { 
+        groceriesCost: -1,
+        childcareCost: -1,
+        insuranceCost: -1,
+        otherSharedCosts: -1
+    });
+    console.assert(res.isValid === false, 'Invalid lifestyle costs should fail');
+    console.assert(res.errors.length === 4, 'Expected 4 errors');
+});
+
+runTest('Validator.validateField required boundary coverage', () => {
+    const v = window.Validator;
+    console.assert(v.validateField('salaryP1', '') === false, 'Empty string should fail required');
+    console.assert(v.validateField('salaryP1', null) === false, 'Null should fail required');
+    console.assert(v.validateField('salaryP1', undefined) === false, 'Undefined should fail required');
+});
+
+runTest('Validator.validateScreen screen-5 success', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-5', { 
+        councilTaxCost: 150,
+        energyCost: 100,
+        waterBill: 30,
+        broadbandCost: 35
+    });
+    console.assert(res.isValid === true, 'Valid utilities should pass');
+});
+
+runTest('Validator.validateScreen screen-6 success', () => {
+    const v = window.Validator;
+    const res = v.validateScreen('screen-6', { 
+        groceriesCost: 400,
+        childcareCost: 0,
+        insuranceCost: 50,
+        otherSharedCosts: 100
+    });
+    console.assert(res.isValid === true, 'Valid lifestyle should pass');
+});
+
 // -- END: Unit Tests --
