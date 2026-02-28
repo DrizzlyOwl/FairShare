@@ -915,6 +915,10 @@ runTest('app.cacheElements should populate elements object', () => {
 });
 
 runTest('app.toggleTheme should update data-theme', () => {
+    // Ensure ThemeManager is initialized on app
+    if (!window.app.themeManager) {
+        window.app.themeManager = new window.ThemeManager(window.app.elements);
+    }
     document.documentElement.setAttribute('data-theme', 'light');
     window.app.toggleTheme();
     console.assert(document.documentElement.getAttribute('data-theme') === 'dark', 'Should toggle to dark');

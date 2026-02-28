@@ -91,6 +91,7 @@ const modules = [
     { path: 'src/core/Validator.js', global: 'Validator', type: 'class' },
     { path: 'src/services/ApiService.js', global: 'ApiService', type: 'class' },
     { path: 'src/ui/UIManager.js', global: 'UIManager', type: 'class' },
+    { path: 'src/ui/ThemeManager.js', global: 'ThemeManager', type: 'class' },
     { path: 'src/ui/Export.js', global: 'CSV', type: 'class' },
     { path: 'src/main.js', global: 'app', type: 'class' }
 ];

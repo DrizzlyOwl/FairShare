@@ -7,6 +7,7 @@ import State, { INITIAL_STATE } from './core/State.js';
 import FinanceOrchestrator from './core/FinanceOrchestrator.js';
 import ApiService from './services/ApiService.js';
 import UIManager from './ui/UIManager.js';
+import ThemeManager from './ui/ThemeManager.js';
 import NavigationController from './ui/NavigationController.js';
 import FormController from './ui/FormController.js';
 import { formatCurrency } from './utils/Helpers.js';
@@ -25,6 +26,7 @@ const app = {
         // 1. Initialize Core Managers
         this.ui = new UIManager(this.elements, BAND_PRICES, (id) => this.nav.updatePagination(id));
         this.store = new State(INITIAL_STATE, (data) => this.ui.render(data));
+        this.themeManager = new ThemeManager(this.elements);
         
         // 2. Initialize Specialized Controllers
         this.nav = new NavigationController(this, this.ui, this.elements);
@@ -34,15 +36,7 @@ const app = {
         this.store.hydrate();
 
         // 4. Initialize Theme
-        const theme = localStorage.getItem('fairshare_theme');
-        if (theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            const logoImg = this.elements.headerBrand?.querySelector('.header-brand__icon');
-            if (logoImg) {
-                const buster = logoImg.src.match(/\?v=\d+/) || '';
-                logoImg.src = `${theme === 'dark' ? 'logo-icon-dark.svg' : 'logo-icon.svg'}${buster}`;
-            }
-        }
+        this.themeManager.init();
 
         this.bindGlobalEvents();
         this.syncUIWithState();
@@ -227,21 +221,26 @@ const app = {
      * Handles async property price estimation.
      */
     async handlePriceEstimation() {
-        const postcode = this.elements.postcode.value.trim();
-        const bedrooms = parseInt(this.elements.bedrooms.value) || 2;
-        if (!postcode) return;
+        try {
+            const postcode = this.elements.postcode.value.trim();
+            const bedrooms = parseInt(this.elements.bedrooms.value) || 2;
+            if (!postcode) return;
 
-        this.ui.hideWarning(3);
-        const result = await ApiService.getEstimatedPropertyPrice(postcode, bedrooms);
-        
-        const price = typeof result === 'object' ? result.price : result;
-        this.store.update({ propertyPrice: price });
-        this.elements.propertyPrice.value = price;
-        this.form.updatePropertyPriceDisplay(price, !!result.isEstimated);
-        
-        const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-        this.store.update(update);
-        this.syncCalculatedFields(update);
+            this.ui.hideWarning(3);
+            const result = await ApiService.getEstimatedPropertyPrice(postcode, bedrooms);
+            
+            const price = typeof result === 'object' ? result.price : result;
+            this.store.update({ propertyPrice: price });
+            this.elements.propertyPrice.value = price;
+            this.form.updatePropertyPriceDisplay(price, !!result.isEstimated);
+            
+            const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
+            this.store.update(update);
+            this.syncCalculatedFields(update);
+        } catch (error) {
+            console.error(`[App] Error during price estimation:`, error);
+            this.ui.showWarning(3, "Failed to estimate property price. Please enter manually.");
+        }
     },
 
     /**
@@ -278,71 +277,77 @@ const app = {
      * Validates current screen data and transitions to the next screen.
      */
     async validateAndNext(screenId) {
-        this.form.forceStateSync();
+        try {
+            this.form.forceStateSync();
 
-        let stateUpdate = {};
-        if (screenId === this.ui.SCREENS.INCOME) {
-            stateUpdate = FinanceOrchestrator.calculateRatio(this.store.data);
-        }
-        if (screenId === this.ui.SCREENS.PROPERTY) {
-            Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.store.data));
-            Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
-        }
-        if (screenId === this.ui.SCREENS.MORTGAGE) {
-            Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
-        }
-        if (screenId === this.ui.SCREENS.COMMITTED) {
-            this.renderResults();
-        }
+            let stateUpdate = {};
+            if (screenId === this.ui.SCREENS.INCOME) {
+                stateUpdate = FinanceOrchestrator.calculateRatio(this.store.data);
+            }
+            if (screenId === this.ui.SCREENS.PROPERTY) {
+                Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.store.data));
+                Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
+            }
+            if (screenId === this.ui.SCREENS.MORTGAGE) {
+                Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
+            }
+            if (screenId === this.ui.SCREENS.COMMITTED) {
+                this.renderResults();
+            }
 
-        if (Object.keys(stateUpdate).length > 0) {
-            this.store.update(stateUpdate);
-            this.syncCalculatedFields(stateUpdate);
-        }
+            if (Object.keys(stateUpdate).length > 0) {
+                this.store.update(stateUpdate);
+                this.syncCalculatedFields(stateUpdate);
+            }
 
-        const isScreenValid = this.form.validateScreen(screenId);
-        
-        if (!isScreenValid) {
-            this.ui.showWarning(parseInt(screenId.split('-')[1]), "Please ensure all required fields are valid.");
-            return;
-        }
+            const isScreenValid = this.form.validateScreen(screenId);
+            
+            if (!isScreenValid) {
+                this.ui.showWarning(parseInt(screenId.split('-')[1]), "Please ensure all required fields are valid.");
+                return;
+            }
 
-        this.ui.hideWarning(parseInt(screenId.split('-')[1]));
+            this.ui.hideWarning(parseInt(screenId.split('-')[1]));
 
-        const nextScreens = {
-            [this.ui.SCREENS.INCOME]: this.ui.SCREENS.PROPERTY,
-            [this.ui.SCREENS.PROPERTY]: this.ui.SCREENS.MORTGAGE,
-            [this.ui.SCREENS.MORTGAGE]: this.ui.SCREENS.UTILITIES,
-            [this.ui.SCREENS.UTILITIES]: this.ui.SCREENS.COMMITTED,
-            [this.ui.SCREENS.COMMITTED]: this.ui.SCREENS.RESULTS
-        };
+            const nextScreens = {
+                [this.ui.SCREENS.INCOME]: this.ui.SCREENS.PROPERTY,
+                [this.ui.SCREENS.PROPERTY]: this.ui.SCREENS.MORTGAGE,
+                [this.ui.SCREENS.MORTGAGE]: this.ui.SCREENS.UTILITIES,
+                [this.ui.SCREENS.UTILITIES]: this.ui.SCREENS.COMMITTED,
+                [this.ui.SCREENS.COMMITTED]: this.ui.SCREENS.RESULTS
+            };
 
-        if (nextScreens[screenId]) {
-            this.ui.switchScreen(nextScreens[screenId]);
+            if (nextScreens[screenId]) {
+                this.ui.switchScreen(nextScreens[screenId]);
+            }
+        } catch (error) {
+            console.error(`[App] Error during screen transition:`, error);
         }
     },
 
     /**
      * Clears application state and performs a clean reload.
      */
-    clearCache() {
-        const theme = localStorage.getItem('fairshare_theme');
-        this.store.clear();
-        if (theme) localStorage.setItem('fairshare_theme', theme);
-        
-        // Unregister all service workers
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
+    async clearCache() {
+        try {
+            const theme = localStorage.getItem('fairshare_theme');
+            this.store.clear();
+            if (theme) localStorage.setItem('fairshare_theme', theme);
+            
+            // Unregister all service workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
                 for (const registration of registrations) {
-                    registration.unregister();
+                    await registration.unregister();
                 }
-            }).finally(() => {
-                window.location.hash = '';
-                window.location.replace(window.location.origin + window.location.pathname);
-            });
-        } else {
+            }
+            
             window.location.hash = '';
             window.location.replace(window.location.origin + window.location.pathname);
+        } catch (error) {
+            console.error(`[App] Error clearing cache:`, error);
+            // Fallback reload
+            window.location.reload();
         }
     },
 
@@ -350,22 +355,18 @@ const app = {
      * Toggles the application theme.
      */
     toggleTheme() {
-        const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('fairshare_theme', theme);
-        
-        const logoImg = this.elements.headerBrand?.querySelector('.header-brand__icon');
-        if (logoImg) {
-            const buster = logoImg.src.match(/\?v=\d+/) || '';
-            logoImg.src = `${theme === 'dark' ? 'logo-icon-dark.svg' : 'logo-icon.svg'}${buster}`;
-        }
+        this.themeManager.toggle();
     },
 
     /**
      * Generates and downloads a CSV report.
      */
     downloadCSV() {
-        CSV.download(this.store.data, this.elements.resultsTable);
+        try {
+            CSV.download(this.store.data, this.elements.resultsTable);
+        } catch (error) {
+            console.error(`[App] Error downloading CSV:`, error);
+        }
     }
 };
 
