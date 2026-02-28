@@ -27,21 +27,25 @@ export default class FormController {
     }
 
     /**
-     * Binds DOM input and selection events.
+     * Binds DOM input and selection events using event delegation.
      */
     bindEvents() {
-        // Form field event binding
-        FORM_FIELDS.forEach(field => {
-            const el = document.getElementById(field.id);
-            if (!el) return;
+        const main = document.querySelector('main');
+        if (!main) return;
 
-            const debouncedUpdate = debounce(() => {
+        // Create debounced update map for number/text fields
+        const fieldUpdates = new Map();
+        FORM_FIELDS.forEach(field => {
+            fieldUpdates.set(field.id, debounce(() => {
+                const el = document.getElementById(field.id);
+                if (!el) return;
+
                 let val = el.value;
                 if (field.type === 'number') val = parseFloat(val) || 0;
-                console.log(`[FormController] Debounced Input Update: ${field.id} =`, val);
+                console.log(`[FormController] Delegated Debounced Update: ${field.id} =`, val);
+                
                 this.store.update({ [field.key || field.id]: val });
                 
-                // Logic side effects handled by orchestrator updates
                 const stateUpdate = {};
                 if (field.id === 'propertyPrice') {
                     this.updatePropertyPriceDisplay(val, false);
@@ -55,92 +59,90 @@ export default class FormController {
                     this.store.update(stateUpdate);
                     this.app.syncCalculatedFields(stateUpdate);
                 }
-            }, 300);
-
-            el.addEventListener('input', () => {
-                this.clearFieldError(field.id);
-                if (field.id === 'postcode') {
-                    this.formatPostcode(el);
-                    this.handlePostcodeChange(el.value);
-                }
-                if (field.id === 'salaryP1' || field.id === 'salaryP2') {
-                    this.updateTaxEstimate(field.id === 'salaryP1' ? 'P1' : 'P2');
-                    this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
-                }
-                debouncedUpdate();
-            });
+            }, 300));
         });
 
-        // Toggle / Radio Listeners
-        document.querySelectorAll('input[name="salaryType"]').forEach(radio => {
-            radio.onchange = () => {
-                this.store.update({ salaryType: radio.value });
-                this.updateSalaryTypeLabels(radio.value);
-                this.updateTaxEstimate('P1');
-                this.updateTaxEstimate('P2');
+        // 1. Delegated Input Handler (Text/Number)
+        main.addEventListener('input', (e) => {
+            const target = e.target;
+            const field = FORM_FIELDS.find(f => f.id === target.id);
+            if (!field) return;
+
+            this.clearFieldError(field.id);
+            if (field.id === 'postcode') {
+                this.formatPostcode(target);
+                this.handlePostcodeChange(target.value);
+            }
+            if (field.id === 'salaryP1' || field.id === 'salaryP2') {
+                this.updateTaxEstimate(field.id === 'salaryP1' ? 'P1' : 'P2');
                 this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
-            };
+            }
+
+            const updateFn = fieldUpdates.get(field.id);
+            if (updateFn) updateFn();
         });
 
-        document.querySelectorAll('input[name="depositType"]').forEach(radio => {
-            radio.onchange = () => {
-                this.store.update({ depositType: radio.value });
-                if (radio.value === 'percentage') {
-                    this.elements.depositPercContainer.removeAttribute('hidden');
-                    this.elements.depositAmtContainer.setAttribute('hidden', '');
-                } else {
-                    this.elements.depositPercContainer.setAttribute('hidden', '');
-                    this.elements.depositAmtContainer.removeAttribute('hidden');
-                }
-                const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-                this.store.update(update);
-                this.app.syncCalculatedFields(update);
-            };
-        });
+        // 2. Delegated Change Handler (Radios/Selects)
+        main.addEventListener('change', (e) => {
+            const target = e.target;
+            if (target.tagName !== 'INPUT' || target.type !== 'radio') return;
 
-        document.querySelectorAll('input[name="taxBand"]').forEach(radio => {
-            radio.onchange = () => {
-                this.store.update({ taxBand: radio.value });
-                this.ui.updatePricePreview(radio.value);
-            };
-        });
+            const name = target.name;
+            const val = target.value;
 
-        document.querySelectorAll('input[name="depositSplitType"]').forEach(radio => {
-            radio.onchange = () => {
-                this.store.update({ depositSplitProportional: radio.value === 'yes' });
-                const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-                this.store.update(update);
-                this.app.syncCalculatedFields(update);
-            };
+            switch(name) {
+                case 'salaryType':
+                    this.store.update({ salaryType: val });
+                    this.updateSalaryTypeLabels(val);
+                    this.updateTaxEstimate('P1');
+                    this.updateTaxEstimate('P2');
+                    this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
+                    break;
+                case 'depositType':
+                    this.store.update({ depositType: val });
+                    if (val === 'percentage') {
+                        this.elements.depositPercContainer.removeAttribute('hidden');
+                        this.elements.depositAmtContainer.setAttribute('hidden', '');
+                    } else {
+                        this.elements.depositPercContainer.setAttribute('hidden', '');
+                        this.elements.depositAmtContainer.removeAttribute('hidden');
+                    }
+                    this.syncEquityDetails();
+                    break;
+                case 'taxBand':
+                    this.store.update({ taxBand: val });
+                    this.ui.updatePricePreview(val);
+                    break;
+                case 'depositSplitType':
+                    this.store.update({ depositSplitProportional: val === 'yes' });
+                    this.syncEquityDetails();
+                    break;
+                case 'homeType':
+                    this.store.update({ homeType: val });
+                    this.updateFTBVisibility();
+                    this.syncEquityDetails();
+                    break;
+                case 'buyerStatus':
+                    this.store.update({ isFTB: val === 'ftb' });
+                    this.syncEquityDetails();
+                    break;
+                case 'masterUtilities':
+                    this.setAllSplitTypes('utilities', val);
+                    break;
+                case 'masterCommitted':
+                    this.setAllSplitTypes('committed', val);
+                    break;
+            }
         });
+    }
 
-        document.querySelectorAll('input[name="homeType"]').forEach(radio => {
-            radio.onchange = () => {
-                this.store.update({ homeType: radio.value });
-                this.updateFTBVisibility();
-                const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-                this.store.update(update);
-                this.app.syncCalculatedFields(update);
-            };
-        });
-
-        document.querySelectorAll('input[name="buyerStatus"]').forEach(radio => {
-            radio.onchange = () => {
-                this.store.update({ isFTB: radio.value === 'ftb' });
-                const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-                this.store.update(update);
-                this.app.syncCalculatedFields(update);
-            };
-        });
-
-        // Bulk Utility/Committed Toggles
-        document.querySelectorAll('input[name="masterUtilities"]').forEach(radio => {
-            radio.onchange = () => this.setAllSplitTypes('utilities', radio.value);
-        });
-
-        document.querySelectorAll('input[name="masterCommitted"]').forEach(radio => {
-            radio.onchange = () => this.setAllSplitTypes('committed', radio.value);
-        });
+    /**
+     * Helper to recalculate and sync equity details.
+     */
+    syncEquityDetails() {
+        const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
+        this.store.update(update);
+        this.app.syncCalculatedFields(update);
     }
 
     /**

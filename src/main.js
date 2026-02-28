@@ -116,24 +116,28 @@ const app = {
     },
 
     /**
-     * Binds specialized global event listeners.
+     * Binds specialized global event listeners using event delegation.
      */
     bindGlobalEvents() {
-        if (this.elements.estimatePriceBtn) {
-            this.elements.estimatePriceBtn.onclick = () => this.handlePriceEstimation();
-        }
+        const main = document.querySelector('main');
+        if (!main) return;
 
-        if (this.elements.themeToggle) {
-            this.elements.themeToggle.onclick = () => this.toggleTheme();
-        }
+        main.onclick = (e) => {
+            const target = e.target.closest('button, a');
+            if (!target) return;
 
-        if (this.elements.startOverButton) {
-            this.elements.startOverButton.onclick = () => this.clearCache();
-        }
+            const id = target.id;
 
-        if (document.getElementById('downloadCSVBtn')) {
-            document.getElementById('downloadCSVBtn').onclick = () => this.downloadCSV();
-        }
+            if (id === 'estimatePriceBtn') {
+                this.handlePriceEstimation();
+            } else if (id === 'theme-toggle' || target.closest('#theme-toggle')) {
+                this.toggleTheme();
+            } else if (id === 'start-over-button') {
+                this.clearCache();
+            } else if (id === 'downloadCSVBtn') {
+                this.downloadCSV();
+            }
+        };
     },
 
     /**
