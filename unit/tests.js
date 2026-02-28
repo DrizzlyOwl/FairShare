@@ -906,6 +906,7 @@ runTest('ApiService.getEstimatedPropertyPrice error path', async () => {
 runTest('app.cacheElements should populate elements object', () => {
     const p1 = document.createElement('input');
     p1.id = 'salaryP1';
+    p1.dataset.ui = 'salaryP1';
     document.body.appendChild(p1);
 
     window.app.cacheElements();

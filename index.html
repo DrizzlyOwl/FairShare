@@ -72,7 +72,7 @@
     <main id="main-content">
         <div class="app-container">
             <!-- Header Brand -->
-            <header class="header-brand" id="header-brand">
+            <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
                     <img src="logo-icon.svg?v=1772317591" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
@@ -83,10 +83,10 @@
                     </div>
                 </div>
                 <div class="header-brand__controls">
-                    <button id="theme-toggle" class="header-brand__theme-toggle" aria-label="Toggle Night Mode">
+                    <button id="theme-toggle" class="header-brand__theme-toggle" aria-label="Toggle Night Mode" data-action="toggleTheme">
                         <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-lightning.svg'); mask-image: url('icons/icon-lightning.svg');" aria-hidden="true"></span>
                     </button>
-                    <button id="start-over-button" aria-label="Start over and clear all data" class="header-brand__reset-btn" data-cy="start-over-button">
+                    <button id="start-over-button" aria-label="Start over and clear all data" class="header-brand__reset-btn" data-cy="start-over-button" data-action="clearCache">
                         Start Over
                     </button>
                 </div>
@@ -96,10 +96,10 @@
             <div class="progress" id="progress-container">
                 <div class="progress__content">
                     <div class="progress__info">
-                        <span class="progress__text" aria-live="polite">Step 1 of 7: Welcome</span>
+                        <span class="progress__text" aria-live="polite" data-ui="progressLabel">Step 1 of 7: Welcome</span>
                     </div>
                     <div class="progress__track">
-                        <div class="progress__bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome" data-cy="progress-bar"></div>
+                        <div class="progress__bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome" data-cy="progress-bar" data-ui="progressBar"></div>
                     </div>
                 </div>
             </div>
@@ -168,33 +168,33 @@
 
                 <div class="form-group">
                     <div class="field-header">
-                        <label class="form-label" for="salaryP1" id="salaryP1Label">Your Annual Salary (Pre-tax) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
+                        <label class="form-label" for="salaryP1" id="salaryP1Label" data-ui="salaryP1Label">Your Annual Salary (Pre-tax) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-desc salaryP1-error salaryP1-tax-hint" data-cy="salaryP1-input">
+                        <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-desc salaryP1-error salaryP1-tax-hint" data-cy="salaryP1-input" data-ui="salaryP1">
                     </div>
-                    <p id="salaryP1-desc" class="help-text">Enter your total yearly income before any deductions.</p>
+                    <p id="salaryP1-desc" class="help-text" data-ui="salaryP1Desc">Enter your total yearly income before any deductions.</p>
                     <div id="salaryP1-tax-hint" class="help-text tax-hint" hidden></div>
-                    <div id="salaryP1-error" class="alert alert--error" hidden>
+                    <div id="salaryP1-error" class="alert alert--error" hidden data-ui="salaryP1Error">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                        <div class="alert__text" id="salaryP1ErrorText">Please enter a valid salary (0 or more).</div>
+                        <div class="alert__text" id="salaryP1ErrorText" data-ui="salaryP1ErrorText">Please enter a valid salary (0 or more).</div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="field-header">
-                        <label class="form-label" for="salaryP2" id="salaryP2Label">Your Partner's Annual Salary (Pre-tax) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
+                        <label class="form-label" for="salaryP2" id="salaryP2Label" data-ui="salaryP2Label">Your Partner's Annual Salary (Pre-tax) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-desc salaryP2-error salaryP2-tax-hint" data-cy="salaryP2-input">
+                        <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-desc salaryP2-error salaryP2-tax-hint" data-cy="salaryP2-input" data-ui="salaryP2">
                     </div>
-                    <p id="salaryP2-desc" class="help-text">Enter your partner's total yearly income before any deductions.</p>
+                    <p id="salaryP2-desc" class="help-text" data-ui="salaryP2Desc">Enter your partner's total yearly income before any deductions.</p>
                     <div id="salaryP2-tax-hint" class="help-text tax-hint" hidden></div>
-                    <div id="salaryP2-error" class="alert alert--error" hidden>
+                    <div id="salaryP2-error" class="alert alert--error" hidden data-ui="salaryP2Error">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
-                        <div class="alert__text" id="salaryP2ErrorText">Please enter a valid salary for your partner (0 or more).</div>
+                        <div class="alert__text" id="salaryP2ErrorText" data-ui="salaryP2ErrorText">Please enter a valid salary for your partner (0 or more).</div>
                     </div>
                 </div>
 
@@ -218,14 +218,14 @@
                 <div class="form-group">
                     <label class="form-label" for="postcode">Property Postcode <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <div class="input-group">
-                        <input type="text" id="postcode" class="input-group__control" required aria-required="true" aria-describedby="postcode-help postcode-error" placeholder="e.g. SW1A 0AA" data-cy="postcode-input">
+                        <input type="text" id="postcode" class="input-group__control" required aria-required="true" aria-describedby="postcode-help postcode-error" placeholder="e.g. SW1A 0AA" data-cy="postcode-input" data-ui="postcode">
                     </div>
-                    <div id="postcode-error" class="alert alert--error" hidden>
+                    <div id="postcode-error" class="alert alert--error" hidden data-ui="postcodeError">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid UK postcode.</div>
                     </div>
                     <div id="postcode-help" class="help-text">Used to detect your local region and estimate market values.</div>
-                    <div id="region-announcement" class="alert alert--info" aria-live="polite" hidden>
+                    <div id="region-announcement" class="alert alert--info" aria-live="polite" hidden data-ui="regionAnnouncement">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
                         <div class="alert__text"></div>
                     </div>
@@ -235,16 +235,16 @@
                     <label class="form-label" for="propertyPrice">Estimated Property Value <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="propertyPrice" class="input-group__control" required aria-required="true" placeholder="e.g. 250000" aria-describedby="propertyPrice-desc propertyPrice-error" data-cy="propertyPrice-input">
-                        <button type="button" id="estimatePriceBtn" class="btn--addon" data-cy="estimatePrice-button">Estimate</button>
+                        <input type="number" id="propertyPrice" class="input-group__control" required aria-required="true" placeholder="e.g. 250000" aria-describedby="propertyPrice-desc propertyPrice-error" data-cy="propertyPrice-input" data-ui="propertyPrice">
+                        <button type="button" id="estimatePriceBtn" class="btn--addon" data-cy="estimatePrice-button" data-action="handlePriceEstimation">Estimate</button>
                     </div>
                     <p id="propertyPrice-desc" class="help-text">The estimated market value of the property you're buying or already own.</p>
-                    <div id="propertyPrice-error" class="alert alert--error" hidden>
+                    <div id="propertyPrice-error" class="alert alert--error" hidden data-ui="propertyPriceError">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a value or use your postcode to estimate.</div>
                     </div>
-                    <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden>
-                        Using estimated market price: <span id="estimatedPriceValue" class="fw-bold"></span>
+                    <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden data-ui="propertyPriceEstimateDisplay">
+                        Using estimated market price: <span id="estimatedPriceValue" class="fw-bold" data-ui="estimatedPriceValue"></span>
                     </div>
                 </div>
 
@@ -346,26 +346,26 @@
                     </div>
                 </fieldset>
 
-                <div class="form-group" id="depositPercContainer">
+                <div class="form-group" id="depositPercContainer" data-ui="depositPercContainer">
                     <label class="form-label" for="depositPercentage">Total Cash Deposit (%) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <div class="input-group">
-                        <input type="number" id="depositPercentage" class="input-group__control" value="10" min="0" max="100" required aria-required="true" aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input">
+                        <input type="number" id="depositPercentage" class="input-group__control" value="10" min="0" max="100" required aria-required="true" aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input" data-ui="depositPercentage">
                         <span class="input-group__addon">%</span>
                     </div>
-                    <div id="depositPercentage-error" class="alert alert--error" hidden>
+                    <div id="depositPercentage-error" class="alert alert--error" hidden data-ui="depositPercentageError">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a deposit percentage (0-100).</div>
                     </div>
                     <div id="depositPercentage-help" class="help-text">The total percentage of the property value you're paying upfront.</div>
                 </div>
 
-                <div class="form-group" id="depositAmtContainer" hidden>
+                <div class="form-group" id="depositAmtContainer" hidden data-ui="depositAmtContainer">
                     <label class="form-label" for="depositAmount">Total Cash Deposit (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="depositAmount" class="input-group__control" required aria-required="true" placeholder="e.g. 25000" aria-describedby="depositAmount-help depositAmount-error" data-cy="depositAmount-input">
+                        <input type="number" id="depositAmount" class="input-group__control" required aria-required="true" placeholder="e.g. 25000" aria-describedby="depositAmount-help depositAmount-error" data-cy="depositAmount-input" data-ui="depositAmount">
                     </div>
-                    <div id="depositAmount-error" class="alert alert--error" hidden>
+                    <div id="depositAmount-error" class="alert alert--error" hidden data-ui="depositAmountError">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid deposit amount.</div>
                     </div>
@@ -388,11 +388,11 @@
                     <div class="form-group col">
                         <label class="form-label" for="mortgageInterestRate">Interest Rate (APR %) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="input-group">
-                            <input type="number" id="mortgageInterestRate" class="input-group__control" value="5" min="0" step="0.1" required aria-required="true" aria-describedby="mortgageInterestRate-desc mortgageInterestRate-error" data-cy="mortgageInterestRate-input">
+                            <input type="number" id="mortgageInterestRate" class="input-group__control" value="5" min="0" step="0.1" required aria-required="true" aria-describedby="mortgageInterestRate-desc mortgageInterestRate-error" data-cy="mortgageInterestRate-input" data-ui="mortgageInterestRate">
                             <span class="input-group__addon">%</span>
                         </div>
                         <p id="mortgageInterestRate-desc" class="help-text">The annual interest rate for your mortgage.</p>
-                        <div id="mortgageInterestRate-error" class="alert alert--error" hidden>
+                        <div id="mortgageInterestRate-error" class="alert alert--error" hidden data-ui="mortgageInterestRateError">
                             <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                             <div class="alert__text">Invalid interest rate.</div>
                         </div>
@@ -401,10 +401,10 @@
                     <div class="form-group col">
                         <label class="form-label" for="mortgageTerm">Repayment Term (Years) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="input-group">
-                            <input type="number" id="mortgageTerm" class="input-group__control" value="25" min="1" max="50" required aria-required="true" aria-describedby="mortgageTerm-desc mortgageTerm-error" data-cy="mortgageTerm-input">
+                            <input type="number" id="mortgageTerm" class="input-group__control" value="25" min="1" max="50" required aria-required="true" aria-describedby="mortgageTerm-desc mortgageTerm-error" data-cy="mortgageTerm-input" data-ui="mortgageTerm">
                         </div>
                         <p id="mortgageTerm-desc" class="help-text">The number of years you'll take to pay off the mortgage.</p>
-                        <div id="mortgageTerm-error" class="alert alert--error" hidden>
+                        <div id="mortgageTerm-error" class="alert alert--error" hidden data-ui="mortgageTermError">
                             <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
                             <div class="alert__text">Please enter a term (1-50 years).</div>
                         </div>
@@ -742,12 +742,12 @@
                     <div id="equity-mortgage-summary" class="alert alert--info" aria-live="polite">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
                         <div class="alert__text">
-                            Total Equity (Deposit): <span id="totalEquityDisplay" class="fw-bold">£0</span><br>
-                            Est. Stamp Duty (SDLT): <span id="sdltDisplay" class="fw-bold">£0</span><br>
-                            Legal Fees: <span id="legalFeesDisplay" class="fw-bold">£0</span><br>
-                            Mortgage Product Fees: <span id="mortgageFeesDisplay" class="fw-bold">£0</span><br>
+                            Total Equity (Deposit): <span id="totalEquityDisplay" class="fw-bold" data-ui="totalEquityDisplay">£0</span><br>
+                            Est. Stamp Duty (SDLT): <span id="sdltDisplay" class="fw-bold" data-ui="sdltDisplay">£0</span><br>
+                            Legal Fees: <span id="legalFeesDisplay" class="fw-bold" data-ui="legalFeesDisplay">£0</span><br>
+                            Mortgage Product Fees: <span id="mortgageFeesDisplay" class="fw-bold" data-ui="mortgageFeesDisplay">£0</span><br>
                             <hr class="summary-hr">
-                            <strong>Est. Total Upfront Cash: <span id="totalUpfrontDisplay" class="fw-bold">£0</span></strong>
+                            <strong>Est. Total Upfront Cash: <span id="totalUpfrontDisplay" class="fw-bold" data-ui="totalUpfrontDisplay">£0</span></strong>
                         </div>
                     </div>
 
@@ -755,12 +755,12 @@
                         <div class="card card--result card--share-p1">
                             <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
                             <p class="card__label">Your Upfront Share</p>
-                            <p id="equityP1Display" class="card__value" aria-live="polite">£0</p>
+                            <p id="equityP1Display" class="card__value" aria-live="polite" data-ui="equityP1Display">£0</p>
                         </div>
                         <div class="card card--result card--share-p2">
                             <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
                             <p class="card__label">Partner's Upfront Share</p>
-                            <p id="equityP2Display" class="card__value" aria-live="polite">£0</p>
+                            <p id="equityP2Display" class="card__value" aria-live="polite" data-ui="equityP2Display">£0</p>
                         </div>
                     </div>
                 </div>
@@ -770,28 +770,28 @@
                     <div class="result-ratio-bar" id="result-ratio-bar">
                         <p class="text-center fw-bold type-p">Calculated Contribution Ratio</p>
                         <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent You and 50 percent Your Partner">
-                            <div class="bar-p1" id="bar-p1" aria-hidden="true" data-cy="ratio-bar-p1">50%</div>
-                            <div class="bar-p2" id="bar-p2" aria-hidden="true" data-cy="ratio-bar-p2">50%</div>
+                            <div class="bar-p1" id="bar-p1" aria-hidden="true" data-cy="ratio-bar-p1" data-ui="barP1">50%</div>
+                            <div class="bar-p2" id="bar-p2" aria-hidden="true" data-cy="ratio-bar-p2" data-ui="barP2">50%</div>
                         </div>
-                        <p class="sr-only" id="ratio-text-desc">Ratio is 50 percent You and 50 percent Your Partner.</p>
+                        <p class="sr-only" id="ratio-text-desc" data-ui="ratioTextDesc">Ratio is 50 percent You and 50 percent Your Partner.</p>
                     </div>
 
                     <div class="card-grid" id="monthly-shares-summary">
                         <div class="card card--result card--share-p1" id="result-share-p1">
                             <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
                             <p class="card__label">Your Monthly Total</p>
-                            <p class="card__value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1">£0</p>
+                            <p class="card__value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1" data-ui="resultP1">£0</p>
                         </div>
                         <div class="card card--result card--share-p2" id="result-share-p2">
                             <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
                             <p class="card__label">Partner's Monthly Total</p>
-                            <p class="card__value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2">£0</p>
+                            <p class="card__value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2" data-ui="resultP2">£0</p>
                         </div>
                     </div>
                     <p class="text-center total-bill-row type-p" id="total-bill-row">
-                        Total Shared Monthly Budget: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display">£0</span>
+                        Total Shared Monthly Budget: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display" data-ui="totalBillDisplay">£0</span>
                     </p>
-                    <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden data-cy="result-summary">
+                    <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden data-cy="result-summary" data-ui="resultSummary">
                         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
                         <div class="alert__text"></div>
                     </div>
@@ -799,26 +799,26 @@
 
                 <div class="workings">
                     <h4 class="workings__title">Calculation Details</h4>
-                    <div class="workings__content" id="calculation-workings">
+                    <div class="workings__content" id="calculation-workings" data-ui="calculationWorkings">
                         <div class="workings__sections">
                             <div class="workings__section">
-                                <h5 class="workings__subtitle" id="wk-income-subtitle">Income & Ratio Workings</h5>
-                                <p><span id="wk-salary-p1" data-cy="wk-salary-p1">£0</span> + <span id="wk-salary-p2" data-cy="wk-salary-p2">£0</span> = <strong id="wk-total-salary" data-cy="wk-total-salary">£0</strong></p>
+                                <h5 class="workings__subtitle" id="wk-income-subtitle" data-ui="wkIncomeSubtitle">Income & Ratio Workings</h5>
+                                <p><span id="wk-salary-p1" data-cy="wk-salary-p1" data-ui="wkSalaryP1">£0</span> + <span id="wk-salary-p2" data-cy="wk-salary-p2" data-ui="wkSalaryP2">£0</span> = <strong id="wk-total-salary" data-cy="wk-total-salary" data-ui="wkTotalSalary">£0</strong></p>
                                 <ul class="workings__list">
-                                    <li>You: <strong id="wk-p1-perc" data-cy="wk-p1-perc">0%</strong> share</li>
-                                    <li>Your Partner: <strong id="wk-p2-perc" data-cy="wk-p2-perc">0%</strong> share</li>
+                                    <li>You: <strong id="wk-p1-perc" data-cy="wk-p1-perc" data-ui="wkP1Perc">0%</strong> share</li>
+                                    <li>Your Partner: <strong id="wk-p2-perc" data-cy="wk-p2-perc" data-ui="wkP2Perc">0%</strong> share</li>
                                 </ul>
                             </div>
 
                             <div class="workings__section">
                                 <h5 class="workings__subtitle">Mortgage & Terms</h5>
-                                <p>Property Value: <strong id="wk-property-price" data-cy="wk-property-price">£0</strong></p>
+                                <p>Property Value: <strong id="wk-property-price" data-cy="wk-property-price" data-ui="wkPropertyPrice">£0</strong></p>
                                 <ul class="workings__list">
-                                    <li>Deposit: <strong id="wk-deposit-perc" data-cy="wk-deposit-perc">0%</strong> (<span id="wk-total-equity" data-cy="wk-total-equity">£0</span>) split by <strong id="wk-deposit-split-type" data-cy="wk-deposit-split-type">Income Ratio</strong></li>
-                                    <li>Mortgage Required: <strong id="wk-mortgage-required" data-cy="wk-mortgage-required">£0</strong></li>
-                                    <li>Terms: <strong id="wk-interest-rate" data-cy="wk-interest-rate">0%</strong> over <strong id="wk-mortgage-term" data-cy="wk-mortgage-term">0</strong> years</li>
-                                    <li>Monthly Repayment: <strong id="wk-monthly-payment" data-cy="wk-monthly-payment">£0</strong></li>
-                                    <li>Total Repayment: <strong id="wk-total-repayment" data-cy="wk-total-repayment">£0</strong></li>
+                                    <li>Deposit: <strong id="wk-deposit-perc" data-cy="wk-deposit-perc" data-ui="wkDepositPerc">0%</strong> (<span id="wk-total-equity" data-cy="wk-total-equity" data-ui="wkTotalEquity">£0</span>) split by <strong id="wk-deposit-split-type" data-cy="wk-deposit-split-type" data-ui="wkDepositSplitType">Income Ratio</strong></li>
+                                    <li>Mortgage Required: <strong id="wk-mortgage-required" data-cy="wk-mortgage-required" data-ui="wkMortgageRequired">£0</strong></li>
+                                    <li>Terms: <strong id="wk-interest-rate" data-cy="wk-interest-rate" data-ui="wkInterestRate">0%</strong> over <strong id="wk-mortgage-term" data-cy="wk-mortgage-term" data-ui="wkMortgageTerm">0</strong> years</li>
+                                    <li>Monthly Repayment: <strong id="wk-monthly-payment" data-cy="wk-monthly-payment" data-ui="wkMonthlyPayment">£0</strong></li>
+                                    <li>Total Repayment: <strong id="wk-total-repayment" data-cy="wk-total-repayment" data-ui="wkTotalRepayment">£0</strong></li>
                                 </ul>
                             </div>
 
@@ -832,7 +832,7 @@
 
                 <h3 class="result-section__title screen__heading screen__subheading">Full Cost Breakdown</h3>
                 <div class="table-scroll-container" id="table-scroll-container">
-                    <table class="data-table" id="results-table">
+                    <table class="data-table" id="results-table" data-ui="resultsTable">
                         <thead>
                             <tr>
                                 <th scope="col">Expense</th>
@@ -844,72 +844,72 @@
                         <tbody>
                             <tr>
                                 <th scope="row">Mortgage</th>
-                                <td id="bd-mortgage-total" aria-live="polite">£0</td>
-                                <td id="bd-mortgage-p1" aria-live="polite">£0</td>
-                                <td id="bd-mortgage-p2" aria-live="polite">£0</td>
+                                <td id="bd-mortgage-total" aria-live="polite" data-ui="bdMortgageTotal">£0</td>
+                                <td id="bd-mortgage-p1" aria-live="polite" data-ui="bdMortgageP1">£0</td>
+                                <td id="bd-mortgage-p2" aria-live="polite" data-ui="bdMortgageP2">£0</td>
                             </tr>
                             <tr>
                                 <th scope="row">Council Tax</th>
-                                <td id="bd-tax-total" aria-live="polite">£0</td>
-                                <td id="bd-tax-p1" aria-live="polite">£0</td>
-                                <td id="bd-tax-p2" aria-live="polite">£0</td>
+                                <td id="bd-tax-total" aria-live="polite" data-ui="bdTaxTotal">£0</td>
+                                <td id="bd-tax-p1" aria-live="polite" data-ui="bdTaxP1">£0</td>
+                                <td id="bd-tax-p2" aria-live="polite" data-ui="bdTaxP2">£0</td>
                             </tr>
                             <tr>
                                 <th scope="row">Energy</th>
-                                <td id="bd-energy-total" aria-live="polite">£0</td>
-                                <td id="bd-energy-p1" aria-live="polite">£0</td>
-                                <td id="bd-energy-p2" aria-live="polite">£0</td>
+                                <td id="bd-energy-total" aria-live="polite" data-ui="bdEnergyTotal">£0</td>
+                                <td id="bd-energy-p1" aria-live="polite" data-ui="bdEnergyP1">£0</td>
+                                <td id="bd-energy-p2" aria-live="polite" data-ui="bdEnergyP2">£0</td>
                             </tr>
                             <tr>
                                 <th scope="row">Water</th>
-                                <td id="bd-water-total" aria-live="polite">£0</td>
-                                <td id="bd-water-p1" aria-live="polite">£0</td>
-                                <td id="bd-water-p2" aria-live="polite">£0</td>
+                                <td id="bd-water-total" aria-live="polite" data-ui="bdWaterTotal">£0</td>
+                                <td id="bd-water-p1" aria-live="polite" data-ui="bdWaterP1">£0</td>
+                                <td id="bd-water-p2" aria-live="polite" data-ui="bdWaterP2">£0</td>
                             </tr>
                             <tr>
                                 <th scope="row">Broadband & TV</th>
-                                <td id="bd-broadband-total" aria-live="polite">£0</td>
-                                <td id="bd-broadband-p1" aria-live="polite">£0</td>
-                                <td id="bd-broadband-p2" aria-live="polite">£0</td>
+                                <td id="bd-broadband-total" aria-live="polite" data-ui="bdBroadbandTotal">£0</td>
+                                <td id="bd-broadband-p1" aria-live="polite" data-ui="bdBroadbandP1">£0</td>
+                                <td id="bd-broadband-p2" aria-live="polite" data-ui="bdBroadbandP2">£0</td>
                             </tr>
                             <tr>
                                 <th scope="row">Groceries</th>
-                                <td id="bd-groceries-total" aria-live="polite">£0</td>
-                                <td id="bd-groceries-p1" aria-live="polite">£0</td>
-                                <td id="bd-groceries-p2" aria-live="polite">£0</td>
+                                <td id="bd-groceries-total" aria-live="polite" data-ui="bdGroceriesTotal">£0</td>
+                                <td id="bd-groceries-p1" aria-live="polite" data-ui="bdGroceriesP1">£0</td>
+                                <td id="bd-groceries-p2" aria-live="polite" data-ui="bdGroceriesP2">£0</td>
                             </tr>
                             <tr>
                                 <th scope="row">Childcare</th>
-                                <td id="bd-childcare-total" aria-live="polite">£0</td>
-                                <td id="bd-childcare-p1" aria-live="polite">£0</td>
-                                <td id="bd-childcare-p2" aria-live="polite">£0</td>
+                                <td id="bd-childcare-total" aria-live="polite" data-ui="bdChildcareTotal">£0</td>
+                                <td id="bd-childcare-p1" aria-live="polite" data-ui="bdChildcareP1">£0</td>
+                                <td id="bd-childcare-p2" aria-live="polite" data-ui="bdChildcareP2">£0</td>
                             </tr>
                             <tr>
                                 <th scope="row">Insurance</th>
-                                <td id="bd-insurance-total" aria-live="polite">£0</td>
-                                <td id="bd-insurance-p1" aria-live="polite">£0</td>
-                                <td id="bd-insurance-p2" aria-live="polite">£0</td>
+                                <td id="bd-insurance-total" aria-live="polite" data-ui="bdInsuranceTotal">£0</td>
+                                <td id="bd-insurance-p1" aria-live="polite" data-ui="bdInsuranceP1">£0</td>
+                                <td id="bd-insurance-p2" aria-live="polite" data-ui="bdInsuranceP2">£0</td>
                             </tr>
                             <tr>
                                 <th scope="row">Other Shared Costs</th>
-                                <td id="bd-other-total" aria-live="polite">£0</td>
-                                <td id="bd-other-p1" aria-live="polite">£0</td>
-                                <td id="bd-other-p2" aria-live="polite">£0</td>
+                                <td id="bd-other-total" aria-live="polite" data-ui="bdOtherTotal">£0</td>
+                                <td id="bd-other-p1" aria-live="polite" data-ui="bdOtherP1">£0</td>
+                                <td id="bd-other-p2" aria-live="polite" data-ui="bdOtherP2">£0</td>
                             </tr>
                             <tr class="table-total-row" id="table-total-row">
                                 <th scope="row">Total</th>
-                                <td id="bd-total-total" aria-live="polite">£0</td>
-                                <td id="bd-total-p1" aria-live="polite">£0</td>
-                                <td id="bd-total-p2" aria-live="polite">£0</td>
+                                <td id="bd-total-total" aria-live="polite" data-ui="bdTotalTotal">£0</td>
+                                <td id="bd-total-p1" aria-live="polite" data-ui="bdTotalP1">£0</td>
+                                <td id="bd-total-p2" aria-live="polite" data-ui="bdTotalP2">£0</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <p class="help-text breakdown-summary type-p" id="breakdown-summary"></p>
+                <p class="help-text breakdown-summary type-p" id="breakdown-summary" data-ui="breakdownSummary"></p>
 
                 <div class="nav nav--vertical">
-                    <button type="button" id="downloadCSVBtn" class="btn btn--success btn--block">
+                    <button type="button" id="downloadCSVBtn" class="btn btn--success btn--block" data-action="downloadCSV">
                         <span class="icon-btn icon-btn--lg" style="-webkit-mask-image: url('icons/icon-download.svg'); mask-image: url('icons/icon-download.svg'); margin-inline-end: 0.5rem;" aria-hidden="true"></span>
                         Download results as CSV
                     </button>
@@ -918,8 +918,8 @@
 
             <!-- Navigation Buttons -->
             <div class="nav">
-                <button id="back-button" class="btn btn--secondary nav__button" data-cy="back-button">Back</button>
-                <button id="next-button" class="btn btn--primary nav__button" data-cy="next-button">Next</button>
+                <button id="back-button" class="btn btn--secondary nav__button" data-cy="back-button" data-ui="backButton">Back</button>
+                <button id="next-button" class="btn btn--primary nav__button" data-cy="next-button" data-ui="nextButton">Next</button>
             </div>
         </div>
     </main>

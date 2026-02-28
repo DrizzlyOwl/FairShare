@@ -12,7 +12,7 @@ import NavigationController from './ui/NavigationController.js';
 import FormController from './ui/FormController.js';
 import { formatCurrency } from './utils/Helpers.js';
 import CSV from './ui/Export.js';
-import { FORM_FIELDS, BAND_PRICES } from './core/Constants.js';
+import { FORM_FIELDS, BAND_PRICES, SCREEN_MAP, NEXT_SCREEN_MAP } from './core/Constants.js';
 
 const app = {
     /**
@@ -20,8 +20,8 @@ const app = {
      */
     init() {
         console.log(`[App] Initializing FairShare...`);
-        this.hideLoader();
         this.cacheElements();
+        this.hideLoader();
         
         // 1. Initialize Core Managers
         this.ui = new UIManager(this.elements, BAND_PRICES, (id) => this.nav.updatePagination(id));
@@ -45,97 +45,55 @@ const app = {
         document.querySelectorAll('main section.screen').forEach(el => el.setAttribute('hidden', ''));
 
         // Initial screen transition
-        const initialScreen = window.location.hash.replace('#', '') || this.ui.SCREENS.LANDING;
-        this.ui.switchScreen(this.nav.findScreenByHeadingId(initialScreen) || this.ui.SCREENS.LANDING, true);
+        const initialScreen = window.location.hash.replace('#', '') || SCREEN_MAP.LANDING;
+        this.ui.switchScreen(this.nav.findScreenByHeadingId(initialScreen) || SCREEN_MAP.LANDING, true);
     },
 
     /**
-     * Removes the initial page loader when assets are ready.
+     * Removes the initial page loader when assets are ready using a race condition.
      */
     hideLoader() {
         const loader = document.querySelector('.lazy-loader');
         if (!loader) return;
 
         const performHide = () => {
+            if (!loader.parentElement) return; // Already removed
             loader.setAttribute('hidden', '');
             setTimeout(() => loader.remove(), 500);
         };
 
-        if (document.fonts) {
-            document.fonts.ready.then(performHide).catch(performHide);
-        } else {
-            setTimeout(performHide, 500);
-        }
-        
-        setTimeout(performHide, 2000);
+        // Race between font loading and a 2s timeout
+        const fontLoad = document.fonts ? document.fonts.ready : Promise.resolve();
+        const timeout = new Promise(resolve => setTimeout(resolve, 2000));
+
+        Promise.race([fontLoad, timeout]).then(performHide).catch(performHide);
     },
 
     /**
-     * Scans the DOM for required elements and populates the local cache.
+     * Scans the DOM for elements with [data-ui] and populates the local cache.
      */
     cacheElements() {
         this.elements = {};
-        const ids = [
-            'salaryP1', 'salaryP2', 'salaryP1Label', 'salaryP2Label', 'salaryP1ErrorText', 'salaryP2ErrorText',
-            'postcode', 'propertyPrice', 'bedrooms', 'bathrooms', 'councilTaxCost', 'energyCost', 'waterBill',
-            'broadbandCost', 'groceriesCost', 'childcareCost', 'insuranceCost', 'otherSharedCosts',
-            'depositPercentage', 'mortgageInterestRate', 'mortgageTerm', 'mortgageFees', 'estimatePriceBtn',
-            'back-button', 'next-button', 'propertyPrice-estimate-display', 'estimatedPriceValue',
-            'postcode-error', 'region-announcement', 'sdlt-estimate', 'sdltDisplay', 'legalFeesDisplay',
-            'mortgageFeesDisplay', 'legal-fees-estimate', 'totalEquityDisplay', 'totalUpfrontDisplay',
-            'mortgageRequiredDisplay', 'monthlyMortgageDisplay', 'totalRepaymentDisplay',
-            'equityP1Display', 'equityP2Display', 'band-price-display', 'bar-p1', 'bar-p2',
-            'ratio-text-desc', 'results-table', 'displayPropertyPrice', 'header-brand', 'theme-toggle',
-            'depositPercContainer', 'depositAmtContainer', 'depositAmount',
-            'salaryP1-desc', 'salaryP2-desc',
-            'result-p1', 'result-p2', 'total-bill-display', 'result-summary', 'calculation-workings',
-            'breakdown-summary', 'bd-mortgage-total', 'bd-mortgage-p1', 'bd-mortgage-p2',
-            'bd-tax-total', 'bd-tax-p1', 'bd-tax-p2', 'bd-energy-total', 'bd-energy-p1', 'bd-energy-p2',
-            'bd-water-total', 'bd-water-p1', 'bd-water-p2', 'bd-broadband-total', 'bd-broadband-p1', 'bd-broadband-p2',
-            'bd-groceries-total', 'bd-groceries-p1', 'bd-groceries-p2', 
-            'bd-childcare-total', 'bd-childcare-p1', 'bd-childcare-p2',
-            'bd-insurance-total', 'bd-insurance-p1', 'bd-insurance-p2',
-            'bd-other-total', 'bd-other-p1', 'bd-other-p2',
-            'bd-total-total', 'bd-total-p1', 'bd-total-p2',
-            'wk-salary-p1', 'wk-salary-p2', 'wk-total-salary', 'wk-income-subtitle', 'wk-p1-perc', 'wk-p2-perc',
-            'wk-property-price', 'wk-deposit-perc', 'wk-total-equity', 'wk-deposit-split-type',
-            'wk-mortgage-required', 'wk-interest-rate', 'wk-mortgage-term', 'wk-monthly-payment', 'wk-total-repayment',
-            'start-over-button'
-        ];
-
-        ids.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                const key = id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-                this.elements[key] = el;
-            }
+        document.querySelectorAll('[data-ui]').forEach(el => {
+            const key = el.dataset.ui;
+            this.elements[key] = el;
         });
-
-        this.elements.progressBar = document.querySelector('.progress__bar');
-        this.elements.progressLabel = document.querySelector('.progress__text');
     },
 
     /**
-     * Binds specialized global event listeners using event delegation.
+     * Binds specialized global event listeners using action delegation.
      */
     bindGlobalEvents() {
         const main = document.querySelector('main');
         if (!main) return;
 
         main.onclick = (e) => {
-            const target = e.target.closest('button, a');
+            const target = e.target.closest('[data-action]');
             if (!target) return;
 
-            const id = target.id;
-
-            if (id === 'estimatePriceBtn') {
-                this.handlePriceEstimation();
-            } else if (id === 'theme-toggle' || target.closest('#theme-toggle')) {
-                this.toggleTheme();
-            } else if (id === 'start-over-button') {
-                this.clearCache();
-            } else if (id === 'downloadCSVBtn') {
-                this.downloadCSV();
+            const action = target.dataset.action;
+            if (typeof this[action] === 'function') {
+                this[action](e);
             }
         };
     },
@@ -151,7 +109,7 @@ const app = {
             const el = document.getElementById(field.id);
             if (!el) return;
             const val = state[field.key || field.id];
-            if (val) el.value = val;
+            if (val !== undefined) el.value = val;
         });
 
         // Sync radio groups
@@ -173,37 +131,30 @@ const app = {
         this.form.updateFTBVisibility();
         this.form.updateSalaryTypeLabels(state.salaryType);
         
+        // Let UIManager handle initial calculations sync
         const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
         this.store.update(update);
-        this.syncCalculatedFields(update);
         this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
+        
+        // Trigger manual render for non-observed calculated fields
+        if (update._sdlt !== undefined) this.renderUpfrontWorkings(update._sdlt, update._legalFees);
     },
 
     /**
      * Syncs transient/calculated values back to UI elements.
      */
     syncCalculatedFields(update) {
-        if (update.depositPercentage !== undefined && this.elements.depositPercentage) 
-            this.elements.depositPercentage.value = update.depositPercentage.toFixed(1);
-        if (update.depositAmount !== undefined && this.elements.depositAmount) 
-            this.elements.depositAmount.value = update.depositAmount;
-
+        // Most fields are now handled by UIManager.render which is triggered by store.update
+        // We only handle specific manual orchestrations here if needed
         if (update._sdlt !== undefined) this.renderUpfrontWorkings(update._sdlt, update._legalFees);
-        
-        if (this.elements.monthlyMortgageDisplay && update.monthlyMortgagePayment !== undefined) 
-            this.elements.monthlyMortgageDisplay.innerText = formatCurrency(update.monthlyMortgagePayment);
-        if (this.elements.totalRepaymentDisplay && update.totalRepayment !== undefined) 
-            this.elements.totalRepaymentDisplay.innerText = formatCurrency(update.totalRepayment);
 
         // Utility and regional estimate sync
-        if (update.councilTaxCost !== undefined && this.elements.councilTaxCost) 
-            this.elements.councilTaxCost.value = update.councilTaxCost;
-        if (update.energyCost !== undefined && this.elements.energyCost) 
-            this.elements.energyCost.value = update.energyCost;
-        if (update.waterBill !== undefined && this.elements.waterBill) 
-            this.elements.waterBill.value = update.waterBill;
-        if (update.broadbandCost !== undefined && this.elements.broadbandCost) 
-            this.elements.broadbandCost.value = update.broadbandCost;
+        const utilityFields = ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'];
+        utilityFields.forEach(id => {
+            if (update[id] !== undefined && this.elements[id]) {
+                this.elements[id].value = update[id];
+            }
+        });
     },
 
     /**
@@ -225,15 +176,16 @@ const app = {
      * Handles async property price estimation.
      */
     async handlePriceEstimation() {
-        try {
-            const postcode = this.elements.postcode.value.trim();
-            const bedrooms = parseInt(this.elements.bedrooms.value) || 2;
-            if (!postcode) return;
+        const postcode = this.elements.postcode.value.trim();
+        const bedrooms = parseInt(this.elements.bedrooms.value) || 2;
+        if (!postcode) return;
 
-            this.ui.hideWarning(3);
+        this.ui.hideWarning(3);
+        
+        try {
             const result = await ApiService.getEstimatedPropertyPrice(postcode, bedrooms);
-            
             const price = typeof result === 'object' ? result.price : result;
+            
             this.store.update({ propertyPrice: price });
             this.elements.propertyPrice.value = price;
             this.form.updatePropertyPriceDisplay(price, !!result.isEstimated);
@@ -242,8 +194,17 @@ const app = {
             this.store.update(update);
             this.syncCalculatedFields(update);
         } catch (error) {
-            console.error(`[App] Error during price estimation:`, error);
-            this.ui.showWarning(3, "Failed to estimate property price. Please enter manually.");
+            this.handleError(error, 3, "Failed to estimate property price. Please enter manually.");
+        }
+    },
+
+    /**
+     * Standardized error handling for user-facing issues.
+     */
+    handleError(error, screenNum, userMessage) {
+        console.error(`[App] Error:`, error);
+        if (this.ui) {
+            this.ui.showWarning(screenNum, userMessage || "An unexpected error occurred. Please try again.");
         }
     },
 
@@ -285,17 +246,17 @@ const app = {
             this.form.forceStateSync();
 
             let stateUpdate = {};
-            if (screenId === this.ui.SCREENS.INCOME) {
+            if (screenId === SCREEN_MAP.INCOME) {
                 stateUpdate = FinanceOrchestrator.calculateRatio(this.store.data);
             }
-            if (screenId === this.ui.SCREENS.PROPERTY) {
+            if (screenId === SCREEN_MAP.PROPERTY) {
                 Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.store.data));
                 Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
             }
-            if (screenId === this.ui.SCREENS.MORTGAGE) {
+            if (screenId === SCREEN_MAP.MORTGAGE) {
                 Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
             }
-            if (screenId === this.ui.SCREENS.COMMITTED) {
+            if (screenId === SCREEN_MAP.COMMITTED) {
                 this.renderResults();
             }
 
@@ -305,27 +266,21 @@ const app = {
             }
 
             const isScreenValid = this.form.validateScreen(screenId);
+            const screenNum = parseInt(screenId.split('-')[1]);
             
             if (!isScreenValid) {
-                this.ui.showWarning(parseInt(screenId.split('-')[1]), "Please ensure all required fields are valid.");
+                this.ui.showWarning(screenNum, "Please ensure all required fields are valid.");
                 return;
             }
 
-            this.ui.hideWarning(parseInt(screenId.split('-')[1]));
+            this.ui.hideWarning(screenNum);
 
-            const nextScreens = {
-                [this.ui.SCREENS.INCOME]: this.ui.SCREENS.PROPERTY,
-                [this.ui.SCREENS.PROPERTY]: this.ui.SCREENS.MORTGAGE,
-                [this.ui.SCREENS.MORTGAGE]: this.ui.SCREENS.UTILITIES,
-                [this.ui.SCREENS.UTILITIES]: this.ui.SCREENS.COMMITTED,
-                [this.ui.SCREENS.COMMITTED]: this.ui.SCREENS.RESULTS
-            };
-
-            if (nextScreens[screenId]) {
-                this.ui.switchScreen(nextScreens[screenId]);
+            const nextScreenId = NEXT_SCREEN_MAP[screenId];
+            if (nextScreenId) {
+                this.ui.switchScreen(nextScreenId);
             }
         } catch (error) {
-            console.error(`[App] Error during screen transition:`, error);
+            this.handleError(error, parseInt(screenId.split('-')[1]), "Unable to proceed to the next step.");
         }
     },
 
@@ -338,19 +293,16 @@ const app = {
             this.store.clear();
             if (theme) localStorage.setItem('fairshare_theme', theme);
             
-            // Unregister all service workers
+            // Fast unregister all service workers
             if ('serviceWorker' in navigator) {
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const registration of registrations) {
-                    await registration.unregister();
-                }
+                const regs = await navigator.serviceWorker.getRegistrations();
+                await Promise.all(regs.map(r => r.unregister()));
             }
             
             window.location.hash = '';
             window.location.replace(window.location.origin + window.location.pathname);
         } catch (error) {
-            console.error(`[App] Error clearing cache:`, error);
-            // Fallback reload
+            console.error(`[App] Error during cache clear:`, error);
             window.location.reload();
         }
     },

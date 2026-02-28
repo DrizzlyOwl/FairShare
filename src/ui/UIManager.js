@@ -278,5 +278,21 @@ export default class UIManager {
      */
     render(state) {
         this.updateRatioBar(state.ratioP1, state.ratioP2);
+
+        // Update calculated equity fields if they exist
+        if (state.monthlyMortgagePayment !== undefined && this.elements.monthlyMortgageDisplay) {
+            this.elements.monthlyMortgageDisplay.innerText = formatCurrency(state.monthlyMortgagePayment);
+        }
+        if (state.totalRepayment !== undefined && this.elements.totalRepaymentDisplay) {
+            this.elements.totalRepaymentDisplay.innerText = formatCurrency(state.totalRepayment);
+        }
+
+        // Sync deposit percentage/amount if provided in state
+        if (state.depositPercentage !== undefined && this.elements.depositPercentage) {
+            this.elements.depositPercentage.value = state.depositPercentage.toFixed(1);
+        }
+        if (state.depositAmount !== undefined && this.elements.depositAmount) {
+            this.elements.depositAmount.value = state.depositAmount;
+        }
     }
 }

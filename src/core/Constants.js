@@ -155,3 +155,14 @@ export const SCREEN_MAP = deepFreeze({
     COMMITTED: 'screen-6',
     RESULTS: 'screen-7'
 });
+
+/**
+ * Sequential mapping for screen transitions.
+ */
+export const NEXT_SCREEN_MAP = deepFreeze({
+    [SCREEN_MAP.INCOME]: SCREEN_MAP.PROPERTY,
+    [SCREEN_MAP.PROPERTY]: SCREEN_MAP.MORTGAGE,
+    [SCREEN_MAP.MORTGAGE]: SCREEN_MAP.UTILITIES,
+    [SCREEN_MAP.UTILITIES]: SCREEN_MAP.COMMITTED,
+    [SCREEN_MAP.COMMITTED]: SCREEN_MAP.RESULTS
+});
