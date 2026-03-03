@@ -7,3 +7,4 @@
 - [x] Implement Master Toggles & Bulk Updates tests (`cypress/integration/preferences_spec.js`)
 - [x] Implement Theme Persistence tests (`cypress/integration/preferences_spec.js`)
 - [x] Implement API Error Resilience tests (`cypress/integration/api_error_spec.js`)
+- [x] Optimize CI pipeline with PR triggers and artifact uploads (`.github/workflows/static.yml`)
