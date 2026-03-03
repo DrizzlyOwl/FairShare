@@ -4,6 +4,8 @@
 
 # FairShare - Fair Bill Splitting Calculator
 
+[![Tests](https://github.com/DrizzlyOwl/FairShare/actions/workflows/static.yml/badge.svg)](https://github.com/DrizzlyOwl/FairShare/actions/workflows/static.yml)
+[![Coverage](https://img.shields.io/badge/Coverage-36%25-orange)](https://github.com/DrizzlyOwl/FairShare)
 [![Static Badge](https://img.shields.io/badge/A11y-WCAG%202.1%20AA-success)](https://github.com/DrizzlyOwl/FairShare)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Built with Gemini](https://img.shields.io/badge/Built%20with-Gemini%202.0-orange)](https://deepmind.google/technologies/gemini/)
@@ -102,6 +104,29 @@ This project uses an automated build stamp utility. Before pushing any changes:
 npm run bump
 ```
 This automatically increments the build version, updates the GMT footer timestamp, and refreshes asset cache busters.
+
+---
+
+## 🧪 Testing
+
+FairShare maintains high quality through comprehensive testing:
+
+### Running All Tests
+```sh
+npm test
+```
+
+### Individual Test Suites
+- **Unit Tests**: `npm run test:unit`
+- **Cypress E2E**: `npm run test:cypress`
+- **Accessibility (WCAG)**: `npm run test:a11y`
+
+### Coverage Report
+To generate a local HTML coverage report:
+```sh
+npm run test:coverage
+```
+The report will be available in the `coverage/` directory.
 
 ---
 
