@@ -12,7 +12,12 @@
     "test:a11y": "cypress run --spec cypress/integration/accessibility_spec.js",
     "cypress:open": "cypress open",
     "lint": "eslint src unit run_unit_tests.js service-worker.js",
-    "bump": "node scripts/bump-build.js"
+    "bump": "node scripts/bump-build.js",
+    "clean": "rm -rf dist",
+    "copy-assets": "mkdir -p dist/icons dist/images && cp index.html manifest.json service-worker.js favicon.svg logo-icon.svg logo-icon-dark.svg dist/ && cp icons/*.svg dist/icons/ && cp images/*.svg dist/images/",
+    "build:js": "esbuild src/main.js --bundle --minify --sourcemap --outfile=dist/src/main.js",
+    "build:css": "postcss style.css -o dist/style.css",
+    "build": "npm run clean && npm run copy-assets && npm run build:js && npm run build:css"
   },
   "keywords": [
     "calculator",
@@ -24,14 +29,19 @@
   "author": "Ash Davies (DrizzlyOwl) and Gemini",
   "license": "MIT",
   "devDependencies": {
+    "autoprefixer": "^10.4.27",
     "axe-core": "^4.11.1",
     "c8": "^11.0.0",
+    "cssnano": "^7.1.2",
     "cypress": "^15.11.0",
     "cypress-axe": "^1.7.0",
+    "esbuild": "^0.27.3",
     "eslint": "^10.0.0",
     "http-server": "^14.1.1",
     "istanbul-lib-instrument": "^6.0.3",
     "jsdom": "^22.1.0",
-    "nyc": "^18.0.0"
+    "nyc": "^18.0.0",
+    "postcss": "^8.5.8",
+    "postcss-cli": "^11.0.1"
   }
 }
