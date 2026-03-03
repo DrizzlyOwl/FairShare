@@ -54,6 +54,9 @@ export default class FormController {
                 if (['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'].includes(field.id)) {
                     Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
                 }
+                if (['bedrooms', 'bathrooms', 'taxBand'].includes(field.id)) {
+                    Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.store.data));
+                }
                 
                 if (Object.keys(stateUpdate).length > 0) {
                     this.store.update(stateUpdate);
@@ -112,6 +115,9 @@ export default class FormController {
                 case 'taxBand':
                     this.store.update({ taxBand: val });
                     this.ui.updatePricePreview(val);
+                    const taxUpdate = FinanceOrchestrator.populateEstimates(this.store.data);
+                    this.store.update(taxUpdate);
+                    this.app.syncCalculatedFields(taxUpdate);
                     break;
                 case 'depositSplitType':
                     this.store.update({ depositSplitProportional: val === 'yes' });

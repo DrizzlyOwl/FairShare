@@ -778,7 +778,16 @@ runTest('UIManager.renderResultsSummary breakdown and render', () => {
         upfront: { p1: 5000, p2: 5000, total: 10000 }
     };
 
-    ui.renderResultsSummary(summary);
+    const mockState = {
+        depositSplitProportional: true,
+        ratioP1: 0.5,
+        ratioP2: 0.5,
+        totalEquity: 5000,
+        mortgageFees: 500,
+        regionCode: 'EN'
+    };
+
+    ui.renderResultsSummary(summary, mockState);
     console.assert(breakdownSummary.innerText.includes('Out of the £2,000.00'), 'Breakdown summary text mismatch');
 
     ui.render({ ratioP1: 0.7, ratioP2: 0.3 });
@@ -822,18 +831,27 @@ runTest('UIManager.renderResultsSummary edge cases', () => {
     };
     const ui = new window.UIManager(mockElements, {});
 
+    const mockState = {
+        depositSplitProportional: true,
+        ratioP1: 0.5,
+        ratioP2: 0.5,
+        totalEquity: 5000,
+        mortgageFees: 0,
+        regionCode: 'EN'
+    };
+
     // Equal contribution
     ui.renderResultsSummary({
         monthly: { p1: 1000, p2: 1000, total: 2000, costs: { mortgage: { total: 0 }, councilTax: { total: 0 }, energy: { total: 0 }, water: { total: 0 }, broadband: { total: 0 }, groceries: { total: 0 }, childcare: { total: 0 }, insurance: { total: 0 }, otherShared: { total: 0 } } },
-        upfront: { p1: 5000, p2: 5000 }
-    });
+        upfront: { p1: 5000, p2: 5000, sdlt: 0, legalFees: 0, total: 10000 }
+    }, mockState);
     console.assert(summaryText.innerText === 'Both partners contribute equally.', 'Equal contribution text mismatch');
 
     // P2 pays more
     ui.renderResultsSummary({
         monthly: { p1: 1000, p2: 1500, total: 2500, costs: { mortgage: { total: 0 }, councilTax: { total: 0 }, energy: { total: 0 }, water: { total: 0 }, broadband: { total: 0 }, groceries: { total: 0 }, childcare: { total: 0 }, insurance: { total: 0 }, otherShared: { total: 0 } } },
-        upfront: { p1: 5000, p2: 5000 }
-    });
+        upfront: { p1: 5000, p2: 5000, sdlt: 0, legalFees: 0, total: 10000 }
+    }, mockState);
     console.assert(summaryText.innerText.includes('Your Partner pays'), 'P2 pays more text mismatch');
 });
 

@@ -33,8 +33,8 @@ export const INITIAL_STATE = {
     isNorth: false,
     regionCode: 'EN', // EN, SC, WA, NI
     taxBand: '',
-    beds: 0,
-    baths: 0,
+    beds: 2,
+    baths: 1,
     homeType: 'first',
     isFTB: false,
     splitTypes: {

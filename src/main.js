@@ -153,14 +153,18 @@ const app = {
 
         this.form.updateFTBVisibility();
         this.form.updateSalaryTypeLabels(state.salaryType);
+        this.form.updatePropertyPriceDisplay(state.propertyPrice, false);
         
         // Let UIManager handle initial calculations sync
         const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
+        const estimates = FinanceOrchestrator.populateEstimates(this.store.data);
+        
         this.store.update(update);
+        this.store.update(estimates);
         this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
         
         // Trigger manual render for non-observed calculated fields
-        if (update._sdlt !== undefined) this.renderUpfrontWorkings(update._sdlt, update._legalFees);
+        this.syncCalculatedFields({ ...update, ...estimates });
     },
 
     /**
@@ -329,4 +333,6 @@ const app = {
 };
 
 window.app = app;
+window.CSV = CSV;
+window.ApiService = ApiService;
 document.addEventListener('DOMContentLoaded', () => app.init());
