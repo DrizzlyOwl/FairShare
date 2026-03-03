@@ -11,6 +11,11 @@ import { FORM_FIELDS } from '../core/Constants.js';
 import { formatCurrency, debounce } from '../utils/Helpers.js';
 
 export default class FormController {
+    #app;
+    #ui;
+    #store;
+    #elements;
+
     /**
      * @param {Object} app - Reference to the main app orchestrator.
      * @param {UIManager} ui - Reference to the UI manager.
@@ -18,18 +23,18 @@ export default class FormController {
      * @param {Object} elements - Pre-populated element cache.
      */
     constructor(app, ui, store, elements) {
-        this.app = app;
-        this.ui = ui;
-        this.store = store;
-        this.elements = elements;
+        this.#app = app;
+        this.#ui = ui;
+        this.#store = store;
+        this.#elements = elements;
 
-        this.bindEvents();
+        this.#bindEvents();
     }
 
     /**
      * Binds DOM input and selection events using event delegation.
      */
-    bindEvents() {
+    #bindEvents() {
         const main = document.querySelector('main');
         if (!main) return;
 
@@ -44,23 +49,23 @@ export default class FormController {
                 if (field.type === 'number') val = parseFloat(val) || 0;
                 console.log(`[FormController] Delegated Debounced Update: ${field.id} =`, val);
                 
-                this.store.update({ [field.key || field.id]: val });
+                this.#store.update({ [field.key || field.id]: val });
                 
                 const stateUpdate = {};
                 if (field.id === 'propertyPrice') {
                     this.updatePropertyPriceDisplay(val, false);
-                    Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
+                    Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.#store.data));
                 }
                 if (['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'].includes(field.id)) {
-                    Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
+                    Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.#store.data));
                 }
                 if (['bedrooms', 'bathrooms', 'taxBand'].includes(field.id)) {
-                    Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.store.data));
+                    Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.#store.data));
                 }
                 
                 if (Object.keys(stateUpdate).length > 0) {
-                    this.store.update(stateUpdate);
-                    this.app.syncCalculatedFields(stateUpdate);
+                    this.#store.update(stateUpdate);
+                    this.#app.syncCalculatedFields(stateUpdate);
                 }
             }, 300));
         });
@@ -73,12 +78,12 @@ export default class FormController {
 
             this.clearFieldError(field.id);
             if (field.id === 'postcode') {
-                this.formatPostcode(target);
-                this.handlePostcodeChange(target.value);
+                this.#formatPostcode(target);
+                this.#handlePostcodeChange(target.value);
             }
             if (field.id === 'salaryP1' || field.id === 'salaryP2') {
                 this.updateTaxEstimate(field.id === 'salaryP1' ? 'P1' : 'P2');
-                this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
+                this.#store.update(FinanceOrchestrator.calculateRatio(this.#store.data));
             }
 
             const updateFn = fieldUpdates.get(field.id);
@@ -95,41 +100,41 @@ export default class FormController {
 
             switch(name) {
                 case 'salaryType':
-                    this.store.update({ salaryType: val });
+                    this.#store.update({ salaryType: val });
                     this.updateSalaryTypeLabels(val);
                     this.updateTaxEstimate('P1');
                     this.updateTaxEstimate('P2');
-                    this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
+                    this.#store.update(FinanceOrchestrator.calculateRatio(this.#store.data));
                     break;
                 case 'depositType':
-                    this.store.update({ depositType: val });
+                    this.#store.update({ depositType: val });
                     if (val === 'percentage') {
-                        this.elements.depositPercContainer.removeAttribute('hidden');
-                        this.elements.depositAmtContainer.setAttribute('hidden', '');
+                        this.#elements.depositPercContainer.removeAttribute('hidden');
+                        this.#elements.depositAmtContainer.setAttribute('hidden', '');
                     } else {
-                        this.elements.depositPercContainer.setAttribute('hidden', '');
-                        this.elements.depositAmtContainer.removeAttribute('hidden');
+                        this.#elements.depositPercContainer.setAttribute('hidden', '');
+                        this.#elements.depositAmtContainer.removeAttribute('hidden');
                     }
                     this.syncEquityDetails();
                     break;
                 case 'taxBand':
-                    this.store.update({ taxBand: val });
-                    this.ui.updatePricePreview(val);
-                    const taxUpdate = FinanceOrchestrator.populateEstimates(this.store.data);
-                    this.store.update(taxUpdate);
-                    this.app.syncCalculatedFields(taxUpdate);
+                    this.#store.update({ taxBand: val });
+                    this.#ui.updatePricePreview(val);
+                    const taxUpdate = FinanceOrchestrator.populateEstimates(this.#store.data);
+                    this.#store.update(taxUpdate);
+                    this.#app.syncCalculatedFields(taxUpdate);
                     break;
                 case 'depositSplitType':
-                    this.store.update({ depositSplitProportional: val === 'yes' });
+                    this.#store.update({ depositSplitProportional: val === 'yes' });
                     this.syncEquityDetails();
                     break;
                 case 'homeType':
-                    this.store.update({ homeType: val });
+                    this.#store.update({ homeType: val });
                     this.updateFTBVisibility();
                     this.syncEquityDetails();
                     break;
                 case 'buyerStatus':
-                    this.store.update({ isFTB: val === 'ftb' });
+                    this.#store.update({ isFTB: val === 'ftb' });
                     this.syncEquityDetails();
                     break;
                 case 'masterUtilities':
@@ -146,16 +151,16 @@ export default class FormController {
      * Helper to recalculate and sync equity details.
      */
     syncEquityDetails() {
-        const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-        this.store.update(update);
-        this.app.syncCalculatedFields(update);
+        const update = FinanceOrchestrator.calculateEquityDetails(this.#store.data);
+        this.#store.update(update);
+        this.#app.syncCalculatedFields(update);
     }
 
     /**
      * Formats postcode input according to UK standards.
      * @param {HTMLInputElement} input - The input element.
      */
-    formatPostcode(input) {
+    #formatPostcode(input) {
         const val = input.value.replace(/\s+/g, '').toUpperCase();
         if (val.length > 3) {
             input.value = val.slice(0, -3) + ' ' + val.slice(-3);
@@ -166,13 +171,13 @@ export default class FormController {
      * Handles postcode input changes to detect region and update announcements.
      * @param {string} postcode - The UK postcode.
      */
-    handlePostcodeChange(postcode) {
+    #handlePostcodeChange(postcode) {
         const region = ApiService.getRegionFromPostcode(postcode);
-        const announce = this.elements.regionAnnouncement;
+        const announce = this.#elements.regionAnnouncement;
         if (!announce) return;
 
         if (region) {
-            this.store.update({
+            this.#store.update({
                 regionCode: region.code,
                 isNorth: region.key === 'NORTH'
             });
@@ -185,9 +190,9 @@ export default class FormController {
             announce.removeAttribute('hidden');
             
             // Recalculate SDLT/Legal fees as they are region-dependent
-            const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-            this.store.update(update);
-            this.app.syncCalculatedFields(update);
+            const update = FinanceOrchestrator.calculateEquityDetails(this.#store.data);
+            this.#store.update(update);
+            this.#app.syncCalculatedFields(update);
         } else {
             announce.setAttribute('hidden', '');
         }
@@ -197,25 +202,25 @@ export default class FormController {
      * Updates labels and placeholders based on Gross vs Net income selection.
      */
     updateSalaryTypeLabels(type) {
-        if (this.elements.salaryP1Error) this.elements.salaryP1Error.setAttribute('hidden', '');
-        if (this.elements.salaryP2Error) this.elements.salaryP2Error.setAttribute('hidden', '');
+        if (this.#elements.salaryP1Error) this.#elements.salaryP1Error.setAttribute('hidden', '');
+        if (this.#elements.salaryP2Error) this.#elements.salaryP2Error.setAttribute('hidden', '');
 
         if (type === 'gross') {
-            this.elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax) *';
-            this.elements.salaryP2Label.innerText = "Your Partner's Annual Salary (Pre-tax) *";
-            this.elements.salaryP1.placeholder = 'e.g. 35000';
-            this.elements.salaryP2.placeholder = 'e.g. 45000';
-            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your total yearly income before any deductions.';
-            if (this.elements.salaryP2Desc) this.elements.salaryP2Desc.innerText = "Enter your partner's total yearly income before any deductions.";
-            this.elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
+            this.#elements.salaryP1Label.innerText = 'Your Annual Salary (Pre-tax) *';
+            this.#elements.salaryP2Label.innerText = "Your Partner's Annual Salary (Pre-tax) *";
+            this.#elements.salaryP1.placeholder = 'e.g. 35000';
+            this.#elements.salaryP2.placeholder = 'e.g. 45000';
+            if (this.#elements.salaryP1Desc) this.#elements.salaryP1Desc.innerText = 'Enter your total yearly income before any deductions.';
+            if (this.#elements.salaryP2Desc) this.#elements.salaryP2Desc.innerText = "Enter your partner's total yearly income before any deductions.";
+            this.#elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
         } else {
-            this.elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay *';
-            this.elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay *";
-            this.elements.salaryP1.placeholder = 'e.g. 2500';
-            this.elements.salaryP2.placeholder = 'e.g. 3200';
-            if (this.elements.salaryP1Desc) this.elements.salaryP1Desc.innerText = 'Enter your average monthly income after all taxes and deductions.';
-            if (this.elements.salaryP2Desc) this.elements.salaryP2Desc.innerText = "Enter your partner's average monthly income after all taxes and deductions.";
-            this.elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
+            this.#elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay *';
+            this.#elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay *";
+            this.#elements.salaryP1.placeholder = 'e.g. 2500';
+            this.#elements.salaryP2.placeholder = 'e.g. 3200';
+            if (this.#elements.salaryP1Desc) this.#elements.salaryP1Desc.innerText = 'Enter your average monthly income after all taxes and deductions.';
+            if (this.#elements.salaryP2Desc) this.#elements.salaryP2Desc.innerText = "Enter your partner's average monthly income after all taxes and deductions.";
+            this.#elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
         }
     }
 
@@ -224,16 +229,16 @@ export default class FormController {
      * @param {string} p - Partner identifier ('P1' or 'P2').
      */
     updateTaxEstimate(p) {
-        const val = parseFloat(this.elements[`salary${p}`].value) || 0;
+        const val = parseFloat(this.#elements[`salary${p}`].value) || 0;
         const hint = document.getElementById(`salary${p}-tax-hint`);
         if (!hint) return;
 
-        if (this.store.data.salaryType !== 'gross' || val <= 0) {
+        if (this.#store.data.salaryType !== 'gross' || val <= 0) {
             hint.setAttribute('hidden', '');
             return;
         }
 
-        const { bandName, monthlyNet } = FinanceEngine.calculateTakeHome(val, this.store.data.regionCode);
+        const { bandName, monthlyNet } = FinanceEngine.calculateTakeHome(val, this.#store.data.regionCode);
         hint.innerText = `${bandName} • Est. £${Math.round(monthlyNet).toLocaleString()}/mo take-home`;
         hint.removeAttribute('hidden');
     }
@@ -242,7 +247,7 @@ export default class FormController {
      * Updates visibility of First Time Buyer specific options.
      */
     updateFTBVisibility() {
-        const state = this.store.data;
+        const state = this.#store.data;
         const ftbContainer = document.getElementById('ftb-container');
         if (ftbContainer) {
             if (state.homeType === 'first') ftbContainer.removeAttribute('hidden');
@@ -256,21 +261,21 @@ export default class FormController {
      * @param {boolean} isEstimated - Whether the price is from market data.
      */
     updatePropertyPriceDisplay(price, isEstimated) {
-        const display = this.elements.propertyPriceEstimateDisplay;
+        const display = this.#elements.propertyPriceEstimateDisplay;
         if (!display) return;
         if (price > 0) {
             const formatted = formatCurrency(price);
             const labelText = isEstimated ? 'Using estimated market price: ' : 'Using manual market price: ';
             display.innerHTML = `${labelText}<span>${formatted}</span>`;
             display.removeAttribute('hidden');
-            if (this.elements.displayPropertyPrice) {
+            if (this.#elements.displayPropertyPrice) {
                 // Remove £ symbol as it's provided by .input-group__addon
-                this.elements.displayPropertyPrice.value = price.toLocaleString('en-GB');
+                this.#elements.displayPropertyPrice.value = price.toLocaleString('en-GB');
             }
         } else {
             display.setAttribute('hidden', '');
-            if (this.elements.displayPropertyPrice) {
-                this.elements.displayPropertyPrice.value = '';
+            if (this.#elements.displayPropertyPrice) {
+                this.#elements.displayPropertyPrice.value = '';
             }
         }
     }
@@ -285,13 +290,13 @@ export default class FormController {
             ? ['councilTax', 'energy', 'water', 'broadband']
             : ['groceries', 'childcare', 'insurance', 'otherShared'];
 
-        const splitTypes = { ...this.store.data.splitTypes };
+        const splitTypes = { ...this.#store.data.splitTypes };
         groups.forEach(group => {
             const radio = document.querySelector(`input[name="${group}SplitType"][value="${type}"]`);
             if (radio) radio.checked = true;
             splitTypes[group] = type;
         });
-        this.store.update({ splitTypes });
+        this.#store.update({ splitTypes });
     }
 
     /**
@@ -309,7 +314,7 @@ export default class FormController {
         // Also clear screen-level warnings if any field is being fixed
         const screenId = el?.closest('section.screen')?.id;
         if (screenId) {
-            this.ui.hideWarning(parseInt(screenId.split('-')[1]));
+            this.#ui.hideWarning(parseInt(screenId.split('-')[1]));
         }
     }
 
@@ -323,16 +328,16 @@ export default class FormController {
         // Ensure state is fresh before validation
         this.forceStateSync();
         
-        const { isValid, errors } = Validator.validateScreen(screenId, this.store.data);
+        const { isValid, errors } = Validator.validateScreen(screenId, this.#store.data);
         console.log(`[FormController] Validating Screen: ${screenId}. Result: ${isValid}`, errors.length ? `Errors: ${errors}` : "");
 
         // Map of screen fields to clear/set
         const screenFields = {
-            [this.ui.SCREENS.INCOME]: ['salaryP1', 'salaryP2'],
-            [this.ui.SCREENS.PROPERTY]: ['postcode', 'propertyPrice', 'taxBand'],
-            [this.ui.SCREENS.MORTGAGE]: ['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'],
-            [this.ui.SCREENS.UTILITIES]: ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'],
-            [this.ui.SCREENS.COMMITTED]: ['groceriesCost', 'childcareCost', 'insuranceCost', 'otherSharedCosts']
+            [this.#ui.SCREENS.INCOME]: ['salaryP1', 'salaryP2'],
+            [this.#ui.SCREENS.PROPERTY]: ['postcode', 'propertyPrice', 'taxBand'],
+            [this.#ui.SCREENS.MORTGAGE]: ['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'],
+            [this.#ui.SCREENS.UTILITIES]: ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'],
+            [this.#ui.SCREENS.COMMITTED]: ['groceriesCost', 'childcareCost', 'insuranceCost', 'otherSharedCosts']
         };
 
         const setFieldState = (fieldId, fieldValid) => {
@@ -354,7 +359,7 @@ export default class FormController {
         errors.forEach(f => setFieldState(f, false));
 
         if (!isValid) {
-            this.scrollToFirstError(screenId);
+            this.#scrollToFirstError(screenId);
         }
 
         return isValid;
@@ -364,7 +369,7 @@ export default class FormController {
      * Finds the first visible error on the current screen and scrolls it into view.
      * @param {string} screenId - The active screen ID.
      */
-    scrollToFirstError(screenId) {
+    #scrollToFirstError(screenId) {
         const activeScreen = document.getElementById(screenId);
         if (!activeScreen) return;
 
@@ -415,7 +420,7 @@ export default class FormController {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) {
                 if (name.endsWith('SplitType')) {
-                    if (!stateUpdate.splitTypes) stateUpdate.splitTypes = { ...this.store.data.splitTypes };
+                    if (!stateUpdate.splitTypes) stateUpdate.splitTypes = { ...this.#store.data.splitTypes };
                     const key = name.replace('SplitType', '');
                     stateUpdate.splitTypes[key] = checked.value;
                 } 
@@ -428,6 +433,6 @@ export default class FormController {
             }
         });
 
-        this.store.update(stateUpdate);
+        this.#store.update(stateUpdate);
     }
 }

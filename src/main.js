@@ -14,7 +14,14 @@ import { formatCurrency } from './utils/Helpers.js';
 import CSV from './ui/Export.js';
 import { FORM_FIELDS, BAND_PRICES, SCREEN_MAP, NEXT_SCREEN_MAP } from './core/Constants.js';
 
-const app = {
+class FairShareApp {
+    #ui = null;
+    #store = null;
+    #themeManager = null;
+    #nav = null;
+    #form = null;
+    #elements = {};
+
     /**
      * Initializes the application, caches elements, and sets up controllers.
      */
@@ -24,19 +31,19 @@ const app = {
         this.hideLoader();
         
         // 1. Initialize Core Managers
-        this.ui = new UIManager(this.elements, BAND_PRICES, (id) => this.nav.updatePagination(id));
-        this.store = new State(INITIAL_STATE, (data) => this.ui.render(data));
-        this.themeManager = new ThemeManager(this.elements);
+        this.#ui = new UIManager(this.#elements, BAND_PRICES, (id) => this.#nav.updatePagination(id));
+        this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data));
+        this.#themeManager = new ThemeManager(this.#elements);
         
         // 2. Initialize Specialized Controllers
-        this.nav = new NavigationController(this, this.ui, this.elements);
-        this.form = new FormController(this, this.ui, this.store, this.elements);
+        this.#nav = new NavigationController(this, this.#ui, this.#elements);
+        this.#form = new FormController(this, this.#ui, this.#store, this.#elements);
         
         // 3. Setup Initial State
-        this.store.hydrate();
+        this.#store.hydrate();
 
         // 4. Initialize Theme
-        this.themeManager.init();
+        this.#themeManager.init();
 
         this.initPWA();
         this.bindGlobalEvents();
@@ -47,8 +54,8 @@ const app = {
 
         // Initial screen transition
         const initialScreen = window.location.hash.replace('#', '') || SCREEN_MAP.LANDING;
-        this.ui.switchScreen(this.nav.findScreenByHeadingId(initialScreen) || SCREEN_MAP.LANDING, true);
-    },
+        this.#ui.switchScreen(this.#nav.findScreenByHeadingId(initialScreen) || SCREEN_MAP.LANDING, true);
+    }
 
     /**
      * Initializes PWA-specific listeners and features.
@@ -59,18 +66,18 @@ const app = {
         
         // Check initial status
         this.updateOnlineStatus();
-    },
+    }
 
     /**
      * Updates the UI to reflect current online/offline status.
      */
     updateOnlineStatus() {
         const isOffline = !navigator.onLine;
-        if (this.elements.offlineIndicator) {
-            if (isOffline) this.elements.offlineIndicator.removeAttribute('hidden');
-            else this.elements.offlineIndicator.setAttribute('hidden', '');
+        if (this.#elements.offlineIndicator) {
+            if (isOffline) this.#elements.offlineIndicator.removeAttribute('hidden');
+            else this.#elements.offlineIndicator.setAttribute('hidden', '');
         }
-    },
+    }
 
     /**
      * Removes the initial page loader when assets are ready using a race condition.
@@ -90,18 +97,18 @@ const app = {
         const timeout = new Promise(resolve => setTimeout(resolve, 2000));
 
         Promise.race([fontLoad, timeout]).then(performHide).catch(performHide);
-    },
+    }
 
     /**
      * Scans the DOM for elements with [data-ui] and populates the local cache.
      */
     cacheElements() {
-        this.elements = {};
+        this.#elements = {};
         document.querySelectorAll('[data-ui]').forEach(el => {
             const key = el.dataset.ui;
-            this.elements[key] = el;
+            this.#elements[key] = el;
         });
-    },
+    }
 
     /**
      * Binds specialized global event listeners using action delegation.
@@ -119,13 +126,13 @@ const app = {
                 this[action](e);
             }
         };
-    },
+    }
 
     /**
      * Synchronizes complex UI elements with current application state.
      */
     syncUIWithState() {
-        const state = this.store.data;
+        const state = this.#store.data;
 
         // Sync standard form fields
         FORM_FIELDS.forEach(field => {
@@ -151,21 +158,21 @@ const app = {
             if (radio) radio.checked = true;
         });
 
-        this.form.updateFTBVisibility();
-        this.form.updateSalaryTypeLabels(state.salaryType);
-        this.form.updatePropertyPriceDisplay(state.propertyPrice, false);
+        this.#form.updateFTBVisibility();
+        this.#form.updateSalaryTypeLabels(state.salaryType);
+        this.#form.updatePropertyPriceDisplay(state.propertyPrice, false);
         
         // Let UIManager handle initial calculations sync
-        const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-        const estimates = FinanceOrchestrator.populateEstimates(this.store.data);
+        const update = FinanceOrchestrator.calculateEquityDetails(this.#store.data);
+        const estimates = FinanceOrchestrator.populateEstimates(this.#store.data);
         
-        this.store.update(update);
-        this.store.update(estimates);
-        this.store.update(FinanceOrchestrator.calculateRatio(this.store.data));
+        this.#store.update(update);
+        this.#store.update(estimates);
+        this.#store.update(FinanceOrchestrator.calculateRatio(this.#store.data));
         
         // Trigger manual render for non-observed calculated fields
         this.syncCalculatedFields({ ...update, ...estimates });
-    },
+    }
 
     /**
      * Syncs transient/calculated values back to UI elements.
@@ -178,117 +185,117 @@ const app = {
         // Utility and regional estimate sync
         const utilityFields = ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'];
         utilityFields.forEach(id => {
-            if (update[id] !== undefined && this.elements[id]) {
-                this.elements[id].value = update[id];
+            if (update[id] !== undefined && this.#elements[id]) {
+                this.#elements[id].value = update[id];
             }
         });
-    },
+    }
 
     /**
      * Renders upfront cash requirement details to the UI.
      */
     renderUpfrontWorkings(sdlt, legalFees) {
-        const state = this.store.data;
+        const state = this.#store.data;
         const totalUpfront = state.totalEquity + sdlt + legalFees + state.mortgageFees;
         
-        if (this.elements.sdltEstimate) this.elements.sdltEstimate.value = sdlt.toLocaleString();
-        if (this.elements.legalFeesEstimate) this.elements.legalFeesEstimate.value = legalFees.toLocaleString();
-        if (this.elements.sdltDisplay) this.elements.sdltDisplay.innerText = formatCurrency(sdlt);
-        if (this.elements.legalFeesDisplay) this.elements.legalFeesDisplay.innerText = formatCurrency(legalFees);
-        if (this.elements.totalEquityDisplay) this.elements.totalEquityDisplay.innerText = formatCurrency(state.totalEquity);
-        if (this.elements.totalUpfrontDisplay) this.elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
-    },
+        if (this.#elements.sdltEstimate) this.#elements.sdltEstimate.value = sdlt.toLocaleString();
+        if (this.#elements.legalFeesEstimate) this.#elements.legalFeesEstimate.value = legalFees.toLocaleString();
+        if (this.#elements.sdltDisplay) this.#elements.sdltDisplay.innerText = formatCurrency(sdlt);
+        if (this.#elements.legalFeesDisplay) this.#elements.legalFeesDisplay.innerText = formatCurrency(legalFees);
+        if (this.#elements.totalEquityDisplay) this.#elements.totalEquityDisplay.innerText = formatCurrency(state.totalEquity);
+        if (this.#elements.totalUpfrontDisplay) this.#elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
+    }
 
     /**
      * Handles async property price estimation.
      */
     async handlePriceEstimation() {
-        const postcode = this.elements.postcode.value.trim();
-        const bedrooms = parseInt(this.elements.bedrooms.value) || 2;
+        const postcode = this.#elements.postcode.value.trim();
+        const bedrooms = parseInt(this.#elements.bedrooms.value) || 2;
         if (!postcode) return;
 
-        this.ui.hideWarning(3);
+        this.#ui.hideWarning(3);
         
         try {
             const result = await ApiService.getEstimatedPropertyPrice(postcode, bedrooms);
             const price = typeof result === 'object' ? result.price : result;
             
-            this.store.update({ propertyPrice: price });
-            this.elements.propertyPrice.value = price;
-            this.form.updatePropertyPriceDisplay(price, !!result.isEstimated);
+            this.#store.update({ propertyPrice: price });
+            this.#elements.propertyPrice.value = price;
+            this.#form.updatePropertyPriceDisplay(price, !!result.isEstimated);
             
-            const update = FinanceOrchestrator.calculateEquityDetails(this.store.data);
-            this.store.update(update);
+            const update = FinanceOrchestrator.calculateEquityDetails(this.#store.data);
+            this.#store.update(update);
             this.syncCalculatedFields(update);
         } catch (error) {
             this.handleError(error, 3, "Failed to estimate property price. Please enter manually.");
         }
-    },
+    }
 
     /**
      * Standardized error handling for user-facing issues.
      */
     handleError(error, screenNum, userMessage) {
         console.error(`[App] Error:`, error);
-        if (this.ui) {
-            this.ui.showWarning(screenNum, userMessage || "An unexpected error occurred. Please try again.");
+        if (this.#ui) {
+            this.#ui.showWarning(screenNum, userMessage || "An unexpected error occurred. Please try again.");
         }
-    },
+    }
 
     /**
      * Calculates the final bill splitting breakdown and transitions to results.
      */
     renderResults() {
-        const summary = FinanceOrchestrator.getFinalSummary(this.store.data);
-        this.ui.renderResultsSummary(summary, this.store.data);
-        this.ui.renderCalculationWorkings(this.store.data);
-    },
+        const summary = FinanceOrchestrator.getFinalSummary(this.#store.data);
+        this.#ui.renderResultsSummary(summary, this.#store.data);
+        this.#ui.renderCalculationWorkings(this.#store.data);
+    }
 
     /**
      * Validates current screen data and transitions to the next screen.
      */
     async validateAndNext(screenId) {
         try {
-            this.form.forceStateSync();
+            this.#form.forceStateSync();
 
             let stateUpdate = {};
             if (screenId === SCREEN_MAP.INCOME) {
-                stateUpdate = FinanceOrchestrator.calculateRatio(this.store.data);
+                stateUpdate = FinanceOrchestrator.calculateRatio(this.#store.data);
             }
             if (screenId === SCREEN_MAP.PROPERTY) {
-                Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.store.data));
-                Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
+                Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.#store.data));
+                Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.#store.data));
             }
             if (screenId === SCREEN_MAP.MORTGAGE) {
-                Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.store.data));
+                Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.#store.data));
             }
             if (screenId === SCREEN_MAP.COMMITTED) {
                 this.renderResults();
             }
 
             if (Object.keys(stateUpdate).length > 0) {
-                this.store.update(stateUpdate);
+                this.#store.update(stateUpdate);
                 this.syncCalculatedFields(stateUpdate);
             }
 
-            const isScreenValid = this.form.validateScreen(screenId);
+            const isScreenValid = this.#form.validateScreen(screenId);
             const screenNum = parseInt(screenId.split('-')[1]);
             
             if (!isScreenValid) {
-                this.ui.showWarning(screenNum, "Please ensure all required fields are valid.");
+                this.#ui.showWarning(screenNum, "Please ensure all required fields are valid.");
                 return;
             }
 
-            this.ui.hideWarning(screenNum);
+            this.#ui.hideWarning(screenNum);
 
             const nextScreenId = NEXT_SCREEN_MAP[screenId];
             if (nextScreenId) {
-                this.ui.switchScreen(nextScreenId);
+                this.#ui.switchScreen(nextScreenId);
             }
         } catch (error) {
             this.handleError(error, parseInt(screenId.split('-')[1]), "Unable to proceed to the next step.");
         }
-    },
+    }
 
     /**
      * Clears application state and performs a clean reload.
@@ -296,7 +303,7 @@ const app = {
     async clearCache() {
         try {
             const theme = localStorage.getItem('fairshare_theme');
-            this.store.clear();
+            this.#store.clear();
             if (theme) localStorage.setItem('fairshare_theme', theme);
             
             // Fast unregister all service workers
@@ -311,27 +318,44 @@ const app = {
             console.error(`[App] Error during cache clear:`, error);
             window.location.reload();
         }
-    },
+    }
 
     /**
      * Toggles the application theme.
      */
     toggleTheme() {
-        this.themeManager.toggle();
-    },
+        this.#themeManager.toggle();
+    }
 
     /**
      * Generates and downloads a CSV report.
      */
     downloadCSV() {
         try {
-            CSV.download(this.store.data, this.elements.resultsTable);
+            CSV.download(this.#store.data, this.#elements.resultsTable);
         } catch (error) {
             console.error(`[App] Error downloading CSV:`, error);
         }
     }
-};
 
+    /**
+     * Accessor for cached elements.
+     * @returns {Object}
+     */
+    get elements() {
+        return this.#elements;
+    }
+
+    /**
+     * Accessor for ThemeManager.
+     * @returns {ThemeManager}
+     */
+    get themeManager() {
+        return this.#themeManager;
+    }
+}
+
+const app = new FairShareApp();
 window.app = app;
 window.CSV = CSV;
 window.ApiService = ApiService;

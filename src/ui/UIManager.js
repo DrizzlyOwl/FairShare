@@ -4,10 +4,13 @@
  */
 
 import { formatCurrency } from '../utils/Helpers.js';
-import { createAlertHTML } from './Components.js';
 import { SCREEN_MAP } from '../core/Constants.js';
 
 export default class UIManager {
+    #elements;
+    #bandPrices;
+    #onScreenChange;
+
     SCREENS = SCREEN_MAP;
 
     /**
@@ -16,9 +19,9 @@ export default class UIManager {
      * @param {Function} onScreenChangeCallback - Called when screen transitions occur.
      */
     constructor(elements, bandPrices, onScreenChangeCallback = null) {
-        this.elements = elements;
-        this.bandPrices = bandPrices;
-        this.onScreenChange = onScreenChangeCallback;
+        this.#elements = elements;
+        this.#bandPrices = bandPrices;
+        this.#onScreenChange = onScreenChangeCallback;
     }
 
     /**
@@ -60,8 +63,8 @@ export default class UIManager {
         this.updateBackgroundImage(id);
         
         // Notify via callback instead of global object
-        if (this.onScreenChange) {
-            this.onScreenChange(id);
+        if (this.#onScreenChange) {
+            this.#onScreenChange(id);
         }
     }
 
@@ -81,13 +84,13 @@ export default class UIManager {
         };
 
         const stepData = progressMap[id] || { p: 0, text: '' };
-        if (this.elements.progressBar) {
-            this.elements.progressBar.style.width = `${stepData.p}%`;
-            this.elements.progressBar.setAttribute('aria-valuenow', stepData.p);
-            this.elements.progressBar.setAttribute('aria-valuetext', stepData.text);
+        if (this.#elements.progressBar) {
+            this.#elements.progressBar.style.width = `${stepData.p}%`;
+            this.#elements.progressBar.setAttribute('aria-valuenow', stepData.p);
+            this.#elements.progressBar.setAttribute('aria-valuetext', stepData.text);
         }
-        if (this.elements.progressLabel) {
-            this.elements.progressLabel.innerText = stepData.text;
+        if (this.#elements.progressLabel) {
+            this.#elements.progressLabel.innerText = stepData.text;
         }
     }
 
@@ -120,16 +123,16 @@ export default class UIManager {
     updateRatioBar(ratioP1, ratioP2) {
         const p1P = Math.round(ratioP1 * 100);
         const p2P = Math.round(ratioP2 * 100);
-        if (this.elements.barP1) {
-            this.elements.barP1.style.width = p1P + '%';
-            this.elements.barP1.innerText = p1P + '%';
+        if (this.#elements.barP1) {
+            this.#elements.barP1.style.width = p1P + '%';
+            this.#elements.barP1.innerText = p1P + '%';
         }
-        if (this.elements.barP2) {
-            this.elements.barP2.style.width = p2P + '%';
-            this.elements.barP2.innerText = p2P + '%';
+        if (this.#elements.barP2) {
+            this.#elements.barP2.style.width = p2P + '%';
+            this.#elements.barP2.innerText = p2P + '%';
         }
-        if (this.elements.ratioTextDesc) {
-            this.elements.ratioTextDesc.innerText = `Income ratio is ${p1P}% You and ${p2P}% Your Partner.`;
+        if (this.#elements.ratioTextDesc) {
+            this.#elements.ratioTextDesc.innerText = `Income ratio is ${p1P}% You and ${p2P}% Your Partner.`;
         }
     }
 
@@ -138,7 +141,7 @@ export default class UIManager {
      * @param {string} band - The tax band letter (A-H).
      */
     updatePricePreview(band) {
-        const cost = this.bandPrices[band];
+        const cost = this.#bandPrices[band];
         this.updateAlert('band-price-display', {
             variant: 'info',
             icon: 'icon-info.svg',
@@ -155,9 +158,9 @@ export default class UIManager {
      * @param {number} p2 - Partner 2 share.
      */
     updateBreakdownRow(key, total, p1, p2) {
-        if (this.elements[`bd${key}Total`]) this.elements[`bd${key}Total`].innerText = formatCurrency(total, 2);
-        if (this.elements[`bd${key}P1`]) this.elements[`bd${key}P1`].innerText = formatCurrency(p1, 2);
-        if (this.elements[`bd${key}P2`]) this.elements[`bd${key}P2`].innerText = formatCurrency(p2, 2);
+        if (this.#elements[`bd${key}Total`]) this.#elements[`bd${key}Total`].innerText = formatCurrency(total, 2);
+        if (this.#elements[`bd${key}P1`]) this.#elements[`bd${key}P1`].innerText = formatCurrency(p1, 2);
+        if (this.#elements[`bd${key}P2`]) this.#elements[`bd${key}P2`].innerText = formatCurrency(p2, 2);
     }
 
     /**
@@ -226,19 +229,19 @@ export default class UIManager {
         const { monthly, upfront } = summary;
         
         // Update Monthly Summary Cards
-        if (this.elements.resultP1) this.elements.resultP1.innerText = formatCurrency(monthly.p1, 2);
-        if (this.elements.resultP2) this.elements.resultP2.innerText = formatCurrency(monthly.p2, 2);
-        if (this.elements.totalBillDisplay) this.elements.totalBillDisplay.innerText = formatCurrency(monthly.total, 2);
+        if (this.#elements.resultP1) this.#elements.resultP1.innerText = formatCurrency(monthly.p1, 2);
+        if (this.#elements.resultP2) this.#elements.resultP2.innerText = formatCurrency(monthly.p2, 2);
+        if (this.#elements.totalBillDisplay) this.#elements.totalBillDisplay.innerText = formatCurrency(monthly.total, 2);
 
         // Update Upfront Summary Cards
-        if (this.elements.equityP1Display) this.elements.equityP1Display.innerText = formatCurrency(upfront.p1, 2);
-        if (this.elements.equityP2Display) this.elements.equityP2Display.innerText = formatCurrency(upfront.p2, 2);
+        if (this.#elements.equityP1Display) this.#elements.equityP1Display.innerText = formatCurrency(upfront.p1, 2);
+        if (this.#elements.equityP2Display) this.#elements.equityP2Display.innerText = formatCurrency(upfront.p2, 2);
 
         // 1. Upfront Breakdown Table
         const upfrontRatio = state.depositSplitProportional ? state.ratioP1 : 0.5;
         const taxLabel = state.regionCode === 'SC' ? 'Stamp Duty (LBTT)' : (state.regionCode === 'WA' ? 'Stamp Duty (LTT)' : 'Stamp Duty (SDLT)');
         
-        if (this.elements.upfrontTaxLabel) this.elements.upfrontTaxLabel.innerText = taxLabel;
+        if (this.#elements.upfrontTaxLabel) this.#elements.upfrontTaxLabel.innerText = taxLabel;
         
         this.updateBreakdownRow('UpfrontDeposit', state.totalEquity, state.totalEquity * upfrontRatio, state.totalEquity * (1 - upfrontRatio));
         this.updateBreakdownRow('UpfrontTax', upfront.sdlt, upfront.sdlt * upfrontRatio, upfront.sdlt * (1 - upfrontRatio));
@@ -260,21 +263,21 @@ export default class UIManager {
         this.updateBreakdownRow('Total', monthly.total, monthly.p1, monthly.p2);
 
         const diff = Math.abs(monthly.p1 - monthly.p2);
-        const summaryText = this.elements.resultSummary?.querySelector('.alert__text');
+        const summaryText = this.#elements.resultSummary?.querySelector('.alert__text');
         
         if (summaryText) {
             const moreP = monthly.p1 > monthly.p2 ? 'You' : 'Your Partner';
             const verb = moreP === 'You' ? 'pay' : 'pays';
             summaryText.innerText = diff < 0.01 ? "Both partners contribute equally." : `${moreP} ${verb} ${formatCurrency(diff, 2)} more per month.`;
-            this.elements.resultSummary.removeAttribute('hidden');
+            this.#elements.resultSummary.removeAttribute('hidden');
         }
 
-        if (this.elements.breakdownSummary) {
-            const { costs } = monthly;
-            const mainCosts = costs.mortgage.total + costs.councilTax.total + costs.energy.total + costs.water.total;
-            const lifestyleCosts = costs.broadband.total + costs.groceries.total + costs.childcare.total + costs.insurance.total + costs.otherShared.total;
+        if (this.#elements.breakdownSummary) {
+            const { costs: monthlyCosts } = monthly;
+            const mainCosts = monthlyCosts.mortgage.total + monthlyCosts.councilTax.total + monthlyCosts.energy.total + monthlyCosts.water.total;
+            const lifestyleCosts = monthlyCosts.broadband.total + monthlyCosts.groceries.total + monthlyCosts.childcare.total + monthlyCosts.insurance.total + monthlyCosts.otherShared.total;
             
-            this.elements.breakdownSummary.innerText = `Out of the £${monthly.total.toLocaleString('en-GB', {minimumFractionDigits: 2})} total monthly spend, £${mainCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} is dedicated to the property and utilities, while £${lifestyleCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} covers shared lifestyle and committed costs.`;
+            this.#elements.breakdownSummary.innerText = `Out of the £${monthly.total.toLocaleString('en-GB', {minimumFractionDigits: 2})} total monthly spend, £${mainCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} is dedicated to the property and utilities, while £${lifestyleCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} covers shared lifestyle and committed costs.`;
         }
     }
 
@@ -283,7 +286,7 @@ export default class UIManager {
      * @param {Object} state - Current application state.
      */
     renderCalculationWorkings(state) {
-        const wk = this.elements;
+        const wk = this.#elements;
         if (wk.wkSalaryP1) wk.wkSalaryP1.innerText = formatCurrency(state.salaryP1);
         if (wk.wkSalaryP2) wk.wkSalaryP2.innerText = formatCurrency(state.salaryP2);
         if (wk.wkTotalSalary) wk.wkTotalSalary.innerText = formatCurrency(state.salaryP1 + state.salaryP2);
@@ -308,19 +311,19 @@ export default class UIManager {
         this.updateRatioBar(state.ratioP1, state.ratioP2);
 
         // Update calculated equity fields if they exist
-        if (state.monthlyMortgagePayment !== undefined && this.elements.monthlyMortgageDisplay) {
-            this.elements.monthlyMortgageDisplay.innerText = formatCurrency(state.monthlyMortgagePayment);
+        if (state.monthlyMortgagePayment !== undefined && this.#elements.monthlyMortgageDisplay) {
+            this.#elements.monthlyMortgageDisplay.innerText = formatCurrency(state.monthlyMortgagePayment);
         }
-        if (state.totalRepayment !== undefined && this.elements.totalRepaymentDisplay) {
-            this.elements.totalRepaymentDisplay.innerText = formatCurrency(state.totalRepayment);
+        if (state.totalRepayment !== undefined && this.#elements.totalRepaymentDisplay) {
+            this.#elements.totalRepaymentDisplay.innerText = formatCurrency(state.totalRepayment);
         }
 
         // Sync deposit percentage/amount if provided in state
-        if (state.depositPercentage !== undefined && this.elements.depositPercentage) {
-            this.elements.depositPercentage.value = state.depositPercentage.toFixed(1);
+        if (state.depositPercentage !== undefined && this.#elements.depositPercentage) {
+            this.#elements.depositPercentage.value = state.depositPercentage.toFixed(1);
         }
-        if (state.depositAmount !== undefined && this.elements.depositAmount) {
-            this.elements.depositAmount.value = state.depositAmount;
+        if (state.depositAmount !== undefined && this.#elements.depositAmount) {
+            this.#elements.depositAmount.value = state.depositAmount;
         }
     }
 }
