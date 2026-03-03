@@ -6,6 +6,7 @@
     <meta name="description" content="A bill-splitting calculator that helps couples and housemates divide expenses fairly based on their income.">
     <title>FairShare - Fair Bill Splitting Calculator</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1772557563">
+    <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -62,7 +63,7 @@
     </div>
 
     <!-- Offline Indicator -->
-    <div id="offline-indicator" class="alert alert--info alert--fixed-top" hidden aria-live="polite">
+    <div id="offline-indicator" class="alert alert--info alert--fixed-top" hidden aria-live="polite" data-ui="offlineIndicator">
         <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-offline.svg'); mask-image: url('icons/icon-offline.svg');" aria-hidden="true"></span>
         <div class="alert__text">Working Offline</div>
     </div>
@@ -762,6 +763,51 @@
                             <p class="card__label">Partner's Upfront Share</p>
                             <p id="equityP2Display" class="card__value" aria-live="polite" data-ui="equityP2Display">£0</p>
                         </div>
+                    </div>
+
+                    <div class="table-scroll-container" style="margin-top: 1.5rem;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Upfront Cost</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">You</th>
+                                    <th scope="col">Partner</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Cash Deposit</th>
+                                    <td id="bd-upfront-deposit-total" data-ui="bdUpfrontDepositTotal">£0</td>
+                                    <td id="bd-upfront-deposit-p1" data-ui="bdUpfrontDepositP1">£0</td>
+                                    <td id="bd-upfront-deposit-p2" data-ui="bdUpfrontDepositP2">£0</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" id="upfront-tax-label" data-ui="upfrontTaxLabel">Stamp Duty (SDLT)</th>
+                                    <td id="bd-upfront-tax-total" data-ui="bdUpfrontTaxTotal">£0</td>
+                                    <td id="bd-upfront-tax-p1" data-ui="bdUpfrontTaxP1">£0</td>
+                                    <td id="bd-upfront-tax-p2" data-ui="bdUpfrontTaxP2">£0</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Legal Fees</th>
+                                    <td id="bd-upfront-legal-total" data-ui="bdUpfrontLegalTotal">£0</td>
+                                    <td id="bd-upfront-legal-p1" data-ui="bdUpfrontLegalP1">£0</td>
+                                    <td id="bd-upfront-legal-p2" data-ui="bdUpfrontLegalP2">£0</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Mortgage Fees</th>
+                                    <td id="bd-upfront-fees-total" data-ui="bdUpfrontFeesTotal">£0</td>
+                                    <td id="bd-upfront-fees-p1" data-ui="bdUpfrontFeesP1">£0</td>
+                                    <td id="bd-upfront-fees-p2" data-ui="bdUpfrontFeesP2">£0</td>
+                                </tr>
+                                <tr class="table-total-row">
+                                    <th scope="row">Total Upfront</th>
+                                    <td id="bd-upfront-total-total" data-ui="bdUpfrontTotalTotal">£0</td>
+                                    <td id="bd-upfront-total-p1" data-ui="bdUpfrontTotalP1">£0</td>
+                                    <td id="bd-upfront-total-p2" data-ui="bdUpfrontTotalP2">£0</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

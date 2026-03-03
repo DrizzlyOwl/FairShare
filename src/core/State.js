@@ -124,8 +124,14 @@ export default class State {
      * Prevents UI jank and redundant writes during fast typing.
      */
     persist() {
-        if (typeof window !== 'undefined' && window.Cypress) return;
+        if (typeof window !== 'undefined' && window.Cypress && !window.__CYPRESS_PERSISTENCE__) return;
         
+        // Immediate persistence for tests to avoid race conditions with cy.reload()
+        if (typeof window !== 'undefined' && window.__CYPRESS_PERSISTENCE__) {
+            localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));
+            return;
+        }
+
         if (this.#persistTimeout) {
             clearTimeout(this.#persistTimeout);
         }
@@ -141,7 +147,7 @@ export default class State {
      * @returns {Object} The current state after hydration.
      */
     hydrate() {
-        if (typeof window !== 'undefined' && window.Cypress) return this.#data;
+        if (typeof window !== 'undefined' && window.Cypress && !window.__CYPRESS_PERSISTENCE__) return this.#data;
 
         const cached = localStorage.getItem(this.#CACHE_KEY);
         if (cached) {

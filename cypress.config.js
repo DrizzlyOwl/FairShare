@@ -16,6 +16,6 @@ module.exports = defineConfig({
       })
     },
     specPattern: 'cypress/integration/**/*.js',
-    supportFile: false
+    supportFile: 'cypress/support/e2e.js'
   },
 })

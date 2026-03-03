@@ -38,9 +38,11 @@ export default class UIManager {
 
         // Only update hash if not initial load and not in a test environment
         // Hash updates can trigger unwanted page cycles in some CI/Test runners
-        if (!isInitialLoad && !window.Cypress) {
+        if (!isInitialLoad && (!window.Cypress || window.__CYPRESS_PERSISTENCE__)) {
             window.location.hash = heading?.id || id;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (typeof window.scrollTo === 'function') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
         // Hide all screens
@@ -218,8 +220,9 @@ export default class UIManager {
     /**
      * Renders text summaries and card totals of the results to the results screen.
      * @param {Object} summary - Unified calculation summary.
+     * @param {Object} state - Current application state (for regional context).
      */
-    renderResultsSummary(summary) {
+    renderResultsSummary(summary, state) {
         const { monthly, upfront } = summary;
         
         // Update Monthly Summary Cards
@@ -230,6 +233,31 @@ export default class UIManager {
         // Update Upfront Summary Cards
         if (this.elements.equityP1Display) this.elements.equityP1Display.innerText = formatCurrency(upfront.p1, 2);
         if (this.elements.equityP2Display) this.elements.equityP2Display.innerText = formatCurrency(upfront.p2, 2);
+
+        // 1. Upfront Breakdown Table
+        const upfrontRatio = state.depositSplitProportional ? state.ratioP1 : 0.5;
+        const taxLabel = state.regionCode === 'SC' ? 'Stamp Duty (LBTT)' : (state.regionCode === 'WA' ? 'Stamp Duty (LTT)' : 'Stamp Duty (SDLT)');
+        
+        if (this.elements.upfrontTaxLabel) this.elements.upfrontTaxLabel.innerText = taxLabel;
+        
+        this.updateBreakdownRow('UpfrontDeposit', state.totalEquity, state.totalEquity * upfrontRatio, state.totalEquity * (1 - upfrontRatio));
+        this.updateBreakdownRow('UpfrontTax', upfront.sdlt, upfront.sdlt * upfrontRatio, upfront.sdlt * (1 - upfrontRatio));
+        this.updateBreakdownRow('UpfrontLegal', upfront.legalFees, upfront.legalFees * upfrontRatio, upfront.legalFees * (1 - upfrontRatio));
+        this.updateBreakdownRow('UpfrontFees', state.mortgageFees || 0, (state.mortgageFees || 0) * upfrontRatio, (state.mortgageFees || 0) * (1 - upfrontRatio));
+        this.updateBreakdownRow('UpfrontTotal', upfront.total, upfront.p1, upfront.p2);
+
+        // 2. Monthly Breakdown Table
+        const { costs } = monthly;
+        this.updateBreakdownRow('Mortgage', costs.mortgage.total, costs.mortgage.p1, costs.mortgage.p2);
+        this.updateBreakdownRow('Tax', costs.councilTax.total, costs.councilTax.p1, costs.councilTax.p2);
+        this.updateBreakdownRow('Energy', costs.energy.total, costs.energy.p1, costs.energy.p2);
+        this.updateBreakdownRow('Water', costs.water.total, costs.water.p1, costs.water.p2);
+        this.updateBreakdownRow('Broadband', costs.broadband.total, costs.broadband.p1, costs.broadband.p2);
+        this.updateBreakdownRow('Groceries', costs.groceries.total, costs.groceries.p1, costs.groceries.p2);
+        this.updateBreakdownRow('Childcare', costs.childcare.total, costs.childcare.p1, costs.childcare.p2);
+        this.updateBreakdownRow('Insurance', costs.insurance.total, costs.insurance.p1, costs.insurance.p2);
+        this.updateBreakdownRow('Other', costs.otherShared.total, costs.otherShared.p1, costs.otherShared.p2);
+        this.updateBreakdownRow('Total', monthly.total, monthly.p1, monthly.p2);
 
         const diff = Math.abs(monthly.p1 - monthly.p2);
         const summaryText = this.elements.resultSummary?.querySelector('.alert__text');

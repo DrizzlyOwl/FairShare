@@ -34,19 +34,8 @@ describe('Accessibility CI Test', () => {
     }).as('landRegistry');
 
     cy.visit('index.html');
-    
-    // Disable animations and hide loader for stable testing
-    cy.get('body').invoke('append', `
-      <style>
-        *, *::before, *::after {
-          transition: none !important;
-          animation: none !important;
-        }
-        .lazy-loader { display: none !important; }
-      </style>
-    `);
-    
-    cy.get('.lazy-loader', { timeout: 10000 }).should('not.exist');
+    cy.disableAnimations();
+    cy.waitForAppReady();
     cy.injectAxe();
   });
 
@@ -77,8 +66,7 @@ describe('Accessibility CI Test', () => {
 
       // 2. Income Screen
       cy.log('Checking Income Screen');
-      cy.get('[data-cy="next-button"]').click();
-      cy.get('#screen-2').should('be.visible');
+      cy.skipToStep2();
       cy.checkA11y(null, checkA11yOptions, terminalLog);
 
       // 3. Property Screen

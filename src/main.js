@@ -38,6 +38,7 @@ const app = {
         // 4. Initialize Theme
         this.themeManager.init();
 
+        this.initPWA();
         this.bindGlobalEvents();
         this.syncUIWithState();
         
@@ -47,6 +48,28 @@ const app = {
         // Initial screen transition
         const initialScreen = window.location.hash.replace('#', '') || SCREEN_MAP.LANDING;
         this.ui.switchScreen(this.nav.findScreenByHeadingId(initialScreen) || SCREEN_MAP.LANDING, true);
+    },
+
+    /**
+     * Initializes PWA-specific listeners and features.
+     */
+    initPWA() {
+        window.addEventListener('online', () => this.updateOnlineStatus());
+        window.addEventListener('offline', () => this.updateOnlineStatus());
+        
+        // Check initial status
+        this.updateOnlineStatus();
+    },
+
+    /**
+     * Updates the UI to reflect current online/offline status.
+     */
+    updateOnlineStatus() {
+        const isOffline = !navigator.onLine;
+        if (this.elements.offlineIndicator) {
+            if (isOffline) this.elements.offlineIndicator.removeAttribute('hidden');
+            else this.elements.offlineIndicator.setAttribute('hidden', '');
+        }
     },
 
     /**
@@ -213,28 +236,7 @@ const app = {
      */
     renderResults() {
         const summary = FinanceOrchestrator.getFinalSummary(this.store.data);
-        const { monthly } = summary;
-        const { costs } = monthly;
-
-        const rows = [
-            ['Mortgage', costs.mortgage],
-            ['Tax', costs.councilTax],
-            ['Energy', costs.energy],
-            ['Water', costs.water],
-            ['Broadband', costs.broadband],
-            ['Groceries', costs.groceries],
-            ['Childcare', costs.childcare],
-            ['Insurance', costs.insurance],
-            ['Other', costs.otherShared]
-        ];
-
-        rows.forEach(([label, cost]) => {
-            this.ui.updateBreakdownRow(label, cost.total, cost.p1, cost.p2);
-        });
-        
-        this.ui.updateBreakdownRow('Total', monthly.total, monthly.p1, monthly.p2);
-
-        this.ui.renderResultsSummary(summary);
+        this.ui.renderResultsSummary(summary, this.store.data);
         this.ui.renderCalculationWorkings(this.store.data);
     },
 
