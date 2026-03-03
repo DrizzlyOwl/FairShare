@@ -15,7 +15,7 @@
     /* Backgrounds */
     --color-bg-body: light-dark(#E9EDF0, #0f172a);
     --color-bg-app: light-dark(#FFFFFF, #1e293b);
-    
+
     /* Semantic Colors */
     --color-info-bg: light-dark(#EBF5FF, #1e3a8a);
     --color-info-text: light-dark(#1E429F, #bfdbfe);
@@ -375,11 +375,11 @@ h2, .type-h2 {
     }
 }
 
-h3, .type-h3 { 
-    font-size: var(--font-size-h3); 
-    margin-block-start: var(--spacing-xl); 
+h3, .type-h3 {
+    font-size: var(--font-size-h3);
+    margin-block-start: var(--spacing-xl);
     margin-block-end: var(--spacing-md);
-    color: var(--color-primary); 
+    color: var(--color-primary);
     line-height: var(--line-height-heading);
     font-weight: 700;
 }
@@ -388,9 +388,9 @@ h3, .type-h3 {
     h3, .type-h3 { margin-block-start: 2rem; }
 }
 
-p, .type-p { 
-    margin-block-end: var(--spacing-lg); 
-    font-size: var(--font-size-base); 
+p, .type-p {
+    margin-block-end: var(--spacing-lg);
+    font-size: var(--font-size-base);
     line-height: var(--line-height-base);
 }
 
@@ -505,6 +505,21 @@ li, .type-li {
     width: 1.25rem;
     height: 1.25rem;
 }
+
+/* Icon Modifiers */
+.icon--building { -webkit-mask-image: url('/dist/icons/icon-building.svg'); mask-image: url('/dist/icons/icon-building.svg'); }
+.icon--download { -webkit-mask-image: url('/dist/icons/icon-download.svg'); mask-image: url('/dist/icons/icon-download.svg'); }
+.icon--error { -webkit-mask-image: url('/dist/icons/icon-error.svg'); mask-image: url('/dist/icons/icon-error.svg'); }
+.icon--external-link { -webkit-mask-image: url('/dist/icons/icon-external-link.svg'); mask-image: url('/dist/icons/icon-external-link.svg'); }
+.icon--heart { -webkit-mask-image: url('/dist/icons/icon-heart.svg'); mask-image: url('/dist/icons/icon-heart.svg'); }
+.icon--info { -webkit-mask-image: url('/dist/icons/icon-info.svg'); mask-image: url('/dist/icons/icon-info.svg'); }
+.icon--lightning { -webkit-mask-image: url('/dist/icons/icon-lightning.svg'); mask-image: url('/dist/icons/icon-lightning.svg'); }
+.icon--money { -webkit-mask-image: url('/dist/icons/icon-money.svg'); mask-image: url('/dist/icons/icon-money.svg'); }
+.icon--offline { -webkit-mask-image: url('/dist/icons/icon-offline.svg'); mask-image: url('/dist/icons/icon-offline.svg'); }
+.icon--pie-chart { -webkit-mask-image: url('/dist/icons/icon-pie-chart.svg'); mask-image: url('/dist/icons/icon-pie-chart.svg'); }
+.icon--receipt { -webkit-mask-image: url('/dist/icons/icon-receipt.svg'); mask-image: url('/dist/icons/icon-receipt.svg'); }
+.icon--user { -webkit-mask-image: url('/dist/icons/icon-user.svg'); mask-image: url('/dist/icons/icon-user.svg'); }
+.icon--users { -webkit-mask-image: url('/dist/icons/icon-users.svg'); mask-image: url('/dist/icons/icon-users.svg'); }
 
 
 /* --- Screen Transitions --- */
@@ -934,11 +949,11 @@ button, .btn {
 
 .btn--block { width: 100%; margin-block-start: 1rem; }
 .btn--outline { background-color: var(--color-bg-app); color: var(--color-primary); border: 1px solid var(--color-primary); padding-block: 0.5rem; padding-inline: 1rem; }
-.btn--addon { 
-    background-color: var(--color-primary); 
-    color: light-dark(white, #0f172a); 
-    padding-inline: 0.75rem; 
-    border-radius: 0 0.5rem 0.5rem 0; 
+.btn--addon {
+    background-color: var(--color-primary);
+    color: light-dark(white, #0f172a);
+    padding-inline: 0.75rem;
+    border-radius: 0 0.5rem 0.5rem 0;
 }
 .btn--text { background: transparent; color: var(--color-primary); text-decoration: underline; padding: 0.5rem; font-size: var(--font-size-base); }
 
@@ -947,7 +962,7 @@ button, .btn {
         padding-block: 1rem;
         padding-inline: 2rem;
     }
-    
+
     .btn--external {
         padding-block: 0.6rem;
         padding-inline: 1rem;
@@ -1486,12 +1501,12 @@ button, .btn {
     border: 2px solid var(--color-primary);
 }
 
-footer { 
-    text-align: center; 
-    margin-block-start: 2rem; 
+footer {
+    text-align: center;
+    margin-block-start: 2rem;
     padding-block-end: 2rem;
-    font-size: var(--font-size-base); 
-    color: var(--color-text-light); 
+    font-size: var(--font-size-base);
+    color: var(--color-text-light);
 }
 
 footer a {

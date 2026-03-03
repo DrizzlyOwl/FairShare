@@ -1,6 +1,1 @@
-<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <!-- Simplified House Icon for Favicon -->
-  <path d="M2 12 L16 2 L30 12" stroke="#2C3E63" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M5 12 V28 H15" stroke="#D9534F" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M27 12 V28 H17" stroke="#345F57" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="none" stroke="#2c3e63" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M2 12 16 2l14 10"/><path fill="none" stroke="#d9534f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 12v16h10"/><path fill="none" stroke="#345f57" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M27 12v16H17"/></svg>
