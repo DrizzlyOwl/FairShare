@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A bill-splitting calculator that helps couples and housemates divide expenses fairly based on their income.">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1772563340">
+    <link rel="icon" type="image/svg+xml" href="dist/favicon.svg?v=1772566011">
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="logo-icon.svg?v=1772563340" as="image">
+    <link rel="preload" href="dist/logo-icon.svg?v=1772566011" as="image">
+    <link rel="preload" href="dist/icons/icon-offline.svg" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
 
@@ -48,23 +49,23 @@
         [hidden]{display:none !important}
     </style>
 
-    <link rel="preload" href="dist/style.css?v=1772563340" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="dist/style.css?v=1772563340"></noscript>
+    <link rel="preload" href="dist/style.css?v=1772566011" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="dist/style.css?v=1772566011"></noscript>
 </head>
 <body>
 
     <!-- Lazy Loader -->
     <div class="lazy-loader">
         <div class="loader-branded">
-            <img src="logo-icon.svg?v=1772563340" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
-            <img src="logo-icon-dark.svg?v=1772563340" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
+            <img src="dist/logo-icon.svg?v=1772566011" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
+            <img src="dist/logo-icon-dark.svg?v=1772566011" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
             <div class="spinner"></div>
         </div>
     </div>
 
     <!-- Offline Indicator -->
     <div id="offline-indicator" class="alert alert--info alert--fixed-top" hidden aria-live="polite" data-ui="offlineIndicator">
-        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-offline.svg'); mask-image: url('icons/icon-offline.svg');" aria-hidden="true"></span>
+        <span class="alert__icon icon--offline" aria-hidden="true"></span>
         <div class="alert__text">Working Offline</div>
     </div>
 
@@ -75,7 +76,7 @@
             <!-- Header Brand -->
             <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
-                    <img src="logo-icon.svg?v=1772563340" alt="" width="60" height="60" class="header-brand__icon">
+                    <img src="dist/logo-icon.svg?v=1772566011" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
                         <h1 class="header-brand__title">
                             <span class="header-brand__title-part header-brand__title-part--primary">Fair</span><span class="header-brand__title-part header-brand__title-part--accent">Share</span>
@@ -85,7 +86,7 @@
                 </div>
                 <div class="header-brand__controls">
                     <button id="theme-toggle" class="header-brand__theme-toggle" aria-label="Toggle Night Mode" data-action="toggleTheme" data-ui="themeToggle">
-                        <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-lightning.svg'); mask-image: url('icons/icon-lightning.svg');" aria-hidden="true"></span>
+                        <span class="icon-btn icon--lightning" aria-hidden="true"></span>
                     </button>
                     <button id="start-over-button" aria-label="Start over and clear all data" class="header-brand__reset-btn" data-cy="start-over-button" data-action="clearCache" data-ui="startOverButton">
                         Start Over
@@ -108,7 +109,7 @@
             <!-- Screen 1: Welcome -->
             <section class="screen" id="screen-1" aria-labelledby="heading-landing" tabindex="-1">
                 <h2 id="heading-landing" class="screen__heading">
-                    <span class="heading-icon" style="mask-image: url('icons/icon-heart.svg'); -webkit-mask-image: url('icons/icon-heart.svg');" aria-hidden="true"></span>
+                    <span class="heading-icon icon--heart" aria-hidden="true"></span>
                     Welcome to FairShare
                 </h2>
 
@@ -118,7 +119,7 @@
                         Establish proportionate bill splitting based on your relative incomes in just 7 steps.
                     </p>
                     <div id="efficiency-tip" class="alert alert--info">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--info" aria-hidden="true"></span>
                         <div class="alert__text">
                             <strong>Efficiency Tip:</strong> Use your <strong>Arrow Keys</strong> or <strong>Enter</strong> to navigate quickly between screens.
                         </div>
@@ -141,7 +142,7 @@
             <!-- Screen 2: Income -->
             <section class="screen" id="screen-2" aria-labelledby="heading-income" tabindex="-1" hidden>
                 <h2 id="heading-income" class="screen__heading">
-                    <span class="heading-icon" style="mask-image: url('icons/icon-money.svg'); -webkit-mask-image: url('icons/icon-money.svg');" aria-hidden="true"></span>
+                    <span class="heading-icon icon--money" aria-hidden="true"></span>
                     Your Income
                 </h2>
                 <p>Calculate your contribution ratio based on earnings.</p>
@@ -150,7 +151,7 @@
                 </p>
 
                 <div id="methodology-note" class="alert alert--info">
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
+                    <span class="alert__icon icon--info" aria-hidden="true"></span>
                     <div class="alert__text">
                         <strong>Methodology Note:</strong> To ensure long-term fairness, your final contribution ratio is always calculated based on <strong>estimated monthly take-home pay</strong> (after tax and NI), even when providing annual gross figures.
                     </div>
@@ -178,7 +179,7 @@
                     <p id="salaryP1-desc" class="help-text" data-ui="salaryP1Desc">Enter your total yearly income before any deductions.</p>
                     <div id="salaryP1-tax-hint" class="help-text tax-hint" hidden></div>
                     <div id="salaryP1-error" class="alert alert--error" hidden data-ui="salaryP1Error">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text" id="salaryP1ErrorText" data-ui="salaryP1ErrorText">Please enter a valid salary (0 or more).</div>
                     </div>
                 </div>
@@ -194,13 +195,13 @@
                     <p id="salaryP2-desc" class="help-text" data-ui="salaryP2Desc">Enter your partner's total yearly income before any deductions.</p>
                     <div id="salaryP2-tax-hint" class="help-text tax-hint" hidden></div>
                     <div id="salaryP2-error" class="alert alert--error" hidden data-ui="salaryP2Error">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text" id="salaryP2ErrorText" data-ui="salaryP2ErrorText">Please enter a valid salary for your partner (0 or more).</div>
                     </div>
                 </div>
 
                 <div id="warning-screen-2" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                    <span class="alert__icon icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -208,7 +209,7 @@
             <!-- Screen 3: Property -->
             <section class="screen" id="screen-3" aria-labelledby="heading-property" tabindex="-1" hidden>
                 <h2 id="heading-property" class="screen__heading">
-                    <span class="heading-icon" style="mask-image: url('icons/icon-building.svg'); -webkit-mask-image: url('icons/icon-building.svg');" aria-hidden="true"></span>
+                    <span class="heading-icon icon--building" aria-hidden="true"></span>
                     Property Details
                 </h2>
                 <p>Define your home to estimate running costs.</p>
@@ -222,12 +223,12 @@
                         <input type="text" id="postcode" class="input-group__control" required aria-required="true" aria-describedby="postcode-help postcode-error" placeholder="e.g. SW1A 0AA" data-cy="postcode-input" data-ui="postcode">
                     </div>
                     <div id="postcode-error" class="alert alert--error" hidden data-ui="postcodeError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid UK postcode.</div>
                     </div>
                     <div id="postcode-help" class="help-text">Used to detect your local region and estimate market values.</div>
                     <div id="region-announcement" class="alert alert--info" aria-live="polite" hidden data-ui="regionAnnouncement">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--info" aria-hidden="true"></span>
                         <div class="alert__text"></div>
                     </div>
                 </div>
@@ -241,7 +242,7 @@
                     </div>
                     <p id="propertyPrice-desc" class="help-text">The estimated market value of the property you're buying or already own.</p>
                     <div id="propertyPrice-error" class="alert alert--error" hidden data-ui="propertyPriceError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a value or use your postcode to estimate.</div>
                     </div>
                     <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden data-ui="propertyPriceEstimateDisplay">
@@ -254,7 +255,7 @@
                     <p class="help-text">Find your band using the link below if you're unsure.</p>
                     <a href="https://www.gov.uk/council-tax-bands" target="_blank" rel="nofollow" class="btn btn--external">
                         Find my Council Tax Band
-                        <span class="icon-btn" style="-webkit-mask-image: url('icons/icon-external-link.svg'); mask-image: url('icons/icon-external-link.svg');" aria-hidden="true"></span>
+                        <span class="icon-btn icon--external-link" aria-hidden="true"></span>
                     </a>
                     <div class="segmented-control">
                         <input type="radio" name="taxBand" id="bA" value="A" class="segmented-control__input" data-cy="taxBand-A">
@@ -282,13 +283,13 @@
                         <label for="bH" class="segmented-control__label">H</label>
                     </div>
                     <div id="taxBand-error" class="alert alert--error" aria-live="assertive" hidden data-ui="taxBandError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please select a band to continue.</div>
                     </div>
                 </fieldset>
 
                 <div id="band-price-display" class="alert alert--info" aria-live="polite">
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
+                    <span class="alert__icon icon--info" aria-hidden="true"></span>
                     <div class="alert__text">Select a band to see estimated cost</div>
                 </div>
 
@@ -300,7 +301,7 @@
                         </div>
                         <p id="bedrooms-desc" class="help-text">Used to estimate regional utility and energy costs.</p>
                         <div id="bedrooms-error" class="alert alert--error" hidden data-ui="bedroomsError">
-                            <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                            <span class="alert__icon icon--error" aria-hidden="true"></span>
                             <div class="alert__text">Required.</div>
                         </div>
                     </div>
@@ -311,14 +312,14 @@
                         </div>
                         <p id="bathrooms-desc" class="help-text">Used for regional water bill estimates.</p>
                         <div id="bathrooms-error" class="alert alert--error" hidden data-ui="bathroomsError">
-                            <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                            <span class="alert__icon icon--error" aria-hidden="true"></span>
                             <div class="alert__text">Required.</div>
                         </div>
                     </div>
                 </div>
 
                 <div id="warning-screen-3" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                    <span class="alert__icon icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -326,7 +327,7 @@
             <!-- Screen 4: Mortgage & Equity -->
             <section class="screen" id="screen-4" aria-labelledby="heading-mortgage" tabindex="-1" hidden>
                 <h2 id="heading-mortgage" class="screen__heading">
-                    <span class="heading-icon" style="mask-image: url('icons/icon-money.svg'); -webkit-mask-image: url('icons/icon-money.svg');" aria-hidden="true"></span>
+                    <span class="heading-icon icon--money" aria-hidden="true"></span>
                     Mortgage & Equity
                 </h2>
 
@@ -354,7 +355,7 @@
                         <span class="input-group__addon">%</span>
                     </div>
                     <div id="depositPercentage-error" class="alert alert--error" hidden data-ui="depositPercentageError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a deposit percentage (0-100).</div>
                     </div>
                     <div id="depositPercentage-help" class="help-text">The total percentage of the property value you're paying upfront.</div>
@@ -367,7 +368,7 @@
                         <input type="number" id="depositAmount" class="input-group__control" required aria-required="true" placeholder="e.g. 25000" aria-describedby="depositAmount-help depositAmount-error" data-cy="depositAmount-input" data-ui="depositAmount">
                     </div>
                     <div id="depositAmount-error" class="alert alert--error" hidden data-ui="depositAmountError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid deposit amount.</div>
                     </div>
                     <div id="depositAmount-help" class="help-text">The exact cash amount you're putting down as a deposit.</div>
@@ -394,7 +395,7 @@
                         </div>
                         <p id="mortgageInterestRate-desc" class="help-text">The annual interest rate for your mortgage.</p>
                         <div id="mortgageInterestRate-error" class="alert alert--error" hidden data-ui="mortgageInterestRateError">
-                            <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                            <span class="alert__icon icon--error" aria-hidden="true"></span>
                             <div class="alert__text">Invalid interest rate.</div>
                         </div>
                     </div>
@@ -406,7 +407,7 @@
                         </div>
                         <p id="mortgageTerm-desc" class="help-text">The number of years you'll take to pay off the mortgage.</p>
                         <div id="mortgageTerm-error" class="alert alert--error" hidden data-ui="mortgageTermError">
-                            <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                            <span class="alert__icon icon--error" aria-hidden="true"></span>
                             <div class="alert__text">Please enter a term (1-50 years).</div>
                         </div>
                     </div>
@@ -501,7 +502,7 @@
                 </div>
 
                 <div id="warning-screen-4" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                    <span class="alert__icon icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -509,7 +510,7 @@
             <!-- Screen 5: Utilities -->
             <section class="screen" id="screen-5" aria-labelledby="heading-utilities" tabindex="-1" hidden>
                 <h2 id="heading-utilities" class="screen__heading">
-                    <span class="heading-icon" style="mask-image: url('icons/icon-lightning.svg'); -webkit-mask-image: url('icons/icon-lightning.svg');" aria-hidden="true"></span>
+                    <span class="heading-icon icon--lightning" aria-hidden="true"></span>
                     Monthly Utilities
                 </h2>
 
@@ -548,7 +549,7 @@
                     </div>
                     <p id="councilTaxCost-desc" class="help-text">Estimated monthly council tax based on your selected tax band.</p>
                     <div id="councilTaxCost-error" class="alert alert--error" hidden data-ui="councilTaxCostError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -570,7 +571,7 @@
                     </div>
                     <p id="energyCost-desc" class="help-text">Estimated monthly utility cost for gas and electricity.</p>
                     <div id="energyCost-error" class="alert alert--error" hidden data-ui="energyCostError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -592,7 +593,7 @@
                     </div>
                     <p id="waterBill-desc" class="help-text">Average regional monthly water cost based on property size.</p>
                     <div id="waterBill-error" class="alert alert--error" hidden data-ui="waterBillError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -614,13 +615,13 @@
                     </div>
                     <p id="broadbandCost-desc" class="help-text">Internet, cable, and streaming subscriptions.</p>
                     <div id="broadband-error" class="alert alert--error" hidden data-ui="broadbandCostError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
 
                 <div id="warning-screen-5" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                    <span class="alert__icon icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -628,7 +629,7 @@
             <!-- Screen 6: Lifestyle & Committed -->
             <section class="screen" id="screen-6" aria-labelledby="heading-committed" tabindex="-1" hidden>
                 <h2 id="heading-committed" class="screen__heading">
-                    <span class="heading-icon" style="mask-image: url('icons/icon-receipt.svg'); -webkit-mask-image: url('icons/icon-receipt.svg');" aria-hidden="true"></span>
+                    <span class="heading-icon icon--receipt" aria-hidden="true"></span>
                     Lifestyle & Committed
                 </h2>
 
@@ -667,7 +668,7 @@
                     </div>
                     <p id="groceriesCost-desc" class="help-text">Food, household supplies, and shared toiletries.</p>
                     <div id="groceries-error" class="alert alert--error" hidden data-ui="groceriesCostError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -689,7 +690,7 @@
                     </div>
                     <p id="childcareCost-desc" class="help-text">Nursery, childminders, or other regular care costs.</p>
                     <div id="childcare-error" class="alert alert--error" hidden data-ui="childcareCostError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -711,7 +712,7 @@
                     </div>
                     <p id="insuranceCost-desc" class="help-text">Combined life, health, or pet insurance payments.</p>
                     <div id="insurance-error" class="alert alert--error" hidden data-ui="insuranceCostError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -733,13 +734,13 @@
                     </div>
                     <p id="otherSharedCosts-desc" class="help-text">Gym, streaming services, or other joint subscriptions.</p>
                     <div id="other-error" class="alert alert--error" hidden data-ui="otherSharedCostsError">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
 
                 <div id="warning-screen-6" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-error.svg'); mask-image: url('icons/icon-error.svg');" aria-hidden="true"></span>
+                    <span class="alert__icon icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -747,7 +748,7 @@
             <!-- Screen 7: Results -->
             <section class="screen" id="screen-7" aria-labelledby="heading-results" tabindex="-1" hidden>
                 <h2 id="heading-results" class="screen__heading">
-                    <span class="heading-icon" style="mask-image: url('icons/icon-pie-chart.svg'); -webkit-mask-image: url('icons/icon-pie-chart.svg');" aria-hidden="true"></span>
+                    <span class="heading-icon icon--pie-chart" aria-hidden="true"></span>
                     Detailed Analysis
                 </h2>
 
@@ -760,7 +761,7 @@
                     <p>The total cash required to complete the purchase, split by your chosen rule.</p>
                     
                     <div id="equity-mortgage-summary" class="alert alert--info" aria-live="polite">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--info" aria-hidden="true"></span>
                         <div class="alert__text">
                             Total Equity (Deposit): <span id="totalEquityDisplay" class="fw-bold" data-ui="totalEquityDisplay">£0</span><br>
                             Est. Stamp Duty (SDLT): <span id="sdltDisplay" class="fw-bold" data-ui="sdltDisplay">£0</span><br>
@@ -773,12 +774,12 @@
 
                     <div class="card-grid" id="upfront-share-summary">
                         <div class="card card--result card--share-p1">
-                            <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
+                            <span class="card__icon icon--user" aria-hidden="true"></span>
                             <p class="card__label">Your Upfront Share</p>
                             <p id="equityP1Display" class="card__value" aria-live="polite" data-ui="equityP1Display">£0</p>
                         </div>
                         <div class="card card--result card--share-p2">
-                            <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
+                            <span class="card__icon icon--users" aria-hidden="true"></span>
                             <p class="card__label">Partner's Upfront Share</p>
                             <p id="equityP2Display" class="card__value" aria-live="polite" data-ui="equityP2Display">£0</p>
                         </div>
@@ -843,12 +844,12 @@
 
                     <div class="card-grid" id="monthly-shares-summary">
                         <div class="card card--result card--share-p1" id="result-share-p1">
-                            <span class="card__icon" style="-webkit-mask-image: url('icons/icon-user.svg'); mask-image: url('icons/icon-user.svg');" aria-hidden="true"></span>
+                            <span class="card__icon icon--user" aria-hidden="true"></span>
                             <p class="card__label">Your Monthly Total</p>
                             <p class="card__value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1" data-ui="resultP1">£0</p>
                         </div>
                         <div class="card card--result card--share-p2" id="result-share-p2">
-                            <span class="card__icon" style="-webkit-mask-image: url('icons/icon-users.svg'); mask-image: url('icons/icon-users.svg');" aria-hidden="true"></span>
+                            <span class="card__icon icon--users" aria-hidden="true"></span>
                             <p class="card__label">Partner's Monthly Total</p>
                             <p class="card__value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2" data-ui="resultP2">£0</p>
                         </div>
@@ -857,7 +858,7 @@
                         Total Shared Monthly Budget: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display" data-ui="totalBillDisplay">£0</span>
                     </p>
                     <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden data-cy="result-summary" data-ui="resultSummary">
-                        <span class="alert__icon" style="-webkit-mask-image: url('icons/icon-info.svg'); mask-image: url('icons/icon-info.svg');" aria-hidden="true"></span>
+                        <span class="alert__icon icon--info" aria-hidden="true"></span>
                         <div class="alert__text"></div>
                     </div>
                 </div>
@@ -975,7 +976,7 @@
 
                 <div class="nav nav--vertical">
                     <button type="button" id="downloadCSVBtn" class="btn btn--success btn--block" data-action="downloadCSV" data-ui="downloadCSVButton">
-                        <span class="icon-btn icon-btn--lg" style="-webkit-mask-image: url('icons/icon-download.svg'); mask-image: url('icons/icon-download.svg'); margin-inline-end: 0.5rem;" aria-hidden="true"></span>
+                        <span class="icon-btn icon-btn--lg icon--download" style="margin-inline-end: 0.5rem;" aria-hidden="true"></span>
                         Download results as CSV
                     </button>
                 </div>
@@ -991,11 +992,11 @@
 
     <!-- Footer -->
     <footer>
-        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.81 • 2026-03-03 18:42:20
+        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.83 • 2026-03-03 19:26:51
     </footer>
 
     <!-- Scripts -->
-    <script type="module" src="dist/src/main.js?v=1772563340"></script>
+    <script type="module" src="dist/main.js?v=1772566011"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

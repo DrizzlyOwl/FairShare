@@ -4,7 +4,7 @@
  */
 
 import { formatCurrency } from '../utils/Helpers.js';
-import { SCREEN_MAP } from '../core/Constants.js';
+import { SCREEN_MAP, ASSET_PATH } from '../core/Constants.js';
 
 export default class UIManager {
     #elements;
@@ -111,7 +111,7 @@ export default class UIManager {
 
         const newImage = screenToImageMap[screenId];
         if (newImage) {
-            document.body.style.setProperty('--bg-image', `url('images/${newImage}')`);
+            document.body.style.setProperty('--bg-image', `url('${ASSET_PATH}images/${newImage}')`);
         }
     }
 
@@ -181,9 +181,13 @@ export default class UIManager {
         if (icon) {
             const iconEl = el.querySelector('.alert__icon');
             if (iconEl) {
-                const url = `url('icons/${icon}')`;
-                iconEl.style.webkitMaskImage = url;
-                iconEl.style.maskImage = url;
+                // Remove all existing icon-- classes
+                iconEl.className = iconEl.className.split(' ')
+                    .filter(c => !c.startsWith('icon--'))
+                    .join(' ');
+                
+                const iconSlug = icon.replace('icon-', '').replace('.svg', '');
+                iconEl.classList.add(`icon--${iconSlug}`);
             }
         }
 
@@ -312,10 +316,10 @@ export default class UIManager {
 
         // Update calculated equity fields if they exist
         if (state.monthlyMortgagePayment !== undefined && this.#elements.monthlyMortgageDisplay) {
-            this.#elements.monthlyMortgageDisplay.innerText = formatCurrency(state.monthlyMortgagePayment);
+            this.#elements.monthlyMortgageDisplay.value = formatCurrency(state.monthlyMortgagePayment);
         }
         if (state.totalRepayment !== undefined && this.#elements.totalRepaymentDisplay) {
-            this.#elements.totalRepaymentDisplay.innerText = formatCurrency(state.totalRepayment);
+            this.#elements.totalRepaymentDisplay.value = formatCurrency(state.totalRepayment);
         }
 
         // Sync deposit percentage/amount if provided in state

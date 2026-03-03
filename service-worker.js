@@ -4,7 +4,7 @@
  * Handles static asset caching and offline functionality.
  */
 
-const CACHE_NAME = 'fairshare-v3';
+const CACHE_NAME = 'fairshare-v4';
 
 /**
  * Static assets to be cached for offline use.
@@ -12,24 +12,25 @@ const CACHE_NAME = 'fairshare-v3';
  */
 const STATIC_ASSETS = [
     './',
-    './index.html?v=1772563340',
-    './style.css?v=1772563340',
-    './src/main.js?v=1772563340',
-    './logo-icon.svg?v=1772563340',
-    './logo-icon-dark.svg?v=1772563340',
-    './favicon.svg?v=1772563340',
+    './index.html?v=1772566011',
+    './logo-icon.svg?v=1772566011',
+    './logo-icon-dark.svg?v=1772566011',
+    './favicon.svg?v=1772566011',
     './manifest.json',
-    './icons/icon-lightning.svg',
-    './icons/icon-heart.svg',
-    './icons/icon-info.svg',
-    './icons/icon-money.svg',
-    './icons/icon-building.svg',
-    './icons/icon-external-link.svg',
-    './icons/icon-receipt.svg',
-    './icons/icon-pie-chart.svg',
-    './icons/icon-user.svg',
-    './icons/icon-users.svg',
-    './icons/icon-download.svg',
+    './dist/style.css?v=1772566011',
+    './dist/main.js?v=1772566011',
+    './dist/icons/icon-lightning.svg',
+    './dist/icons/icon-heart.svg',
+    './dist/icons/icon-info.svg',
+    './dist/icons/icon-money.svg',
+    './dist/icons/icon-building.svg',
+    './dist/icons/icon-external-link.svg',
+    './dist/icons/icon-receipt.svg',
+    './dist/icons/icon-pie-chart.svg',
+    './dist/icons/icon-user.svg',
+    './dist/icons/icon-users.svg',
+    './dist/icons/icon-download.svg',
+    './dist/icons/icon-offline.svg',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional'
 ];
 
@@ -70,12 +71,12 @@ self.addEventListener('activate', event => {
                         requests.map(request => {
                             const url = new URL(request.url);
                             const relativePath = url.pathname.replace(new URL(self.registration.scope).pathname, './');
-                            
+
                             // Check if the cached request matches any of our current static assets
                             const isCurrentAsset = STATIC_ASSETS.some(asset => {
                                 // Direct match (e.g., './src/core/State.js')
                                 if (asset === relativePath) return true;
-                                // Match with query string (e.g., './style.css?v=1772563340')
+                                // Match with query string (e.g., './style.css?v=1772566011')
                                 if (asset.startsWith(relativePath) && (asset === relativePath + url.search || asset === './' + url.search)) return true;
                                 return false;
                             });

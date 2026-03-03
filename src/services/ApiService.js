@@ -4,7 +4,7 @@
  * Decoupled from the DOM.
  */
 
-import { REGIONS, PREFIX_MAP } from '../core/Constants.js';
+import { PREFIX_MAP } from '../core/Constants.js';
 
 export default class ApiService {
     /**

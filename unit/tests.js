@@ -80,6 +80,31 @@ runTest('UIManager.renderResultsSummary', () => {
     console.assert(summaryText.innerText === 'Both partners contribute equally.', 'Summary text mismatch');
 });
 
+runTest('UIManager.render updates input values', () => {
+    const mockElements = {
+        monthlyMortgageDisplay: { value: '' },
+        totalRepaymentDisplay: { value: '' },
+        depositPercentage: { value: '' },
+        depositAmount: { value: '' }
+    };
+    const ui = new window.UIManager(mockElements, {});
+    const state = {
+        ratioP1: 0.5,
+        ratioP2: 0.5,
+        monthlyMortgagePayment: 1200,
+        totalRepayment: 432000,
+        depositPercentage: 10,
+        depositAmount: 30000
+    };
+    
+    ui.render(state);
+    
+    console.assert(mockElements.monthlyMortgageDisplay.value === '£1,200', `Monthly mortgage value mismatch: ${mockElements.monthlyMortgageDisplay.value}`);
+    console.assert(mockElements.totalRepaymentDisplay.value === '£432,000', `Total repayment value mismatch: ${mockElements.totalRepaymentDisplay.value}`);
+    console.assert(mockElements.depositPercentage.value === '10.0', `Deposit percentage value mismatch: ${mockElements.depositPercentage.value}`);
+    console.assert(mockElements.depositAmount.value === 30000, `Deposit amount value mismatch: ${mockElements.depositAmount.value}`);
+});
+
 runTest('Validator.validateField', () => {
     console.assert(window.Validator.validateField('depositPercentage', 50) === true, 'Valid value failed');
     console.assert(window.Validator.validateField('depositPercentage', 150) === false, 'Invalid value passed');

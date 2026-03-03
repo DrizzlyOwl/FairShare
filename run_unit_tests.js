@@ -30,7 +30,7 @@ global.navigator = window.navigator;
 window.scrollTo = () => {};
 
 // Mock fetch
-global.fetch = async (url, options) => {
+global.fetch = async (url, _options) => {
   if (url.includes('landregistry')) {
     return {
       ok: true,
