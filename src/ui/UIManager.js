@@ -3,14 +3,17 @@
  * Manages the application's view state, screen transitions, and DOM updates.
  */
 
-import { formatCurrency } from '../utils/Helpers.js';
+import { formatCurrency, formatNumber } from '../utils/Helpers.js';
 import { SCREEN_MAP } from '../core/Constants.js';
 import CustomSelect from './CustomSelect.js';
 
-export default class UIManager {
+import Logger from '../utils/Logger.js';
+
+export default class UIManager extends Logger {
     #elements;
     #bandPrices;
     #onScreenChange;
+    #observer;
     #customSelects = new Map();
 
     SCREENS = SCREEN_MAP;
@@ -21,9 +24,55 @@ export default class UIManager {
      * @param {Function} onScreenChangeCallback - Called when screen transitions occur.
      */
     constructor(elements, bandPrices, onScreenChangeCallback = null) {
+        super('UIManager');
         this.#elements = elements;
         this.#bandPrices = bandPrices;
         this.#onScreenChange = onScreenChangeCallback;
+
+        this.#initObserver();
+    }
+
+    /**
+     * Sets up the IntersectionObserver for scroll-triggered animations.
+     */
+    #initObserver() {
+        if (typeof IntersectionObserver === 'undefined') {
+            this.debug('IntersectionObserver not supported. Triggering pie animation immediately.');
+            this.#triggerPieAnimation();
+            return;
+        }
+
+        this.#observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('pie-chart--animate');
+                    this.#triggerPieAnimation();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        if (this.#elements.ratioPieChart) {
+            this.#observer.observe(this.#elements.ratioPieChart);
+        }
+    }
+
+    #pieData = { p1: 0.5, p2: 0.5 };
+
+    /**
+     * Internal trigger to apply SVG dasharray values.
+     */
+    #triggerPieAnimation() {
+        const { p1, p2 } = this.#pieData;
+        const p1Perc = Math.round(p1 * 100);
+        const p2Perc = Math.round(p2 * 100);
+
+        if (this.#elements.pieSegmentP1) {
+            this.#elements.pieSegmentP1.setAttribute('stroke-dasharray', `${p1Perc} 100`);
+        }
+        if (this.#elements.pieSegmentP2) {
+            this.#elements.pieSegmentP2.setAttribute('stroke-dasharray', `${p2Perc} 100`);
+            this.#elements.pieSegmentP2.setAttribute('stroke-dashoffset', `-${p1Perc}`);
+        }
     }
 
     /**
@@ -32,10 +81,10 @@ export default class UIManager {
      * @param {boolean} [isInitialLoad=false] - Whether this is the first screen load.
      */
     switchScreen(id, isInitialLoad = false) {
-        console.log(`[UIManager] Navigating to: ${id} (Initial Load: ${isInitialLoad})`);
+        this.debug(`Navigating to: ${id} (Initial Load: ${isInitialLoad})`);
         const target = document.getElementById(id);
         if (!target) {
-            console.error(`Target screen not found: ${id}`);
+            this.error(`Target screen not found: ${id}`);
             return;
         }
 
@@ -57,7 +106,7 @@ export default class UIManager {
         
         // Show target
         target.removeAttribute('hidden');
-        console.log(`Screen ${id} hidden attribute after removal: ${target.hasAttribute('hidden')}`);
+        this.debug(`Screen ${id} hidden attribute after removal: ${target.hasAttribute('hidden')}`);
         
         if (!isInitialLoad) target.focus();
 
@@ -117,23 +166,26 @@ export default class UIManager {
     }
 
     /**
-     * Updates the visual ratio bar.
+     * Updates the visual ratio pie chart and legend.
      * @param {number} ratioP1 - Partner 1 share (0-1).
      * @param {number} ratioP2 - Partner 2 share (0-1).
      */
-    updateRatioBar(ratioP1, ratioP2) {
-        const p1P = Math.round(ratioP1 * 100);
-        const p2P = Math.round(ratioP2 * 100);
-        if (this.#elements.barP1) {
-            this.#elements.barP1.style.width = p1P + '%';
-            this.#elements.barP1.innerText = p1P + '%';
-        }
-        if (this.#elements.barP2) {
-            this.#elements.barP2.style.width = p2P + '%';
-            this.#elements.barP2.innerText = p2P + '%';
-        }
+    updatePieChart(ratioP1, ratioP2) {
+        this.#pieData = { p1: ratioP1, p2: ratioP2 };
+        const p1Perc = Math.round(ratioP1 * 100);
+        const p2Perc = Math.round(ratioP2 * 100);
+
+        if (this.#elements.legendP1Perc) this.#elements.legendP1Perc.innerText = p1Perc + '%';
+        if (this.#elements.legendP2Perc) this.#elements.legendP2Perc.innerText = p2Perc + '%';
+        if (this.#elements.pieCenterText) this.#elements.pieCenterText.textContent = `${p1Perc}/${p2Perc}`;
+
         if (this.#elements.ratioTextDesc) {
-            this.#elements.ratioTextDesc.innerText = `Income ratio is ${p1P}% You and ${p2P}% Your Partner.`;
+            this.#elements.ratioTextDesc.innerText = `Income ratio is ${p1Perc}% You and ${p2Perc}% Your Partner.`;
+        }
+
+        // Trigger animation if already in view
+        if (this.#elements.ratioPieChart?.classList.contains('pie-chart--animate')) {
+            this.#triggerPieAnimation();
         }
     }
 
@@ -288,10 +340,11 @@ export default class UIManager {
 
         if (this.#elements.breakdownSummary) {
             const { costs: monthlyCosts } = monthly;
-            const mainCosts = monthlyCosts.mortgage.total + monthlyCosts.councilTax.total + monthlyCosts.energy.total + monthlyCosts.water.total;
-            const lifestyleCosts = monthlyCosts.broadband.total + monthlyCosts.groceries.total + monthlyCosts.childcare.total + monthlyCosts.insurance.total + monthlyCosts.otherShared.total;
+            const mainCosts = (monthlyCosts.mortgage.total + monthlyCosts.councilTax.total + monthlyCosts.energy.total + monthlyCosts.water.total).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const lifestyleCosts = (monthlyCosts.broadband.total + monthlyCosts.groceries.total + monthlyCosts.childcare.total + monthlyCosts.insurance.total + monthlyCosts.otherShared.total).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const totalMonthlySpend = monthly.total.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             
-            this.#elements.breakdownSummary.innerText = `Out of the £${monthly.total.toLocaleString('en-GB', {minimumFractionDigits: 2})} total monthly spend, £${mainCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} is dedicated to the property and utilities, while £${lifestyleCosts.toLocaleString('en-GB', {minimumFractionDigits: 2})} covers shared lifestyle and committed costs.`;
+            this.#elements.breakdownSummary.innerText = `Out of the £${totalMonthlySpend} total monthly spend, £${mainCosts} is dedicated to the property and utilities, while £${lifestyleCosts} covers shared lifestyle and committed costs.`;
         }
     }
 
@@ -340,14 +393,14 @@ export default class UIManager {
      * @param {Object} state - The current application state.
      */
     render(state) {
-        this.updateRatioBar(state.ratioP1, state.ratioP2);
+        this.updatePieChart(state.ratioP1, state.ratioP2);
 
         // Update calculated equity fields if they exist
         if (state.monthlyMortgagePayment !== undefined && this.#elements.monthlyMortgageDisplay) {
-            this.#elements.monthlyMortgageDisplay.value = formatCurrency(state.monthlyMortgagePayment);
+            this.#elements.monthlyMortgageDisplay.value = formatNumber(state.monthlyMortgagePayment, 0);
         }
         if (state.totalRepayment !== undefined && this.#elements.totalRepaymentDisplay) {
-            this.#elements.totalRepaymentDisplay.value = formatCurrency(state.totalRepayment);
+            this.#elements.totalRepaymentDisplay.value = formatNumber(state.totalRepayment, 0);
         }
 
         // Sync deposit percentage/amount if provided in state

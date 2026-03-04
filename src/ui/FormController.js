@@ -3,14 +3,15 @@
  * Manages complex input life-cycles, formatting, and screen-level validation.
  */
 
-import FinanceOrchestrator from '../core/FinanceOrchestrator.js';
 import FinanceEngine from '../core/FinanceEngine.js';
 import ApiService from '../services/ApiService.js';
 import Validator from '../core/Validator.js';
 import { FORM_FIELDS } from '../core/Constants.js';
 import { formatCurrency, debounce } from '../utils/Helpers.js';
 
-export default class FormController {
+import Logger from '../utils/Logger.js';
+
+export default class FormController extends Logger {
     #app;
     #ui;
     #store;
@@ -23,6 +24,7 @@ export default class FormController {
      * @param {Object} elements - Pre-populated element cache.
      */
     constructor(app, ui, store, elements) {
+        super('FormController');
         this.#app = app;
         this.#ui = ui;
         this.#store = store;
@@ -47,20 +49,20 @@ export default class FormController {
 
                 let val = el.value;
                 if (field.type === 'number') val = parseFloat(val) || 0;
-                console.log(`[FormController] Delegated Debounced Update: ${field.id} =`, val);
+                this.debug(`Delegated Debounced Update: ${field.id} =`, val);
                 
                 this.#store.update({ [field.key || field.id]: val });
                 
                 const stateUpdate = {};
                 if (field.id === 'propertyPrice') {
                     this.updatePropertyPriceDisplay(val, false);
-                    Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.#store.data));
+                    Object.assign(stateUpdate, this.#app.orchestrator.calculateEquityDetails(this.#store.data));
                 }
                 if (['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'].includes(field.id)) {
-                    Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.#store.data));
+                    Object.assign(stateUpdate, this.#app.orchestrator.calculateEquityDetails(this.#store.data));
                 }
                 if (['bedrooms', 'bathrooms', 'taxBand'].includes(field.id)) {
-                    Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.#store.data));
+                    Object.assign(stateUpdate, this.#app.orchestrator.populateEstimates(this.#store.data));
                 }
                 
                 if (Object.keys(stateUpdate).length > 0) {
@@ -84,7 +86,7 @@ export default class FormController {
             if (['salaryP1', 'salaryP2', 'pensionP1', 'pensionP2', 'studentLoanP1', 'studentLoanP2'].includes(field.id)) {
                 const partner = field.id.includes('P1') ? 'P1' : 'P2';
                 this.updateTaxEstimate(partner);
-                this.#store.update(FinanceOrchestrator.calculateRatio(this.#store.data));
+                this.#store.update(this.#app.orchestrator.calculateRatio(this.#store.data));
             }
 
             const updateFn = fieldUpdates.get(field.id);
@@ -122,7 +124,7 @@ export default class FormController {
                     this.updateSalaryTypeLabels(val);
                     this.updateTaxEstimate('P1');
                     this.updateTaxEstimate('P2');
-                    this.#store.update(FinanceOrchestrator.calculateRatio(this.#store.data));
+                    this.#store.update(this.#app.orchestrator.calculateRatio(this.#store.data));
                     break;
                 case 'depositType':
                     this.#store.update({ depositType: val });
@@ -138,7 +140,7 @@ export default class FormController {
                 case 'taxBand':
                     this.#store.update({ taxBand: val });
                     this.#ui.updatePricePreview(val);
-                    const taxUpdate = FinanceOrchestrator.populateEstimates(this.#store.data);
+                    const taxUpdate = this.#app.orchestrator.populateEstimates(this.#store.data);
                     this.#store.update(taxUpdate);
                     this.#app.syncCalculatedFields(taxUpdate);
                     break;
@@ -169,7 +171,7 @@ export default class FormController {
      * Helper to recalculate and sync equity details.
      */
     syncEquityDetails() {
-        const update = FinanceOrchestrator.calculateEquityDetails(this.#store.data);
+        const update = this.#app.orchestrator.calculateEquityDetails(this.#store.data);
         this.#store.update(update);
         this.#app.syncCalculatedFields(update);
     }
@@ -208,7 +210,7 @@ export default class FormController {
             announce.removeAttribute('hidden');
             
             // Recalculate SDLT/Legal fees as they are region-dependent
-            const update = FinanceOrchestrator.calculateEquityDetails(this.#store.data);
+            const update = this.#app.orchestrator.calculateEquityDetails(this.#store.data);
             this.#store.update(update);
             this.#app.syncCalculatedFields(update);
         } else {
@@ -354,7 +356,7 @@ export default class FormController {
         this.forceStateSync();
         
         const { isValid, errors } = Validator.validateScreen(screenId, this.#store.data);
-        console.log(`[FormController] Validating Screen: ${screenId}. Result: ${isValid}`, errors.length ? `Errors: ${errors}` : "");
+        this.debug(`Validating Screen: ${screenId}. Result: ${isValid}`, errors.length ? `Errors: ${errors}` : "");
 
         // Map of screen fields to clear/set
         const screenFields = {
@@ -424,7 +426,7 @@ export default class FormController {
      * Comprehensive sync for all field types, including radios and nested split preferences.
      */
     forceStateSync() {
-        console.log(`[FormController] Executing forced state-DOM synchronization.`);
+        this.debug(`Executing forced state-DOM synchronization.`);
         const stateUpdate = {};
         
         // 1. Sync standard form fields (text/number)

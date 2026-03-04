@@ -10,13 +10,12 @@
     <meta name="apple-mobile-web-app-title" content="FairShare">
     <link rel="apple-touch-icon" href="logo-icon.svg">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772639157">
+    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772644794">
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="./dist/logo-icon.svg?v=1772639157" as="image">
-    <link rel="preload" href="./dist/icons/icon-offline.svg" as="image">
+    <link rel="preload" href="./dist/logo-icon.svg?v=1772644794" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
 
@@ -54,16 +53,16 @@
         [hidden]{display:none !important}
     </style>
 
-    <link rel="preload" href="./dist/style.css?v=1772639157" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772639157"></noscript>
+    <link rel="preload" href="./dist/style.css?v=1772644794" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772644794"></noscript>
 </head>
 <body>
 
     <!-- Lazy Loader -->
     <div class="lazy-loader">
         <div class="loader-branded">
-            <img src="./dist/logo-icon.svg?v=1772639157" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
-            <img src="./dist/logo-icon-dark.svg?v=1772639157" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
+            <img src="./dist/logo-icon.svg?v=1772644794" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
+            <img src="./dist/logo-icon-dark.svg?v=1772644794" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
             <div class="spinner"></div>
         </div>
     </div>
@@ -81,7 +80,7 @@
             <!-- Header Brand -->
             <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
-                    <img src="./dist/logo-icon.svg?v=1772639157" alt="" width="60" height="60" class="header-brand__icon">
+                    <img src="./dist/logo-icon.svg?v=1772644794" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
                         <h1 class="header-brand__title">
                             <span class="header-brand__title-part header-brand__title-part--primary">Fair</span><span class="header-brand__title-part header-brand__title-part--accent">Share</span>
@@ -129,7 +128,7 @@
                         <strong>Build a fair financial foundation for your home.</strong><br>
                         Establish proportionate bill splitting based on your relative incomes in just 7 steps.
                     </p>
-                    <div id="efficiency-tip" class="alert alert--info">
+                    <div id="efficiency-tip" class="alert alert--info" data-ui="efficiencyTip">
                         <span class="alert__icon alert__icon--info icon--info" aria-hidden="true"></span>
                         <div class="alert__text">
                             <strong>Efficiency Tip:</strong> Use your <strong>Arrow Keys</strong> or <strong>Enter</strong> to navigate quickly between screens.
@@ -890,11 +889,27 @@
 
                 <div class="result-section">
                     <h3 class="result-section__title screen__subheading">2. Ongoing Monthly Shares</h3>
-                    <div class="result-ratio-bar" id="result-ratio-bar">
-                        <p class="text-center fw-bold type-p">Calculated Contribution Ratio</p>
-                        <div class="ratio-bar-display" id="ratio-bar-display" role="img" aria-label="Salary Ratio Chart: 50 percent You and 50 percent Your Partner">
-                            <div class="bar-p1" id="bar-p1" aria-hidden="true" data-cy="ratio-bar-p1" data-ui="barP1">50%</div>
-                            <div class="bar-p2" id="bar-p2" aria-hidden="true" data-cy="ratio-bar-p2" data-ui="barP2">50%</div>
+                    
+                    <div class="pie-chart-container">
+                        <div class="pie-chart" id="ratio-pie-chart" data-ui="ratioPieChart">
+                            <svg viewBox="0 0 36 36" class="pie-chart__svg">
+                                <circle class="pie-chart__bg" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3.8"></circle>
+                                <circle class="pie-chart__segment pie-chart__segment--p1" id="pie-segment-p1" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3.8" stroke-dasharray="0 100" stroke-dashoffset="25" data-ui="pieSegmentP1"></circle>
+                                <circle class="pie-chart__segment pie-chart__segment--p2" id="pie-segment-p2" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3.8" stroke-dasharray="0 100" stroke-dashoffset="0" data-ui="pieSegmentP2"></circle>
+                                <g class="pie-chart__text">
+                                    <text x="18" y="18" class="pie-chart__percentage" id="pie-center-text" data-ui="pieCenterText">Ratio</text>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="pie-chart-legend">
+                            <div class="pie-chart-legend__item">
+                                <span class="pie-chart-legend__color pie-chart-legend__color--p1"></span>
+                                <span class="pie-chart-legend__label">You: <strong id="legend-p1-perc" data-ui="legendP1Perc">0%</strong></span>
+                            </div>
+                            <div class="pie-chart-legend__item">
+                                <span class="pie-chart-legend__color pie-chart-legend__color--p2"></span>
+                                <span class="pie-chart-legend__label">Partner: <strong id="legend-p2-perc" data-ui="legendP2Perc">0%</strong></span>
+                            </div>
                         </div>
                         <p class="sr-only" id="ratio-text-desc" data-ui="ratioTextDesc">Ratio is 50 percent You and 50 percent Your Partner.</p>
                     </div>
@@ -1049,35 +1064,11 @@
 
     <!-- Footer -->
     <footer>
-        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.1.104 • 2026-03-04 15:45:57
+        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.2.4 • 2026-03-04 17:19:54
     </footer>
 
     <!-- Scripts -->
-    <script type="module" src="./dist/main.js?v=1772639157"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const efficiencyTip = document.getElementById('efficiency-tip');
-            if (efficiencyTip) {
-                const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-                if (isTouchDevice) {
-                    efficiencyTip.setAttribute('hidden', '');
-                } else {
-                    efficiencyTip.removeAttribute('hidden');
-                }
-            }
-        });
-    </script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(reg => console.log('Service Worker: Registered (Scope: ' + reg.scope + ')'))
-                    .catch(err => console.log('Service Worker: Registration Failed', err));
-            });
-        }
-    </script>
+    <script type="module" src="./dist/main.js?v=1772644794"></script>
 
 </body>
 </html>

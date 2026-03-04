@@ -28,6 +28,19 @@ export const formatCurrency = (num, decimals = 0) => {
 };
 
 /**
+ * Formats a number with thousands separators.
+ * @param {number} num - The number to format.
+ * @param {number} [decimals=0] - Number of decimal places.
+ * @returns {string} Formatted number string.
+ */
+export const formatNumber = (num, decimals = 0) => {
+    return num.toLocaleString('en-GB', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+    });
+};
+
+/**
  * Simple debounce implementation for execution control.
  * Bypasses delay in testing environments (Cypress).
  * @param {Function} func - Function to debounce.

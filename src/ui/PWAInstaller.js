@@ -4,7 +4,9 @@
  * Follows guidelines from https://web.dev/learn/pwa/installation-prompt
  */
 
-export default class PWAInstaller {
+import Logger from '../utils/Logger.js';
+
+export default class PWAInstaller extends Logger {
     #installButton;
     #deferredPrompt = null;
 
@@ -12,6 +14,7 @@ export default class PWAInstaller {
      * @param {HTMLElement} installButton - The button that triggers the installation.
      */
     constructor(installButton) {
+        super('PWA');
         this.#installButton = installButton;
         this.#init();
     }
@@ -33,7 +36,7 @@ export default class PWAInstaller {
             // 3. Update UI notify the user they can install the PWA
             this.#showInstallPromotion();
             
-            console.log('[PWA] beforeinstallprompt event captured');
+            this.debug('beforeinstallprompt event captured');
         });
 
         this.#installButton.addEventListener('click', async () => {
@@ -44,7 +47,7 @@ export default class PWAInstaller {
 
             // 5. Wait for the user to respond to the prompt
             const { outcome } = await this.#deferredPrompt.userChoice;
-            console.log(`[PWA] User response to the install prompt: ${outcome}`);
+            this.debug(`User response to the install prompt: ${outcome}`);
 
             // 6. We've used the prompt, and can't use it again, throw it away
             this.#deferredPrompt = null;
@@ -55,7 +58,7 @@ export default class PWAInstaller {
 
         window.addEventListener('appinstalled', () => {
             // 8. Log the installation
-            console.log('[PWA] App was installed');
+            this.info('App was installed');
             // 9. Hide the install button
             this.#hideInstallPromotion();
             // 10. Clear the deferred prompt

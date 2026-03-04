@@ -54,10 +54,59 @@ runTest('calculateStampDuty should apply FTB relief for England', () => {
     console.assert(res === 5000, `Expected 5000, got ${res}`);
 });
 
+runTest('Logger should format and log messages', () => {
+    class TestModule extends window.Logger {
+        constructor() { super('TestTag'); }
+        testLog() { this.info('Hello Info'); }
+        testDebug() { this.debug('Hello Debug'); }
+    }
+    
+    const logger = new TestModule();
+    let lastLog = '';
+    const originalInfo = console.info;
+    console.info = (msg) => { lastLog = msg; };
+    
+    logger.testLog();
+    console.info = originalInfo;
+    
+    console.assert(lastLog === '[INFO] [TestTag] Hello Info', `Expected "[INFO] [TestTag] Hello Info", got "${lastLog}"`);
+    
+    // Test debug with flag
+    const originalDebug = console.debug;
+    let debugCalled = false;
+    console.debug = () => { debugCalled = true; };
+    
+    window.DEBUG = true;
+    logger.testDebug();
+    console.assert(debugCalled === true, 'Debug should be called when window.DEBUG is true');
+    
+    debugCalled = false;
+    window.DEBUG = false;
+    logger.testDebug();
+    console.assert(debugCalled === false, 'Debug should NOT be called when window.DEBUG is false');
+    
+    console.debug = originalDebug;
+});
+
 runTest('State should initialize with default data', () => {
     const state = new window.State();
+    console.assert(state.data.version === 1, 'Default version should be 1');
     console.assert(state.data.beds === 2, 'Default beds should be 2');
     console.assert(state.data.baths === 1, 'Default baths should be 1');
+});
+
+runTest('State should migrate from v0 (unversioned) to v1', () => {
+    localStorage.clear();
+    const oldState = { salaryP1: 50000, salaryP2: 60000 }; // No version
+    localStorage.setItem('fairshare_cache', JSON.stringify(oldState));
+    
+    const state = new window.State();
+    state.hydrate();
+    
+    console.assert(state.data.version === 1, `Expected version 1, got ${state.data.version}`);
+    console.assert(state.data.salaryP1 === 50000, 'SalaryP1 should be preserved');
+    console.assert(state.data.salaryP2 === 60000, 'SalaryP2 should be preserved');
+    console.assert(state.data.beds === 2, 'Default values from INITIAL_STATE should be populated');
 });
 
 runTest('State.update should handle bulk updates', () => {
@@ -72,11 +121,13 @@ runTest('ApiService.getRegionFromPostcode', () => {
     console.assert(res.code === 'SC', 'Should identify Scotland');
 });
 
-runTest('UIManager.updateRatioBar', () => {
-    const barP1 = { style: {} };
-    const ui = new window.UIManager({ barP1, ratioTextDesc: {} }, {});
-    ui.updateRatioBar(0.6, 0.4);
-    console.assert(barP1.style.width === '60%', 'Ratio bar P1 mismatch');
+runTest('UIManager.updatePieChart', () => {
+    const legendP1Perc = { innerText: '' };
+    const pieCenterText = { textContent: '' };
+    const ui = new window.UIManager({ legendP1Perc, pieCenterText, ratioTextDesc: {} }, {});
+    ui.updatePieChart(0.6, 0.4);
+    console.assert(legendP1Perc.innerText === '60%', 'Legend P1 mismatch');
+    console.assert(pieCenterText.textContent === '60/40', 'Pie center text mismatch');
 });
 
 runTest('UIManager.renderResultsSummary', () => {
@@ -117,8 +168,8 @@ runTest('UIManager.render updates input values', () => {
     
     ui.render(state);
     
-    console.assert(mockElements.monthlyMortgageDisplay.value === '£1,200', `Monthly mortgage value mismatch: ${mockElements.monthlyMortgageDisplay.value}`);
-    console.assert(mockElements.totalRepaymentDisplay.value === '£432,000', `Total repayment value mismatch: ${mockElements.totalRepaymentDisplay.value}`);
+    console.assert(mockElements.monthlyMortgageDisplay.value === '1,200', `Monthly mortgage value mismatch: ${mockElements.monthlyMortgageDisplay.value}`);
+    console.assert(mockElements.totalRepaymentDisplay.value === '432,000', `Total repayment value mismatch: ${mockElements.totalRepaymentDisplay.value}`);
     console.assert(mockElements.depositPercentage.value === '10.0', `Deposit percentage value mismatch: ${mockElements.depositPercentage.value}`);
     console.assert(mockElements.depositAmount.value === 30000, `Deposit amount value mismatch: ${mockElements.depositAmount.value}`);
 });
@@ -135,7 +186,8 @@ runTest('CalculationEngine.getSummary', () => {
         splitTypes: {}, councilTaxCost: 0, energyCost: 0, waterBill: 0, broadbandCost: 0, 
         groceriesCost: 0, childcareCost: 0, insuranceCost: 0, otherSharedCosts: 0
     };
-    const summary = window.CalculationEngine.getSummary(state);
+    const orchestrator = new window.FinanceOrchestrator();
+    const summary = orchestrator.getFinalSummary(state);
     console.assert(summary.upfront.sdlt === 5000, `SDLT mismatch: ${summary.upfront.sdlt}`);
 });
 

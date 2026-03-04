@@ -1,6 +1,6 @@
 {
   "name": "fairshare",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Fair bill splitting calculator for couples based on salary proportions.",
   "main": "app.js",
   "scripts": {

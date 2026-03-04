@@ -6,6 +6,11 @@
 import { deepFreeze } from '../utils/Helpers.js';
 
 /**
+ * Global application flags.
+ */
+export const DEBUG = true;
+
+/**
  * Global Asset Path configuration.
  * Points to the production-ready directory for optimized assets.
  */

@@ -3,7 +3,10 @@
  * Manages application state, persistence, and reactive updates.
  */
 
+import Logger from '../utils/Logger.js';
+
 export const INITIAL_STATE = {
+    version: 1,
     salaryP1: 0,
     salaryP2: 0,
     salaryType: 'gross', // 'gross' or 'net'
@@ -53,7 +56,21 @@ export const INITIAL_STATE = {
     }
 };
 
-export default class State {
+/**
+ * Migration registry.
+ * Maps target version to a migration function.
+ */
+const MIGRATIONS = {
+    /**
+     * Version 1: Initial versioned state.
+     * Ensures all keys from INITIAL_STATE exist in older cached data.
+     */
+    1: (data) => {
+        return { ...INITIAL_STATE, ...data, version: 1 };
+    }
+};
+
+export default class State extends Logger {
     #data;
     #onUpdate;
     #persistTimeout;
@@ -64,6 +81,7 @@ export default class State {
      * @param {Function} onUpdateCallback - Triggered on state change.
      */
     constructor(initialState = INITIAL_STATE, onUpdateCallback = null) {
+        super('State');
         this.#onUpdate = onUpdateCallback;
         // Use a non-proxied object for the initial internal data
         const data = { ...initialState };
@@ -78,7 +96,7 @@ export default class State {
             const handler = {
                 set: (target, prop, value) => {
                     if (target[prop] === value) return true;
-                    console.log(`[State] Property "${prop}" changed:`, target[prop], "->", value);
+                    self.debug(`Property "${prop}" changed:`, target[prop], "->", value);
                     target[prop] = value;
                     self.persist();
                     // Avoid triggering onUpdate for every field if we're in a bulk update
@@ -112,7 +130,7 @@ export default class State {
      */
     update(newData) {
         this.#isBatchUpdating = true;
-        console.log(`[State] Batch Update:`, newData);
+        this.debug(`Batch Update:`, newData);
         try {
             Object.assign(this.#data, newData);
         } finally {
@@ -148,6 +166,7 @@ export default class State {
 
     /**
      * Hydrates state from localStorage if available.
+     * Applies migrations if the cached version is outdated.
      * @returns {Object} The current state after hydration.
      */
     hydrate() {
@@ -156,13 +175,39 @@ export default class State {
         const cached = localStorage.getItem(this.#CACHE_KEY);
         if (cached) {
             try {
-                const parsed = JSON.parse(cached);
+                let parsed = JSON.parse(cached);
+                const currentVersion = INITIAL_STATE.version;
+                const cachedVersion = parsed.version || 0;
+
+                if (cachedVersion < currentVersion) {
+                    this.info(`Migrating state from v${cachedVersion} to v${currentVersion}`);
+                    parsed = this.#migrate(parsed, cachedVersion, currentVersion);
+                }
+
                 this.update(parsed);
             } catch (e) {
-                console.error("Failed to hydrate state:", e);
+                this.error("Failed to hydrate state:", e);
             }
         }
         return this.#data;
+    }
+
+    /**
+     * Runs sequential migrations from startVersion to targetVersion.
+     * @param {Object} data - The state data to migrate.
+     * @param {number} startVersion - The current version of the data.
+     * @param {number} targetVersion - The version to migrate to.
+     * @returns {Object} The migrated data.
+     */
+    #migrate(data, startVersion, targetVersion) {
+        let migratedData = { ...data };
+        for (let v = startVersion + 1; v <= targetVersion; v++) {
+            if (MIGRATIONS[v]) {
+                this.debug(`Applying migration to v${v}`);
+                migratedData = MIGRATIONS[v](migratedData);
+            }
+        }
+        return migratedData;
     }
 
     /**
@@ -186,3 +231,4 @@ export default class State {
         return this.#data;
     }
 }
+

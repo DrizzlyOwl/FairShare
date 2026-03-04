@@ -9,14 +9,20 @@ import CalculationEngine from './Calculations.js';
 import ApiService from '../services/ApiService.js';
 import { BAND_PRICES } from './Constants.js';
 
-export default class FinanceOrchestrator {
+import Logger from '../utils/Logger.js';
+
+export default class FinanceOrchestrator extends Logger {
+    constructor() {
+        super('FinanceOrchestrator');
+    }
+
     /**
      * Orchestrates the income ratio calculation between the engine and store.
      * @param {Object} state - Current application state.
      * @returns {Object} Updated state slice.
      */
-    static calculateRatio(state) {
-        console.log(`[FinanceOrchestrator] Recalculating Income Ratio based on "${state.salaryType}" salaries.`);
+    calculateRatio(state) {
+        this.debug(`Recalculating Income Ratio based on "${state.salaryType}" salaries.`);
         let p1Basis = state.salaryP1;
         let p2Basis = state.salaryP2;
 
@@ -38,9 +44,9 @@ export default class FinanceOrchestrator {
      * @param {Object} state - Current application state.
      * @returns {Object} Updated state slice including equity, mortgage, and upfront details.
      */
-    static calculateEquityDetails(state) {
+    calculateEquityDetails(state) {
         if (state.propertyPrice <= 0) return {};
-        console.log(`[FinanceOrchestrator] Recalculating Equity and Mortgage details for property price: £${state.propertyPrice}`);
+        this.debug(`Recalculating Equity and Mortgage details for property price: £${state.propertyPrice}`);
 
         let totalEquity = state.totalEquity;
         let depositPerc = state.depositPercentage;
@@ -86,7 +92,7 @@ export default class FinanceOrchestrator {
      * @param {Object} state - Current application state.
      * @returns {Object} Updated state slice.
      */
-    static populateEstimates(state) {
+    populateEstimates(state) {
         const councilTax = BAND_PRICES[state.taxBand] || BAND_PRICES[state.band] || 0;
         let energy = 40 + (state.beds * 25) + (state.baths * 15);
         if (state.isNorth) energy *= 1.1;
@@ -107,7 +113,7 @@ export default class FinanceOrchestrator {
      * @param {Object} state - Current application state.
      * @returns {Object} Full summary object from CalculationEngine.
      */
-    static getFinalSummary(state) {
+    getFinalSummary(state) {
         return CalculationEngine.getSummary(state);
     }
 }

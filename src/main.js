@@ -15,41 +15,58 @@ import { formatCurrency } from './utils/Helpers.js';
 import CSV from './ui/Export.js';
 import { FORM_FIELDS, BAND_PRICES, SCREEN_MAP, NEXT_SCREEN_MAP } from './core/Constants.js';
 
-class FairShareApp {
+import Logger from './utils/Logger.js';
+
+window.DEBUG = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+class FairShareApp extends Logger {
     #ui = null;
     #store = null;
     #themeManager = null;
     #nav = null;
     #form = null;
     #pwaInstaller = null;
+    #orchestrator = null;
+    #csv = null;
     #elements = {};
+
+    constructor() {
+        super('App');
+    }
 
     /**
      * Initializes the application, caches elements, and sets up controllers.
      */
     init() {
-        console.log(`[App] Initializing FairShare...`);
+        this.info('Initializing FairShare...');
+        if (window.DEBUG) this.debug('Debug mode is enabled.');
         this.cacheElements();
         this.hideLoader();
         
-        // 1. Initialize Core Managers
-        this.#ui = new UIManager(this.#elements, BAND_PRICES, (id) => this.#nav.updatePagination(id));
+        // 1. Core Logic & Persistence
+        this.#orchestrator = new FinanceOrchestrator();
+        this.#csv = new CSV();
         this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data));
+
+        // 2. UI Orchestration
+        this.#ui = new UIManager(this.#elements, BAND_PRICES, (id) => this.#nav.updatePagination(id));
         this.#themeManager = new ThemeManager(this.#elements);
         
-        // 2. Initialize Specialized Controllers
+        // 3. Controllers
         this.#nav = new NavigationController(this, this.#ui, this.#elements);
-                this.#form = new FormController(this, this.#ui, this.#store, this.#elements);
-                this.#pwaInstaller = new PWAInstaller(this.#elements.installButton);
+        this.#form = new FormController(this, this.#ui, this.#store, this.#elements);
+        this.#pwaInstaller = new PWAInstaller(this.#elements.installButton);
         
-                // 3. Setup Initial State        this.#store.hydrate();
+        // 4. Setup Initial State
+        this.#store.hydrate();
 
-        // 4. Initialize Theme
+        // 5. Initialize Theme
         this.#themeManager.init();
 
         this.initPWA();
         this.bindGlobalEvents();
         this.syncUIWithState();
+        this.updateEfficiencyTip();
         
         // Enhance any selects with custom UI
         this.#ui.initCustomSelects();
@@ -71,6 +88,30 @@ class FairShareApp {
         
         // Check initial status
         this.updateOnlineStatus();
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => this.debug('Service Worker: Registered (Scope: ' + reg.scope + ')'))
+                    .catch(err => this.error('Service Worker: Registration Failed', err));
+            });
+        }
+    }
+
+    /**
+     * Toggles visibility of the efficiency tip based on device type.
+     */
+    updateEfficiencyTip() {
+        const efficiencyTip = this.#elements.efficiencyTip;
+        if (efficiencyTip) {
+            const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            if (isTouchDevice) {
+                efficiencyTip.setAttribute('hidden', '');
+            } else {
+                efficiencyTip.removeAttribute('hidden');
+            }
+        }
     }
 
     /**
@@ -168,12 +209,12 @@ class FairShareApp {
         this.#form.updatePropertyPriceDisplay(state.propertyPrice, false);
         
         // Let UIManager handle initial calculations sync
-        const update = FinanceOrchestrator.calculateEquityDetails(this.#store.data);
-        const estimates = FinanceOrchestrator.populateEstimates(this.#store.data);
+        const update = this.#orchestrator.calculateEquityDetails(this.#store.data);
+        const estimates = this.#orchestrator.populateEstimates(this.#store.data);
         
         this.#store.update(update);
         this.#store.update(estimates);
-        this.#store.update(FinanceOrchestrator.calculateRatio(this.#store.data));
+        this.#store.update(this.#orchestrator.calculateRatio(this.#store.data));
         
         // Trigger manual render for non-observed calculated fields
         this.syncCalculatedFields({ ...update, ...estimates });
@@ -232,7 +273,7 @@ class FairShareApp {
             this.#elements.propertyPrice.value = price;
             this.#form.updatePropertyPriceDisplay(price, !!result.isEstimated);
             
-            const update = FinanceOrchestrator.calculateEquityDetails(this.#store.data);
+            const update = this.#orchestrator.calculateEquityDetails(this.#store.data);
             this.#store.update(update);
             this.syncCalculatedFields(update);
         } catch (error) {
@@ -244,7 +285,7 @@ class FairShareApp {
      * Standardized error handling for user-facing issues.
      */
     handleError(error, screenNum, userMessage) {
-        console.error(`[App] Error:`, error);
+        this.error(`Error:`, error);
         if (this.#ui) {
             this.#ui.showWarning(screenNum, userMessage || "An unexpected error occurred. Please try again.");
         }
@@ -254,7 +295,7 @@ class FairShareApp {
      * Calculates the final bill splitting breakdown and transitions to results.
      */
     renderResults() {
-        const summary = FinanceOrchestrator.getFinalSummary(this.#store.data);
+        const summary = this.#orchestrator.getFinalSummary(this.#store.data);
         this.#ui.renderResultsSummary(summary, this.#store.data);
         this.#ui.renderCalculationWorkings(this.#store.data);
     }
@@ -268,14 +309,14 @@ class FairShareApp {
 
             let stateUpdate = {};
             if (screenId === SCREEN_MAP.INCOME) {
-                stateUpdate = FinanceOrchestrator.calculateRatio(this.#store.data);
+                stateUpdate = this.#orchestrator.calculateRatio(this.#store.data);
             }
             if (screenId === SCREEN_MAP.PROPERTY) {
-                Object.assign(stateUpdate, FinanceOrchestrator.populateEstimates(this.#store.data));
-                Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.#store.data));
+                Object.assign(stateUpdate, this.#orchestrator.populateEstimates(this.#store.data));
+                Object.assign(stateUpdate, this.#orchestrator.calculateEquityDetails(this.#store.data));
             }
             if (screenId === SCREEN_MAP.MORTGAGE) {
-                Object.assign(stateUpdate, FinanceOrchestrator.calculateEquityDetails(this.#store.data));
+                Object.assign(stateUpdate, this.#orchestrator.calculateEquityDetails(this.#store.data));
             }
             if (screenId === SCREEN_MAP.COMMITTED) {
                 this.renderResults();
@@ -330,7 +371,7 @@ class FairShareApp {
             window.location.hash = '';
             window.location.replace(window.location.origin + window.location.pathname);
         } catch (error) {
-            console.error(`[App] Error during cache clear:`, error);
+            this.error(`Error during cache clear:`, error);
             window.location.reload();
         }
     }
@@ -347,9 +388,9 @@ class FairShareApp {
      */
     downloadCSV() {
         try {
-            CSV.download(this.#store.data, this.#elements.resultsTable);
+            this.#csv.download(this.#store.data, this.#elements.resultsTable);
         } catch (error) {
-            console.error(`[App] Error downloading CSV:`, error);
+            this.error(`Error downloading CSV:`, error);
         }
     }
 
@@ -359,6 +400,14 @@ class FairShareApp {
      */
     get elements() {
         return this.#elements;
+    }
+
+    /**
+     * Accessor for FinanceOrchestrator.
+     * @returns {FinanceOrchestrator}
+     */
+    get orchestrator() {
+        return this.#orchestrator;
     }
 
     /**

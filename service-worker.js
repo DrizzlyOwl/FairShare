@@ -4,7 +4,7 @@
  * Handles static asset caching and offline functionality.
  */
 
-const CACHE_NAME = 'fairshare-v4';
+const CACHE_NAME = 'fairshare-v5';
 
 /**
  * Static assets to be cached for offline use.
@@ -12,13 +12,13 @@ const CACHE_NAME = 'fairshare-v4';
  */
 const STATIC_ASSETS = [
     './',
-    './index.html?v=1772639157',
-    './logo-icon.svg?v=1772639157',
-    './logo-icon-dark.svg?v=1772639157',
-    './favicon.svg?v=1772639157',
+    './index.html?v=1772644794',
+    './logo-icon.svg?v=1772644794',
+    './logo-icon-dark.svg?v=1772644794',
+    './favicon.svg?v=1772644794',
     './manifest.json',
-    './dist/style.css?v=1772639157',
-    './dist/main.js?v=1772639157',
+    './dist/style.css?v=1772644794',
+    './dist/main.js?v=1772644794',
     './dist/icons/icon-lightning.svg',
     './dist/icons/icon-heart.svg',
     './dist/icons/icon-info.svg',
@@ -83,7 +83,7 @@ self.addEventListener('activate', event => {
                             const isCurrentAsset = STATIC_ASSETS.some(asset => {
                                 // Direct match (e.g., './src/core/State.js')
                                 if (asset === relativePath) return true;
-                                // Match with query string (e.g., './style.css?v=1772639157')
+                                // Match with query string (e.g., './style.css?v=1772644794')
                                 if (asset.startsWith(relativePath) && (asset === relativePath + url.search || asset === './' + url.search)) return true;
                                 return false;
                             });

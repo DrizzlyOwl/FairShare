@@ -3,14 +3,20 @@
  * Functional utilities for data export and reporting.
  */
 
-export default class CSV {
+import Logger from '../utils/Logger.js';
+
+export default class CSV extends Logger {
+    constructor() {
+        super('Export');
+    }
+
     /**
      * Generates the raw CSV string from application state and breakdown table.
      * @param {Object} state - The current application state.
      * @param {HTMLTableElement} table - The results table element.
      * @returns {string} The formatted CSV content.
      */
-    static generateRawCSV(state, table) {
+    generateRawCSV(state, table) {
         if (!table) return "";
 
         let csvContent = "FairShare Bill Splitting Report\n";
@@ -49,10 +55,10 @@ export default class CSV {
      * @param {Object} state - The current application state.
      * @param {HTMLTableElement} table - The results table element for breakdown data.
      */
-    static download(state, table) {
+    download(state, table) {
         const csvContent = this.generateRawCSV(state, table);
         if (!csvContent) {
-            console.error('CSV Export: Missing table reference.');
+            this.error('Missing table reference.');
             return;
         }
 
