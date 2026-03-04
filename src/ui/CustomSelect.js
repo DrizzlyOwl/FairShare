@@ -47,6 +47,11 @@ export default class CustomSelect {
         this.#trigger.setAttribute('aria-expanded', 'false');
         this.#trigger.setAttribute('aria-controls', `${this.#select.id}-listbox`);
         
+        // Transfer data-cy for testing
+        if (this.#select.dataset.cy) {
+            this.#trigger.dataset.cy = this.#select.dataset.cy;
+        }
+        
         const label = document.querySelector(`label[for="${this.#select.id}"]`);
         if (label) {
             this.#trigger.setAttribute('aria-labelledby', label.id || `${this.#select.id}-label`);
