@@ -41,11 +41,23 @@ export default class ThemeManager {
     applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         
+        // 1. Update Header Logo
         const logoImg = this.#elements.headerBrand?.querySelector('.header-brand__icon');
         if (logoImg) {
             const buster = logoImg.src.match(/\?v=\d+/) || '';
             const logoBase = theme === 'dark' ? 'logo-icon-dark.svg' : 'logo-icon.svg';
             logoImg.src = `${logoBase}${buster}`;
+        }
+
+        // 2. Update Theme Toggle Icon & ARIA
+        const themeBtn = this.#elements.themeToggle;
+        if (themeBtn) {
+            const icon = themeBtn.querySelector('.icon-btn');
+            if (icon) {
+                icon.classList.remove('icon--sun', 'icon--moon');
+                icon.classList.add(theme === 'dark' ? 'icon--sun' : 'icon--moon');
+            }
+            themeBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
         }
     }
 
