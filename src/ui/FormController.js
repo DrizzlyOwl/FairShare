@@ -90,7 +90,24 @@ export default class FormController {
             if (updateFn) updateFn();
         });
 
-        // 2. Delegated Change Handler (Radios/Selects)
+        // 2. Delegated Focus/Blur Handler (for BEM compliant label states)
+        main.addEventListener('focusin', (e) => {
+            const target = e.target;
+            if (target.tagName !== 'INPUT' && target.tagName !== 'SELECT') return;
+            const group = target.closest('.form-group');
+            const label = group?.querySelector('.form-label');
+            if (label) label.classList.add('form-label--focused');
+        });
+
+        main.addEventListener('focusout', (e) => {
+            const target = e.target;
+            if (target.tagName !== 'INPUT' && target.tagName !== 'SELECT') return;
+            const group = target.closest('.form-group');
+            const label = group?.querySelector('.form-label');
+            if (label) label.classList.remove('form-label--focused');
+        });
+
+        // 3. Delegated Change Handler (Radios/Selects)
         main.addEventListener('change', (e) => {
             const target = e.target;
             if (target.tagName !== 'INPUT' || target.type !== 'radio') return;

@@ -20,7 +20,7 @@ export const createAlertHTML = (variant, iconName, text, id = '', hidden = false
     
     return `
         <div ${idAttr} class="alert alert--${variant}" ${hiddenAttr}>
-            <span class="alert__icon icon--${iconSlug}" aria-hidden="true"></span>
+            <span class="alert__icon alert__icon--${variant} icon--${iconSlug}" aria-hidden="true"></span>
             <div class="alert__text">${text}</div>
         </div>
     `;

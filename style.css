@@ -617,7 +617,7 @@ fieldset {
     display: inline-block;
 }
 
-.form-group:focus-within .form-label {
+.form-label--focused {
     color: var(--color-p2);
     border-block-end-color: var(--color-p2);
 }
@@ -802,7 +802,7 @@ input[type=number] {
     min-height: 2.5rem;
 }
 
-.toggle--mini .toggle__label {
+.toggle__label--mini {
     padding-block: 4px;
     padding-inline: 0.25rem;
     font-size: var(--font-size-base);
@@ -834,7 +834,7 @@ input[type=number] {
     box-shadow: 0 4px 10px rgba(44, 62, 99, 0.2);
 }
 
-.toggle--mini .toggle__slider {
+.toggle__slider--mini {
     inset-block-start: 2px;
     inset-inline-start: 2px;
     width: calc(50% - 2px);
@@ -969,7 +969,7 @@ button, .btn {
     }
 }
 
-.btn--external .icon-btn {
+.icon-btn--external {
     margin-inline-start: 0.25rem;
 }
 
@@ -1006,14 +1006,14 @@ button, .btn {
     color: var(--color-info-text);
     border-color: var(--color-info-border);
 }
-.alert--info .alert__icon { background-color: var(--color-info-icon); }
+.alert__icon--info { background-color: var(--color-info-icon); }
 
 .alert--warning {
     background-color: var(--color-warning-bg);
     color: var(--color-warning-text);
     border-color: var(--color-warning-border);
 }
-.alert--warning .alert__icon { background-color: var(--color-warning-icon); }
+.alert__icon--warning { background-color: var(--color-warning-icon); }
 
 .alert--error {
     background-color: var(--color-error-bg);
@@ -1021,7 +1021,7 @@ button, .btn {
     border-color: var(--color-error-border);
     font-weight: 700;
 }
-.alert--error .alert__icon { background-color: var(--color-error-icon); }
+.alert__icon--error { background-color: var(--color-error-icon); }
 
 .alert--fixed-top {
     position: fixed;
@@ -1311,13 +1311,13 @@ button, .btn {
     border-color: rgba(44, 62, 99, 0.1);
 }
 .card--share-p1::before { background-color: var(--color-p1); }
-.card--share-p1 .card__icon { color: var(--color-p1); }
+.card__icon--p1 { color: var(--color-p1); }
 
 .card--share-p2 {
     border-color: rgba(52, 95, 87, 0.1);
 }
 .card--share-p2::before { background-color: var(--color-p2); }
-.card--share-p2 .card__icon { color: var(--color-p2); }
+.card__icon--p2 { color: var(--color-p2); }
 
 .card__icon {
     width: 2.5rem;
@@ -1341,18 +1341,14 @@ button, .btn {
     line-height: 1.2;
 }
 
-.card--result {
-    padding-block: 1.75rem;
-    padding-inline: 1.25rem;
-}
-.card--result .card__value {
+.card__value--result {
     font-size: 2rem;
     font-weight: 900;
 }
 
 @media (min-width: 768px) {
     .card__value { font-size: 1.75rem; }
-    .card--result .card__value { font-size: 2.5rem; }
+    .card__value--result { font-size: 2.5rem; }
     .card__label { font-size: var(--font-size-base); }
 }
 
@@ -1384,14 +1380,14 @@ button, .btn {
     font-size: var(--font-size-base);
 }
 
-.data-table th, .data-table td { padding-block: 0.6rem; padding-inline: 0.75rem; border-block-end: 1px solid var(--color-border); text-align: center; }
-.data-table th[scope=\"row\"] { text-align: left; }
+.data-table__header, .data-table__cell { padding-block: 0.6rem; padding-inline: 0.75rem; border-block-end: 1px solid var(--color-border); text-align: center; }
+.data-table__header[scope="row"] { text-align: left; }
 
 @media (min-width: 768px) {
     .data-table {
         font-size: var(--font-size-base);
     }
-    .data-table th, .data-table td { padding-block: 0.6rem; padding-inline: 1rem; }
+    .data-table__header, .data-table__cell { padding-block: 0.6rem; padding-inline: 1rem; }
 }
 
 .table-total-row { font-weight: 800; background-color: var(--color-bg-alt); }
@@ -1444,7 +1440,7 @@ button, .btn {
     color: var(--color-text);
 }
 
-.workings__section p {
+.workings__text {
     font-size: var(--font-size-base);
     margin-block-end: 0.5rem;
     line-height: 1.5;
@@ -1460,8 +1456,13 @@ button, .btn {
     gap: 0.25rem;
 }
 
-.workings__list li strong {
+.workings__list-item {
+    margin: 0;
+}
+
+.workings__highlight {
     color: var(--color-text);
+    font-weight: 700;
 }
 
 
@@ -1509,7 +1510,7 @@ footer {
     color: var(--color-text-light);
 }
 
-footer a {
+.footer__link {
     color: inherit;
     text-decoration: underline;
     display: inline-flex;
@@ -1517,7 +1518,7 @@ footer a {
     gap: 0.25rem;
 }
 
-footer a svg {
+.footer__icon {
     width: 0.75rem;
     height: 0.75rem;
 }

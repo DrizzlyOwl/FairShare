@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A bill-splitting calculator that helps couples and housemates divide expenses fairly based on their income.">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772635425">
+    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772636524">
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="./dist/logo-icon.svg?v=1772635425" as="image">
+    <link rel="preload" href="./dist/logo-icon.svg?v=1772636524" as="image">
     <link rel="preload" href="./dist/icons/icon-offline.svg" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
@@ -49,23 +49,23 @@
         [hidden]{display:none !important}
     </style>
 
-    <link rel="preload" href="./dist/style.css?v=1772635425" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772635425"></noscript>
+    <link rel="preload" href="./dist/style.css?v=1772636524" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772636524"></noscript>
 </head>
 <body>
 
     <!-- Lazy Loader -->
     <div class="lazy-loader">
         <div class="loader-branded">
-            <img src="./dist/logo-icon.svg?v=1772635425" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
-            <img src="./dist/logo-icon-dark.svg?v=1772635425" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
+            <img src="./dist/logo-icon.svg?v=1772636524" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
+            <img src="./dist/logo-icon-dark.svg?v=1772636524" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
             <div class="spinner"></div>
         </div>
     </div>
 
     <!-- Offline Indicator -->
     <div id="offline-indicator" class="alert alert--info alert--fixed-top" hidden aria-live="polite" data-ui="offlineIndicator">
-        <span class="alert__icon icon--offline" aria-hidden="true"></span>
+        <span class="alert__icon alert__icon--info icon--offline" aria-hidden="true"></span>
         <div class="alert__text">Working Offline</div>
     </div>
 
@@ -76,7 +76,7 @@
             <!-- Header Brand -->
             <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
-                    <img src="./dist/logo-icon.svg?v=1772635425" alt="" width="60" height="60" class="header-brand__icon">
+                    <img src="./dist/logo-icon.svg?v=1772636524" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
                         <h1 class="header-brand__title">
                             <span class="header-brand__title-part header-brand__title-part--primary">Fair</span><span class="header-brand__title-part header-brand__title-part--accent">Share</span>
@@ -119,7 +119,7 @@
                         Establish proportionate bill splitting based on your relative incomes in just 7 steps.
                     </p>
                     <div id="efficiency-tip" class="alert alert--info">
-                        <span class="alert__icon icon--info" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--info icon--info" aria-hidden="true"></span>
                         <div class="alert__text">
                             <strong>Efficiency Tip:</strong> Use your <strong>Arrow Keys</strong> or <strong>Enter</strong> to navigate quickly between screens.
                         </div>
@@ -151,7 +151,7 @@
                 </p>
 
                 <div id="methodology-note" class="alert alert--info">
-                    <span class="alert__icon icon--info" aria-hidden="true"></span>
+                    <span class="alert__icon alert__icon--info icon--info" aria-hidden="true"></span>
                     <div class="alert__text">
                         <strong>Methodology Note:</strong> To ensure long-term fairness, your final contribution ratio is always calculated based on <strong>estimated monthly take-home pay</strong> (after tax and NI), even when providing annual gross figures.
                     </div>
@@ -179,7 +179,7 @@
                     <p id="salaryP1-desc" class="help-text" data-ui="salaryP1Desc">Enter your total yearly income before any deductions.</p>
                     <div id="salaryP1-tax-hint" class="help-text tax-hint" hidden></div>
                     <div id="salaryP1-error" class="alert alert--error" hidden data-ui="salaryP1Error">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text" id="salaryP1ErrorText" data-ui="salaryP1ErrorText">Please enter a valid salary (0 or more).</div>
                     </div>
                 </div>
@@ -195,13 +195,13 @@
                     <p id="salaryP2-desc" class="help-text" data-ui="salaryP2Desc">Enter your partner's total yearly income before any deductions.</p>
                     <div id="salaryP2-tax-hint" class="help-text tax-hint" hidden></div>
                     <div id="salaryP2-error" class="alert alert--error" hidden data-ui="salaryP2Error">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text" id="salaryP2ErrorText" data-ui="salaryP2ErrorText">Please enter a valid salary for your partner (0 or more).</div>
                     </div>
                 </div>
 
                 <div id="warning-screen-2" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon icon--error" aria-hidden="true"></span>
+                    <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -223,12 +223,12 @@
                         <input type="text" id="postcode" class="input-group__control" required aria-required="true" aria-describedby="postcode-help postcode-error" placeholder="e.g. SW1A 0AA" data-cy="postcode-input" data-ui="postcode">
                     </div>
                     <div id="postcode-error" class="alert alert--error" hidden data-ui="postcodeError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid UK postcode.</div>
                     </div>
                     <div id="postcode-help" class="help-text">Used to detect your local region and estimate market values.</div>
                     <div id="region-announcement" class="alert alert--info" aria-live="polite" hidden data-ui="regionAnnouncement">
-                        <span class="alert__icon icon--info" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--info icon--info" aria-hidden="true"></span>
                         <div class="alert__text"></div>
                     </div>
                 </div>
@@ -242,7 +242,7 @@
                     </div>
                     <p id="propertyPrice-desc" class="help-text">The estimated market value of the property you're buying or already own.</p>
                     <div id="propertyPrice-error" class="alert alert--error" hidden data-ui="propertyPriceError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a value or use your postcode to estimate.</div>
                     </div>
                     <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden data-ui="propertyPriceEstimateDisplay">
@@ -255,7 +255,7 @@
                     <p class="help-text">Find your band using the link below if you're unsure.</p>
                     <a href="https://www.gov.uk/council-tax-bands" target="_blank" rel="nofollow" class="btn btn--external">
                         Find my Council Tax Band
-                        <span class="icon-btn icon--external-link" aria-hidden="true"></span>
+                        <span class="icon-btn icon-btn--external icon--external-link" aria-hidden="true"></span>
                     </a>
                     <div class="segmented-control">
                         <input type="radio" name="taxBand" id="bA" value="A" class="segmented-control__input" data-cy="taxBand-A">
@@ -283,13 +283,13 @@
                         <label for="bH" class="segmented-control__label">H</label>
                     </div>
                     <div id="taxBand-error" class="alert alert--error" aria-live="assertive" hidden data-ui="taxBandError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please select a band to continue.</div>
                     </div>
                 </fieldset>
 
                 <div id="band-price-display" class="alert alert--info" aria-live="polite">
-                    <span class="alert__icon icon--info" aria-hidden="true"></span>
+                    <span class="alert__icon alert__icon--info icon--info" aria-hidden="true"></span>
                     <div class="alert__text">Select a band to see estimated cost</div>
                 </div>
 
@@ -301,7 +301,7 @@
                         </div>
                         <p id="bedrooms-desc" class="help-text">Used to estimate regional utility and energy costs.</p>
                         <div id="bedrooms-error" class="alert alert--error" hidden data-ui="bedroomsError">
-                            <span class="alert__icon icon--error" aria-hidden="true"></span>
+                            <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                             <div class="alert__text">Required.</div>
                         </div>
                     </div>
@@ -312,14 +312,14 @@
                         </div>
                         <p id="bathrooms-desc" class="help-text">Used for regional water bill estimates.</p>
                         <div id="bathrooms-error" class="alert alert--error" hidden data-ui="bathroomsError">
-                            <span class="alert__icon icon--error" aria-hidden="true"></span>
+                            <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                             <div class="alert__text">Required.</div>
                         </div>
                     </div>
                 </div>
 
                 <div id="warning-screen-3" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon icon--error" aria-hidden="true"></span>
+                    <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -355,7 +355,7 @@
                         <span class="input-group__addon">%</span>
                     </div>
                     <div id="depositPercentage-error" class="alert alert--error" hidden data-ui="depositPercentageError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a deposit percentage (0-100).</div>
                     </div>
                     <div id="depositPercentage-help" class="help-text">The total percentage of the property value you're paying upfront.</div>
@@ -368,7 +368,7 @@
                         <input type="number" id="depositAmount" class="input-group__control" required aria-required="true" placeholder="e.g. 25000" aria-describedby="depositAmount-help depositAmount-error" data-cy="depositAmount-input" data-ui="depositAmount">
                     </div>
                     <div id="depositAmount-error" class="alert alert--error" hidden data-ui="depositAmountError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid deposit amount.</div>
                     </div>
                     <div id="depositAmount-help" class="help-text">The exact cash amount you're putting down as a deposit.</div>
@@ -395,7 +395,7 @@
                         </div>
                         <p id="mortgageInterestRate-desc" class="help-text">The annual interest rate for your mortgage.</p>
                         <div id="mortgageInterestRate-error" class="alert alert--error" hidden data-ui="mortgageInterestRateError">
-                            <span class="alert__icon icon--error" aria-hidden="true"></span>
+                            <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                             <div class="alert__text">Invalid interest rate.</div>
                         </div>
                     </div>
@@ -407,7 +407,7 @@
                         </div>
                         <p id="mortgageTerm-desc" class="help-text">The number of years you'll take to pay off the mortgage.</p>
                         <div id="mortgageTerm-error" class="alert alert--error" hidden data-ui="mortgageTermError">
-                            <span class="alert__icon icon--error" aria-hidden="true"></span>
+                            <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                             <div class="alert__text">Please enter a term (1-50 years).</div>
                         </div>
                     </div>
@@ -502,7 +502,7 @@
                 </div>
 
                 <div id="warning-screen-4" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon icon--error" aria-hidden="true"></span>
+                    <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -537,10 +537,10 @@
                         <label class="form-label" for="councilTaxCost">Monthly Council Tax (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
                             <input type="radio" name="councilTaxSplitType" id="ctPropYes" value="yes" checked class="toggle__input">
-                            <label for="ctPropYes" class="toggle__label">Ratio</label>
+                            <label for="ctPropYes" class="toggle__label toggle__label--mini">Ratio</label>
                             <input type="radio" name="councilTaxSplitType" id="ctPropNo" value="no" class="toggle__input">
-                            <label for="ctPropNo" class="toggle__label">50/50</label>
-                            <span class="toggle__slider"></span>
+                            <label for="ctPropNo" class="toggle__label toggle__label--mini">50/50</label>
+                            <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
                     </div>
                     <div class="input-group">
@@ -549,7 +549,7 @@
                     </div>
                     <p id="councilTaxCost-desc" class="help-text">Estimated monthly council tax based on your selected tax band.</p>
                     <div id="councilTaxCost-error" class="alert alert--error" hidden data-ui="councilTaxCostError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -559,10 +559,10 @@
                         <label class="form-label" for="energyCost">Monthly Energy (Gas/Elec) (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
                             <input type="radio" name="energySplitType" id="enPropYes" value="yes" checked class="toggle__input">
-                            <label for="enPropYes" class="toggle__label">Ratio</label>
+                            <label for="enPropYes" class="toggle__label toggle__label--mini">Ratio</label>
                             <input type="radio" name="energySplitType" id="enPropNo" value="no" class="toggle__input">
-                            <label for="enPropNo" class="toggle__label">50/50</label>
-                            <span class="toggle__slider"></span>
+                            <label for="enPropNo" class="toggle__label toggle__label--mini">50/50</label>
+                            <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
                     </div>
                     <div class="input-group">
@@ -571,7 +571,7 @@
                     </div>
                     <p id="energyCost-desc" class="help-text">Estimated monthly utility cost for gas and electricity.</p>
                     <div id="energyCost-error" class="alert alert--error" hidden data-ui="energyCostError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -581,10 +581,10 @@
                         <label class="form-label" for="waterBill">Monthly Water Bill (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
                             <input type="radio" name="waterSplitType" id="wtPropYes" value="yes" checked class="toggle__input">
-                            <label for="wtPropYes" class="toggle__label">Ratio</label>
+                            <label for="wtPropYes" class="toggle__label toggle__label--mini">Ratio</label>
                             <input type="radio" name="waterSplitType" id="wtPropNo" value="no" class="toggle__input">
-                            <label for="wtPropNo" class="toggle__label">50/50</label>
-                            <span class="toggle__slider"></span>
+                            <label for="wtPropNo" class="toggle__label toggle__label--mini">50/50</label>
+                            <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
                     </div>
                     <div class="input-group">
@@ -593,7 +593,7 @@
                     </div>
                     <p id="waterBill-desc" class="help-text">Average regional monthly water cost based on property size.</p>
                     <div id="waterBill-error" class="alert alert--error" hidden data-ui="waterBillError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -603,10 +603,10 @@
                         <label class="form-label" for="broadbandCost">Monthly Broadband & TV (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
                             <input type="radio" name="broadbandSplitType" id="bbPropYes" value="yes" checked class="toggle__input">
-                            <label for="bbPropYes" class="toggle__label">Ratio</label>
+                            <label for="bbPropYes" class="toggle__label toggle__label--mini">Ratio</label>
                             <input type="radio" name="broadbandSplitType" id="bbPropNo" value="no" class="toggle__input">
-                            <label for="bbPropNo" class="toggle__label">50/50</label>
-                            <span class="toggle__slider"></span>
+                            <label for="bbPropNo" class="toggle__label toggle__label--mini">50/50</label>
+                            <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
                     </div>
                     <div class="input-group">
@@ -615,13 +615,13 @@
                     </div>
                     <p id="broadbandCost-desc" class="help-text">Internet, cable, and streaming subscriptions.</p>
                     <div id="broadband-error" class="alert alert--error" hidden data-ui="broadbandCostError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
 
                 <div id="warning-screen-5" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon icon--error" aria-hidden="true"></span>
+                    <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -656,10 +656,10 @@
                         <label class="form-label" for="groceriesCost">Monthly Groceries (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
                             <input type="radio" name="groceriesSplitType" id="grPropYes" value="yes" checked class="toggle__input">
-                            <label for="grPropYes" class="toggle__label">Ratio</label>
+                            <label for="grPropYes" class="toggle__label toggle__label--mini">Ratio</label>
                             <input type="radio" name="groceriesSplitType" id="grPropNo" value="no" class="toggle__input">
-                            <label for="grPropNo" class="toggle__label">50/50</label>
-                            <span class="toggle__slider"></span>
+                            <label for="grPropNo" class="toggle__label toggle__label--mini">50/50</label>
+                            <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
                     </div>
                     <div class="input-group">
@@ -668,7 +668,7 @@
                     </div>
                     <p id="groceriesCost-desc" class="help-text">Food, household supplies, and shared toiletries.</p>
                     <div id="groceries-error" class="alert alert--error" hidden data-ui="groceriesCostError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -678,10 +678,10 @@
                         <label class="form-label" for="childcareCost">Monthly Childcare (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
                             <input type="radio" name="childcareSplitType" id="ccPropYes" value="yes" checked class="toggle__input">
-                            <label for="ccPropYes" class="toggle__label">Ratio</label>
+                            <label for="ccPropYes" class="toggle__label toggle__label--mini">Ratio</label>
                             <input type="radio" name="childcareSplitType" id="ccPropNo" value="no" class="toggle__input">
-                            <label for="ccPropNo" class="toggle__label">50/50</label>
-                            <span class="toggle__slider"></span>
+                            <label for="ccPropNo" class="toggle__label toggle__label--mini">50/50</label>
+                            <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
                     </div>
                     <div class="input-group">
@@ -690,7 +690,7 @@
                     </div>
                     <p id="childcareCost-desc" class="help-text">Nursery, childminders, or other regular care costs.</p>
                     <div id="childcare-error" class="alert alert--error" hidden data-ui="childcareCostError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -700,10 +700,10 @@
                         <label class="form-label" for="insuranceCost">Shared Insurances (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
                             <input type="radio" name="insuranceSplitType" id="isPropYes" value="yes" checked class="toggle__input">
-                            <label for="isPropYes" class="toggle__label">Ratio</label>
+                            <label for="isPropYes" class="toggle__label toggle__label--mini">Ratio</label>
                             <input type="radio" name="insuranceSplitType" id="isPropNo" value="no" class="toggle__input">
-                            <label for="isPropNo" class="toggle__label">50/50</label>
-                            <span class="toggle__slider"></span>
+                            <label for="isPropNo" class="toggle__label toggle__label--mini">50/50</label>
+                            <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
                     </div>
                     <div class="input-group">
@@ -712,7 +712,7 @@
                     </div>
                     <p id="insuranceCost-desc" class="help-text">Combined life, health, or pet insurance payments.</p>
                     <div id="insurance-error" class="alert alert--error" hidden data-ui="insuranceCostError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
@@ -722,10 +722,10 @@
                         <label class="form-label" for="otherSharedCosts">Other Shared Costs (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
                             <input type="radio" name="otherSharedSplitType" id="osPropYes" value="yes" checked class="toggle__input">
-                            <label for="osPropYes" class="toggle__label">Ratio</label>
+                            <label for="osPropYes" class="toggle__label toggle__label--mini">Ratio</label>
                             <input type="radio" name="otherSharedSplitType" id="osPropNo" value="no" class="toggle__input">
-                            <label for="osPropNo" class="toggle__label">50/50</label>
-                            <span class="toggle__slider"></span>
+                            <label for="osPropNo" class="toggle__label toggle__label--mini">50/50</label>
+                            <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
                     </div>
                     <div class="input-group">
@@ -734,13 +734,13 @@
                     </div>
                     <p id="otherSharedCosts-desc" class="help-text">Gym, streaming services, or other joint subscriptions.</p>
                     <div id="other-error" class="alert alert--error" hidden data-ui="otherSharedCostsError">
-                        <span class="alert__icon icon--error" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a valid amount.</div>
                     </div>
                 </div>
 
                 <div id="warning-screen-6" class="alert alert--warning" role="alert" aria-live="polite" hidden>
-                    <span class="alert__icon icon--error" aria-hidden="true"></span>
+                    <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
@@ -761,7 +761,7 @@
                     <p>The total cash required to complete the purchase, split by your chosen rule.</p>
 
                     <div id="equity-mortgage-summary" class="alert alert--info" aria-live="polite">
-                        <span class="alert__icon icon--info" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--info icon--info" aria-hidden="true"></span>
                         <div class="alert__text">
                             Total Equity (Deposit): <span id="totalEquityDisplay" class="fw-bold" data-ui="totalEquityDisplay">£0</span><br>
                             Est. Stamp Duty (SDLT): <span id="sdltDisplay" class="fw-bold" data-ui="sdltDisplay">£0</span><br>
@@ -774,12 +774,12 @@
 
                     <div class="card-grid" id="upfront-share-summary">
                         <div class="card card--result card--share-p1">
-                            <span class="card__icon icon--user" aria-hidden="true"></span>
+                            <span class="card__icon card__icon--p1 icon--user" aria-hidden="true"></span>
                             <p class="card__label">Your Upfront Share</p>
                             <p id="equityP1Display" class="card__value" aria-live="polite" data-ui="equityP1Display">£0</p>
                         </div>
                         <div class="card card--result card--share-p2">
-                            <span class="card__icon icon--users" aria-hidden="true"></span>
+                            <span class="card__icon card__icon--p2 icon--users" aria-hidden="true"></span>
                             <p class="card__label">Partner's Upfront Share</p>
                             <p id="equityP2Display" class="card__value" aria-live="polite" data-ui="equityP2Display">£0</p>
                         </div>
@@ -789,42 +789,42 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Upfront Cost</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">You</th>
-                                    <th scope="col">Partner</th>
+                                    <th scope="col" class="data-table__header">Upfront Cost</th>
+                                    <th scope="col" class="data-table__header">Total</th>
+                                    <th scope="col" class="data-table__header">You</th>
+                                    <th scope="col" class="data-table__header">Partner</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th scope="row">Cash Deposit</th>
-                                    <td id="bd-upfront-deposit-total" data-ui="bdUpfrontDepositTotal">£0</td>
-                                    <td id="bd-upfront-deposit-p1" data-ui="bdUpfrontDepositP1">£0</td>
-                                    <td id="bd-upfront-deposit-p2" data-ui="bdUpfrontDepositP2">£0</td>
+                                    <th scope="row" class="data-table__header">Cash Deposit</th>
+                                    <td class="data-table__cell" id="bd-upfront-deposit-total" data-ui="bdUpfrontDepositTotal">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-deposit-p1" data-ui="bdUpfrontDepositP1">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-deposit-p2" data-ui="bdUpfrontDepositP2">£0</td>
                                 </tr>
                                 <tr>
                                     <th scope="row" id="upfront-tax-label" data-ui="upfrontTaxLabel">Stamp Duty (SDLT)</th>
-                                    <td id="bd-upfront-tax-total" data-ui="bdUpfrontTaxTotal">£0</td>
-                                    <td id="bd-upfront-tax-p1" data-ui="bdUpfrontTaxP1">£0</td>
-                                    <td id="bd-upfront-tax-p2" data-ui="bdUpfrontTaxP2">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-tax-total" data-ui="bdUpfrontTaxTotal">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-tax-p1" data-ui="bdUpfrontTaxP1">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-tax-p2" data-ui="bdUpfrontTaxP2">£0</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Legal Fees</th>
-                                    <td id="bd-upfront-legal-total" data-ui="bdUpfrontLegalTotal">£0</td>
-                                    <td id="bd-upfront-legal-p1" data-ui="bdUpfrontLegalP1">£0</td>
-                                    <td id="bd-upfront-legal-p2" data-ui="bdUpfrontLegalP2">£0</td>
+                                    <th scope="row" class="data-table__header">Legal Fees</th>
+                                    <td class="data-table__cell" id="bd-upfront-legal-total" data-ui="bdUpfrontLegalTotal">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-legal-p1" data-ui="bdUpfrontLegalP1">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-legal-p2" data-ui="bdUpfrontLegalP2">£0</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Mortgage Fees</th>
-                                    <td id="bd-upfront-fees-total" data-ui="bdUpfrontFeesTotal">£0</td>
-                                    <td id="bd-upfront-fees-p1" data-ui="bdUpfrontFeesP1">£0</td>
-                                    <td id="bd-upfront-fees-p2" data-ui="bdUpfrontFeesP2">£0</td>
+                                    <th scope="row" class="data-table__header">Mortgage Fees</th>
+                                    <td class="data-table__cell" id="bd-upfront-fees-total" data-ui="bdUpfrontFeesTotal">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-fees-p1" data-ui="bdUpfrontFeesP1">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-fees-p2" data-ui="bdUpfrontFeesP2">£0</td>
                                 </tr>
                                 <tr class="table-total-row">
-                                    <th scope="row">Total Upfront</th>
-                                    <td id="bd-upfront-total-total" data-ui="bdUpfrontTotalTotal">£0</td>
-                                    <td id="bd-upfront-total-p1" data-ui="bdUpfrontTotalP1">£0</td>
-                                    <td id="bd-upfront-total-p2" data-ui="bdUpfrontTotalP2">£0</td>
+                                    <th scope="row" class="data-table__header">Total Upfront</th>
+                                    <td class="data-table__cell" id="bd-upfront-total-total" data-ui="bdUpfrontTotalTotal">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-total-p1" data-ui="bdUpfrontTotalP1">£0</td>
+                                    <td class="data-table__cell" id="bd-upfront-total-p2" data-ui="bdUpfrontTotalP2">£0</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -844,12 +844,12 @@
 
                     <div class="card-grid" id="monthly-shares-summary">
                         <div class="card card--result card--share-p1" id="result-share-p1">
-                            <span class="card__icon icon--user" aria-hidden="true"></span>
+                            <span class="card__icon card__icon--p1 icon--user" aria-hidden="true"></span>
                             <p class="card__label">Your Monthly Total</p>
                             <p class="card__value result-p1" id="result-p1" aria-live="polite" data-cy="result-p1" data-ui="resultP1">£0</p>
                         </div>
                         <div class="card card--result card--share-p2" id="result-share-p2">
-                            <span class="card__icon icon--users" aria-hidden="true"></span>
+                            <span class="card__icon card__icon--p2 icon--users" aria-hidden="true"></span>
                             <p class="card__label">Partner's Monthly Total</p>
                             <p class="card__value result-p2" id="result-p2" aria-live="polite" data-cy="result-p2" data-ui="resultP2">£0</p>
                         </div>
@@ -858,7 +858,7 @@
                         Total Shared Monthly Budget: <span class="fw-bold total-bill-display" id="total-bill-display" aria-live="polite" data-cy="total-bill-display" data-ui="totalBillDisplay">£0</span>
                     </p>
                     <div id="result-summary" class="alert alert--info result-summary" aria-live="polite" hidden data-cy="result-summary" data-ui="resultSummary">
-                        <span class="alert__icon icon--info" aria-hidden="true"></span>
+                        <span class="alert__icon alert__icon--info icon--info" aria-hidden="true"></span>
                         <div class="alert__text"></div>
                     </div>
                 </div>
@@ -869,28 +869,28 @@
                         <div class="workings__sections">
                             <div class="workings__section">
                                 <h5 class="workings__subtitle" id="wk-income-subtitle" data-ui="wkIncomeSubtitle">Income & Ratio Workings</h5>
-                                <p><span id="wk-salary-p1" data-cy="wk-salary-p1" data-ui="wkSalaryP1">£0</span> + <span id="wk-salary-p2" data-cy="wk-salary-p2" data-ui="wkSalaryP2">£0</span> = <strong id="wk-total-salary" data-cy="wk-total-salary" data-ui="wkTotalSalary">£0</strong></p>
+                                <p class="workings__text"><span id="wk-salary-p1" data-cy="wk-salary-p1" data-ui="wkSalaryP1">£0</span> + <span id="wk-salary-p2" data-cy="wk-salary-p2" data-ui="wkSalaryP2">£0</span> = <strong class="workings__highlight" id="wk-total-salary" data-cy="wk-total-salary" data-ui="wkTotalSalary">£0</strong></p>
                                 <ul class="workings__list">
-                                    <li>You: <strong id="wk-p1-perc" data-cy="wk-p1-perc" data-ui="wkP1Perc">0%</strong> share</li>
-                                    <li>Your Partner: <strong id="wk-p2-perc" data-cy="wk-p2-perc" data-ui="wkP2Perc">0%</strong> share</li>
+                                    <li class="workings__list-item">You: <strong class="workings__highlight" id="wk-p1-perc" data-cy="wk-p1-perc" data-ui="wkP1Perc">0%</strong> share</li>
+                                    <li class="workings__list-item">Your Partner: <strong class="workings__highlight" id="wk-p2-perc" data-cy="wk-p2-perc" data-ui="wkP2Perc">0%</strong> share</li>
                                 </ul>
                             </div>
 
                             <div class="workings__section">
                                 <h5 class="workings__subtitle">Mortgage & Terms</h5>
-                                <p>Property Value: <strong id="wk-property-price" data-cy="wk-property-price" data-ui="wkPropertyPrice">£0</strong></p>
+                                <p class="workings__text">Property Value: <strong class="workings__highlight" id="wk-property-price" data-cy="wk-property-price" data-ui="wkPropertyPrice">£0</strong></p>
                                 <ul class="workings__list">
-                                    <li>Deposit: <strong id="wk-deposit-perc" data-cy="wk-deposit-perc" data-ui="wkDepositPerc">0%</strong> (<span id="wk-total-equity" data-cy="wk-total-equity" data-ui="wkTotalEquity">£0</span>) split by <strong id="wk-deposit-split-type" data-cy="wk-deposit-split-type" data-ui="wkDepositSplitType">Income Ratio</strong></li>
-                                    <li>Mortgage Required: <strong id="wk-mortgage-required" data-cy="wk-mortgage-required" data-ui="wkMortgageRequired">£0</strong></li>
-                                    <li>Terms: <strong id="wk-interest-rate" data-cy="wk-interest-rate" data-ui="wkInterestRate">0%</strong> over <strong id="wk-mortgage-term" data-cy="wk-mortgage-term" data-ui="wkMortgageTerm">0</strong> years</li>
-                                    <li>Monthly Repayment: <strong id="wk-monthly-payment" data-cy="wk-monthly-payment" data-ui="wkMonthlyPayment">£0</strong></li>
-                                    <li>Total Repayment: <strong id="wk-total-repayment" data-cy="wk-total-repayment" data-ui="wkTotalRepayment">£0</strong></li>
+                                    <li class="workings__list-item">Deposit: <strong class="workings__highlight" id="wk-deposit-perc" data-cy="wk-deposit-perc" data-ui="wkDepositPerc">0%</strong> (<span id="wk-total-equity" data-cy="wk-total-equity" data-ui="wkTotalEquity">£0</span>) split by <strong class="workings__highlight" id="wk-deposit-split-type" data-cy="wk-deposit-split-type" data-ui="wkDepositSplitType">Income Ratio</strong></li>
+                                    <li class="workings__list-item">Mortgage Required: <strong class="workings__highlight" id="wk-mortgage-required" data-cy="wk-mortgage-required" data-ui="wkMortgageRequired">£0</strong></li>
+                                    <li class="workings__list-item">Terms: <strong class="workings__highlight" id="wk-interest-rate" data-cy="wk-interest-rate" data-ui="wkInterestRate">0%</strong> over <strong class="workings__highlight" id="wk-mortgage-term" data-cy="wk-mortgage-term" data-ui="wkMortgageTerm">0</strong> years</li>
+                                    <li class="workings__list-item">Monthly Repayment: <strong class="workings__highlight" id="wk-monthly-payment" data-cy="wk-monthly-payment" data-ui="wkMonthlyPayment">£0</strong></li>
+                                    <li class="workings__list-item">Total Repayment: <strong class="workings__highlight" id="wk-total-repayment" data-cy="wk-total-repayment" data-ui="wkTotalRepayment">£0</strong></li>
                                 </ul>
                             </div>
 
                             <div class="workings__section">
                                 <h5 class="workings__subtitle">Calculation Logic</h5>
-                                <p>Each monthly line item was split using either your <strong>Income Ratio</strong> or <strong>50/50</strong> based on your specific rule choices throughout the form. The mortgage payment is always split by your Income Ratio to ensure long-term fairness.</p>
+                                <p class="workings__text">Each monthly line item was split using either your <strong class="workings__highlight">Income Ratio</strong> or <strong class="workings__highlight">50/50</strong> based on your specific rule choices throughout the form. The mortgage payment is always split by your Income Ratio to ensure long-term fairness.</p>
                             </div>
                         </div>
                     </div>
@@ -901,72 +901,72 @@
                     <table class="data-table" id="results-table" data-ui="resultsTable">
                         <thead>
                             <tr>
-                                <th scope="col">Expense</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">You</th>
-                                <th scope="col">Your Partner</th>
+                                <th scope="col" class="data-table__header">Expense</th>
+                                <th scope="col" class="data-table__header">Total</th>
+                                <th scope="col" class="data-table__header">You</th>
+                                <th scope="col" class="data-table__header">Your Partner</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">Mortgage</th>
-                                <td id="bd-mortgage-total" aria-live="polite" data-ui="bdMortgageTotal">£0</td>
-                                <td id="bd-mortgage-p1" aria-live="polite" data-ui="bdMortgageP1">£0</td>
-                                <td id="bd-mortgage-p2" aria-live="polite" data-ui="bdMortgageP2">£0</td>
+                                <th scope="row" class="data-table__header">Mortgage</th>
+                                <td class="data-table__cell" id="bd-mortgage-total" aria-live="polite" data-ui="bdMortgageTotal">£0</td>
+                                <td class="data-table__cell" id="bd-mortgage-p1" aria-live="polite" data-ui="bdMortgageP1">£0</td>
+                                <td class="data-table__cell" id="bd-mortgage-p2" aria-live="polite" data-ui="bdMortgageP2">£0</td>
                             </tr>
                             <tr>
-                                <th scope="row">Council Tax</th>
-                                <td id="bd-tax-total" aria-live="polite" data-ui="bdTaxTotal">£0</td>
-                                <td id="bd-tax-p1" aria-live="polite" data-ui="bdTaxP1">£0</td>
-                                <td id="bd-tax-p2" aria-live="polite" data-ui="bdTaxP2">£0</td>
+                                <th scope="row" class="data-table__header">Council Tax</th>
+                                <td class="data-table__cell" id="bd-tax-total" aria-live="polite" data-ui="bdTaxTotal">£0</td>
+                                <td class="data-table__cell" id="bd-tax-p1" aria-live="polite" data-ui="bdTaxP1">£0</td>
+                                <td class="data-table__cell" id="bd-tax-p2" aria-live="polite" data-ui="bdTaxP2">£0</td>
                             </tr>
                             <tr>
-                                <th scope="row">Energy</th>
-                                <td id="bd-energy-total" aria-live="polite" data-ui="bdEnergyTotal">£0</td>
-                                <td id="bd-energy-p1" aria-live="polite" data-ui="bdEnergyP1">£0</td>
-                                <td id="bd-energy-p2" aria-live="polite" data-ui="bdEnergyP2">£0</td>
+                                <th scope="row" class="data-table__header">Energy</th>
+                                <td class="data-table__cell" id="bd-energy-total" aria-live="polite" data-ui="bdEnergyTotal">£0</td>
+                                <td class="data-table__cell" id="bd-energy-p1" aria-live="polite" data-ui="bdEnergyP1">£0</td>
+                                <td class="data-table__cell" id="bd-energy-p2" aria-live="polite" data-ui="bdEnergyP2">£0</td>
                             </tr>
                             <tr>
-                                <th scope="row">Water</th>
-                                <td id="bd-water-total" aria-live="polite" data-ui="bdWaterTotal">£0</td>
-                                <td id="bd-water-p1" aria-live="polite" data-ui="bdWaterP1">£0</td>
-                                <td id="bd-water-p2" aria-live="polite" data-ui="bdWaterP2">£0</td>
+                                <th scope="row" class="data-table__header">Water</th>
+                                <td class="data-table__cell" id="bd-water-total" aria-live="polite" data-ui="bdWaterTotal">£0</td>
+                                <td class="data-table__cell" id="bd-water-p1" aria-live="polite" data-ui="bdWaterP1">£0</td>
+                                <td class="data-table__cell" id="bd-water-p2" aria-live="polite" data-ui="bdWaterP2">£0</td>
                             </tr>
                             <tr>
-                                <th scope="row">Broadband & TV</th>
-                                <td id="bd-broadband-total" aria-live="polite" data-ui="bdBroadbandTotal">£0</td>
-                                <td id="bd-broadband-p1" aria-live="polite" data-ui="bdBroadbandP1">£0</td>
-                                <td id="bd-broadband-p2" aria-live="polite" data-ui="bdBroadbandP2">£0</td>
+                                <th scope="row" class="data-table__header">Broadband & TV</th>
+                                <td class="data-table__cell" id="bd-broadband-total" aria-live="polite" data-ui="bdBroadbandTotal">£0</td>
+                                <td class="data-table__cell" id="bd-broadband-p1" aria-live="polite" data-ui="bdBroadbandP1">£0</td>
+                                <td class="data-table__cell" id="bd-broadband-p2" aria-live="polite" data-ui="bdBroadbandP2">£0</td>
                             </tr>
                             <tr>
-                                <th scope="row">Groceries</th>
-                                <td id="bd-groceries-total" aria-live="polite" data-ui="bdGroceriesTotal">£0</td>
-                                <td id="bd-groceries-p1" aria-live="polite" data-ui="bdGroceriesP1">£0</td>
-                                <td id="bd-groceries-p2" aria-live="polite" data-ui="bdGroceriesP2">£0</td>
+                                <th scope="row" class="data-table__header">Groceries</th>
+                                <td class="data-table__cell" id="bd-groceries-total" aria-live="polite" data-ui="bdGroceriesTotal">£0</td>
+                                <td class="data-table__cell" id="bd-groceries-p1" aria-live="polite" data-ui="bdGroceriesP1">£0</td>
+                                <td class="data-table__cell" id="bd-groceries-p2" aria-live="polite" data-ui="bdGroceriesP2">£0</td>
                             </tr>
                             <tr>
-                                <th scope="row">Childcare</th>
-                                <td id="bd-childcare-total" aria-live="polite" data-ui="bdChildcareTotal">£0</td>
-                                <td id="bd-childcare-p1" aria-live="polite" data-ui="bdChildcareP1">£0</td>
-                                <td id="bd-childcare-p2" aria-live="polite" data-ui="bdChildcareP2">£0</td>
+                                <th scope="row" class="data-table__header">Childcare</th>
+                                <td class="data-table__cell" id="bd-childcare-total" aria-live="polite" data-ui="bdChildcareTotal">£0</td>
+                                <td class="data-table__cell" id="bd-childcare-p1" aria-live="polite" data-ui="bdChildcareP1">£0</td>
+                                <td class="data-table__cell" id="bd-childcare-p2" aria-live="polite" data-ui="bdChildcareP2">£0</td>
                             </tr>
                             <tr>
-                                <th scope="row">Insurance</th>
-                                <td id="bd-insurance-total" aria-live="polite" data-ui="bdInsuranceTotal">£0</td>
-                                <td id="bd-insurance-p1" aria-live="polite" data-ui="bdInsuranceP1">£0</td>
-                                <td id="bd-insurance-p2" aria-live="polite" data-ui="bdInsuranceP2">£0</td>
+                                <th scope="row" class="data-table__header">Insurance</th>
+                                <td class="data-table__cell" id="bd-insurance-total" aria-live="polite" data-ui="bdInsuranceTotal">£0</td>
+                                <td class="data-table__cell" id="bd-insurance-p1" aria-live="polite" data-ui="bdInsuranceP1">£0</td>
+                                <td class="data-table__cell" id="bd-insurance-p2" aria-live="polite" data-ui="bdInsuranceP2">£0</td>
                             </tr>
                             <tr>
-                                <th scope="row">Other Shared Costs</th>
-                                <td id="bd-other-total" aria-live="polite" data-ui="bdOtherTotal">£0</td>
-                                <td id="bd-other-p1" aria-live="polite" data-ui="bdOtherP1">£0</td>
-                                <td id="bd-other-p2" aria-live="polite" data-ui="bdOtherP2">£0</td>
+                                <th scope="row" class="data-table__header">Other Shared Costs</th>
+                                <td class="data-table__cell" id="bd-other-total" aria-live="polite" data-ui="bdOtherTotal">£0</td>
+                                <td class="data-table__cell" id="bd-other-p1" aria-live="polite" data-ui="bdOtherP1">£0</td>
+                                <td class="data-table__cell" id="bd-other-p2" aria-live="polite" data-ui="bdOtherP2">£0</td>
                             </tr>
                             <tr class="table-total-row" id="table-total-row">
-                                <th scope="row">Total</th>
-                                <td id="bd-total-total" aria-live="polite" data-ui="bdTotalTotal">£0</td>
-                                <td id="bd-total-p1" aria-live="polite" data-ui="bdTotalP1">£0</td>
-                                <td id="bd-total-p2" aria-live="polite" data-ui="bdTotalP2">£0</td>
+                                <th scope="row" class="data-table__header">Total</th>
+                                <td class="data-table__cell" id="bd-total-total" aria-live="polite" data-ui="bdTotalTotal">£0</td>
+                                <td class="data-table__cell" id="bd-total-p1" aria-live="polite" data-ui="bdTotalP1">£0</td>
+                                <td class="data-table__cell" id="bd-total-p2" aria-live="polite" data-ui="bdTotalP2">£0</td>
                             </tr>
                         </tbody>
                     </table>
@@ -992,11 +992,11 @@
 
     <!-- Footer -->
     <footer>
-        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" style="color: inherit; text-decoration: underline;">GitHub Repo</a> | Build: 1.1.86 • 2026-03-04 14:43:45
+        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.1.87 • 2026-03-04 15:02:04
     </footer>
 
     <!-- Scripts -->
-    <script type="module" src="./dist/main.js?v=1772635425"></script>
+    <script type="module" src="./dist/main.js?v=1772636524"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

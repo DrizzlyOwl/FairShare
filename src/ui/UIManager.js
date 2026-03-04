@@ -176,6 +176,15 @@ export default class UIManager {
             // Remove existing variant classes and add the new one
             el.classList.remove('alert--info', 'alert--warning', 'alert--error');
             el.classList.add(`alert--${variant}`);
+
+            // Also update the icon variant class for BEM compliance
+            const iconEl = el.querySelector('.alert__icon');
+            if (iconEl) {
+                iconEl.className = iconEl.className.split(' ')
+                    .filter(c => !c.startsWith('alert__icon--'))
+                    .join(' ');
+                iconEl.classList.add(`alert__icon--${variant}`);
+            }
         }
 
         if (icon) {
