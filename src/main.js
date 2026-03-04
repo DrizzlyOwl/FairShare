@@ -10,6 +10,7 @@ import UIManager from './ui/UIManager.js';
 import ThemeManager from './ui/ThemeManager.js';
 import NavigationController from './ui/NavigationController.js';
 import FormController from './ui/FormController.js';
+import PWAInstaller from './ui/PWAInstaller.js';
 import { formatCurrency } from './utils/Helpers.js';
 import CSV from './ui/Export.js';
 import { FORM_FIELDS, BAND_PRICES, SCREEN_MAP, NEXT_SCREEN_MAP } from './core/Constants.js';
@@ -20,6 +21,7 @@ class FairShareApp {
     #themeManager = null;
     #nav = null;
     #form = null;
+    #pwaInstaller = null;
     #elements = {};
 
     /**
@@ -37,10 +39,10 @@ class FairShareApp {
         
         // 2. Initialize Specialized Controllers
         this.#nav = new NavigationController(this, this.#ui, this.#elements);
-        this.#form = new FormController(this, this.#ui, this.#store, this.#elements);
+                this.#form = new FormController(this, this.#ui, this.#store, this.#elements);
+                this.#pwaInstaller = new PWAInstaller(this.#elements.installButton);
         
-        // 3. Setup Initial State
-        this.#store.hydrate();
+                // 3. Setup Initial State        this.#store.hydrate();
 
         // 4. Initialize Theme
         this.#themeManager.init();
