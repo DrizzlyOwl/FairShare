@@ -298,6 +298,13 @@ class FairShareApp {
     }
 
     /**
+     * Navigates to the landing screen.
+     */
+    goHome() {
+        this.#ui.switchScreen(SCREEN_MAP.LANDING);
+    }
+
+    /**
      * Clears application state and performs a clean reload.
      */
     async clearCache() {

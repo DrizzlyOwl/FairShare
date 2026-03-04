@@ -282,7 +282,7 @@ body::before {
     flex-shrink: 0;
 }
 
-.header-brand__theme-toggle {
+.header-brand__btn {
     background-color: var(--color-header-btn-bg);
     color: var(--color-header-btn-color);
     border: 1px solid var(--color-header-btn-border);
@@ -303,7 +303,7 @@ body::before {
     }
 }
 
-.header-brand__theme-toggle:hover {
+.header-brand__btn:hover {
     background-color: var(--color-header-btn-hover);
     border-color: var(--color-primary);
     transform: scale(1.05);
