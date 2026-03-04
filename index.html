@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A bill-splitting calculator that helps couples and housemates divide expenses fairly based on their income.">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772636524">
+    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772636766">
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="./dist/logo-icon.svg?v=1772636524" as="image">
+    <link rel="preload" href="./dist/logo-icon.svg?v=1772636766" as="image">
     <link rel="preload" href="./dist/icons/icon-offline.svg" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
@@ -49,16 +49,16 @@
         [hidden]{display:none !important}
     </style>
 
-    <link rel="preload" href="./dist/style.css?v=1772636524" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772636524"></noscript>
+    <link rel="preload" href="./dist/style.css?v=1772636766" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772636766"></noscript>
 </head>
 <body>
 
     <!-- Lazy Loader -->
     <div class="lazy-loader">
         <div class="loader-branded">
-            <img src="./dist/logo-icon.svg?v=1772636524" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
-            <img src="./dist/logo-icon-dark.svg?v=1772636524" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
+            <img src="./dist/logo-icon.svg?v=1772636766" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
+            <img src="./dist/logo-icon-dark.svg?v=1772636766" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
             <div class="spinner"></div>
         </div>
     </div>
@@ -76,7 +76,7 @@
             <!-- Header Brand -->
             <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
-                    <img src="./dist/logo-icon.svg?v=1772636524" alt="" width="60" height="60" class="header-brand__icon">
+                    <img src="./dist/logo-icon.svg?v=1772636766" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
                         <h1 class="header-brand__title">
                             <span class="header-brand__title-part header-brand__title-part--primary">Fair</span><span class="header-brand__title-part header-brand__title-part--accent">Share</span>
@@ -101,7 +101,7 @@
                         <span class="progress__text" aria-live="polite" data-ui="progressLabel">Step 1 of 7: Welcome</span>
                     </div>
                     <div class="progress__track">
-                        <div class="progress__bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Application Progress" aria-valuetext="Step 1 of 7: Welcome" data-cy="progress-bar" data-ui="progressBar"></div>
+                        <progress class="progress__bar" id="progress-bar" value="0" max="100" aria-label="Application Progress" data-cy="progress-bar" data-ui="progressBar">0%</progress>
                     </div>
                 </div>
             </div>
@@ -174,7 +174,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" placeholder="e.g. 35000" aria-describedby="salaryP1-desc salaryP1-error salaryP1-tax-hint" data-cy="salaryP1-input" data-ui="salaryP1">
+                        <input type="number" id="salaryP1" class="input-group__control" required aria-required="true" inputmode="decimal" aria-invalid="false" placeholder="e.g. 35000" aria-describedby="salaryP1-desc salaryP1-error salaryP1-tax-hint" data-cy="salaryP1-input" data-ui="salaryP1">
                     </div>
                     <p id="salaryP1-desc" class="help-text" data-ui="salaryP1Desc">Enter your total yearly income before any deductions.</p>
                     <div id="salaryP1-tax-hint" class="help-text tax-hint" hidden></div>
@@ -190,7 +190,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" placeholder="e.g. 45000" aria-describedby="salaryP2-desc salaryP2-error salaryP2-tax-hint" data-cy="salaryP2-input" data-ui="salaryP2">
+                        <input type="number" id="salaryP2" class="input-group__control" required aria-required="true" inputmode="decimal" aria-invalid="false" placeholder="e.g. 45000" aria-describedby="salaryP2-desc salaryP2-error salaryP2-tax-hint" data-cy="salaryP2-input" data-ui="salaryP2">
                     </div>
                     <p id="salaryP2-desc" class="help-text" data-ui="salaryP2Desc">Enter your partner's total yearly income before any deductions.</p>
                     <div id="salaryP2-tax-hint" class="help-text tax-hint" hidden></div>
@@ -237,7 +237,7 @@
                     <label class="form-label" for="propertyPrice">Estimated Property Value <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="propertyPrice" class="input-group__control" required aria-required="true" placeholder="e.g. 250000" aria-describedby="propertyPrice-desc propertyPrice-error" data-cy="propertyPrice-input" data-ui="propertyPrice">
+                        <input type="number" id="propertyPrice" class="input-group__control" required aria-required="true" inputmode="decimal" aria-invalid="false" placeholder="e.g. 250000" aria-describedby="propertyPrice-desc propertyPrice-error" data-cy="propertyPrice-input" data-ui="propertyPrice">
                         <button type="button" id="estimatePriceBtn" class="btn--addon" data-cy="estimatePrice-button" data-action="handlePriceEstimation" data-ui="estimatePriceButton">Estimate</button>
                     </div>
                     <p id="propertyPrice-desc" class="help-text">The estimated market value of the property you're buying or already own.</p>
@@ -351,7 +351,7 @@
                 <div class="form-group" id="depositPercContainer" data-ui="depositPercContainer">
                     <label class="form-label" for="depositPercentage">Total Cash Deposit (%) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <div class="input-group">
-                        <input type="number" id="depositPercentage" class="input-group__control" value="10" min="0" max="100" required aria-required="true" aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input" data-ui="depositPercentage">
+                        <input type="number" id="depositPercentage" class="input-group__control" value="10" min="0" max="100" required aria-required="true" inputmode="decimal" aria-invalid="false" aria-describedby="depositPercentage-help depositPercentage-error" data-cy="depositPercentage-input" data-ui="depositPercentage">
                         <span class="input-group__addon">%</span>
                     </div>
                     <div id="depositPercentage-error" class="alert alert--error" hidden data-ui="depositPercentageError">
@@ -365,7 +365,7 @@
                     <label class="form-label" for="depositAmount">Total Cash Deposit (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="depositAmount" class="input-group__control" required aria-required="true" placeholder="e.g. 25000" aria-describedby="depositAmount-help depositAmount-error" data-cy="depositAmount-input" data-ui="depositAmount">
+                        <input type="number" id="depositAmount" class="input-group__control" required aria-required="true" inputmode="decimal" aria-invalid="false" placeholder="e.g. 25000" aria-describedby="depositAmount-help depositAmount-error" data-cy="depositAmount-input" data-ui="depositAmount">
                     </div>
                     <div id="depositAmount-error" class="alert alert--error" hidden data-ui="depositAmountError">
                         <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
@@ -390,7 +390,7 @@
                     <div class="form-group col">
                         <label class="form-label" for="mortgageInterestRate">Interest Rate (APR %) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="input-group">
-                            <input type="number" id="mortgageInterestRate" class="input-group__control" value="5" min="0" step="0.1" required aria-required="true" aria-describedby="mortgageInterestRate-desc mortgageInterestRate-error" data-cy="mortgageInterestRate-input" data-ui="mortgageInterestRate">
+                            <input type="number" id="mortgageInterestRate" class="input-group__control" value="5" min="0" step="0.1" required aria-required="true" inputmode="decimal" aria-invalid="false" aria-describedby="mortgageInterestRate-desc mortgageInterestRate-error" data-cy="mortgageInterestRate-input" data-ui="mortgageInterestRate">
                             <span class="input-group__addon">%</span>
                         </div>
                         <p id="mortgageInterestRate-desc" class="help-text">The annual interest rate for your mortgage.</p>
@@ -403,7 +403,7 @@
                     <div class="form-group col">
                         <label class="form-label" for="mortgageTerm">Repayment Term (Years) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="input-group">
-                            <input type="number" id="mortgageTerm" class="input-group__control" value="25" min="1" max="50" required aria-required="true" aria-describedby="mortgageTerm-desc mortgageTerm-error" data-cy="mortgageTerm-input" data-ui="mortgageTerm">
+                            <input type="number" id="mortgageTerm" class="input-group__control" value="25" min="1" max="50" required aria-required="true" inputmode="decimal" aria-invalid="false" aria-describedby="mortgageTerm-desc mortgageTerm-error" data-cy="mortgageTerm-input" data-ui="mortgageTerm">
                         </div>
                         <p id="mortgageTerm-desc" class="help-text">The number of years you'll take to pay off the mortgage.</p>
                         <div id="mortgageTerm-error" class="alert alert--error" hidden data-ui="mortgageTermError">
@@ -464,7 +464,7 @@
                                 <label class="form-label" for="mortgageFees">Upfront Product Fees (£)</label>
                                 <div class="input-group">
                                     <span class="input-group__addon">£</span>
-                                    <input type="number" id="mortgageFees" class="input-group__control" placeholder="e.g. 999" data-cy="mortgageFees-input" data-ui="mortgageFees">
+                                    <input type="number" id="mortgageFees" class="input-group__control" placeholder="e.g. 999" inputmode="decimal" aria-invalid="false" data-cy="mortgageFees-input" data-ui="mortgageFees">
                                 </div>
                                 <p class="help-text">Any arrangement or booking fees paid at completion.</p>
                             </div>
@@ -545,7 +545,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="councilTaxCost" class="input-group__control" aria-describedby="councilTaxCost-desc councilTaxCost-error" data-cy="councilTaxCost-input" data-ui="councilTaxCost">
+                        <input type="number" id="councilTaxCost" class="input-group__control" inputmode="decimal" aria-invalid="false" aria-describedby="councilTaxCost-desc councilTaxCost-error" data-cy="councilTaxCost-input" data-ui="councilTaxCost">
                     </div>
                     <p id="councilTaxCost-desc" class="help-text">Estimated monthly council tax based on your selected tax band.</p>
                     <div id="councilTaxCost-error" class="alert alert--error" hidden data-ui="councilTaxCostError">
@@ -567,7 +567,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="energyCost" class="input-group__control" aria-describedby="energyCost-desc energyCost-error" data-cy="energyCost-input" data-ui="energyCost">
+                        <input type="number" id="energyCost" class="input-group__control" inputmode="decimal" aria-invalid="false" aria-describedby="energyCost-desc energyCost-error" data-cy="energyCost-input" data-ui="energyCost">
                     </div>
                     <p id="energyCost-desc" class="help-text">Estimated monthly utility cost for gas and electricity.</p>
                     <div id="energyCost-error" class="alert alert--error" hidden data-ui="energyCostError">
@@ -589,7 +589,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="waterBill" class="input-group__control" value="30" aria-describedby="waterBill-desc waterBill-error" data-cy="waterBill-input" data-ui="waterBill">
+                        <input type="number" id="waterBill" class="input-group__control" value="30" inputmode="decimal" aria-invalid="false" aria-describedby="waterBill-desc waterBill-error" data-cy="waterBill-input" data-ui="waterBill">
                     </div>
                     <p id="waterBill-desc" class="help-text">Average regional monthly water cost based on property size.</p>
                     <div id="waterBill-error" class="alert alert--error" hidden data-ui="waterBillError">
@@ -611,7 +611,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="broadbandCost" class="input-group__control" placeholder="e.g. 35" aria-describedby="broadbandCost-desc broadband-error" data-cy="broadbandCost-input" data-ui="broadbandCost">
+                        <input type="number" id="broadbandCost" class="input-group__control" placeholder="e.g. 35" inputmode="decimal" aria-invalid="false" aria-describedby="broadbandCost-desc broadband-error" data-cy="broadbandCost-input" data-ui="broadbandCost">
                     </div>
                     <p id="broadbandCost-desc" class="help-text">Internet, cable, and streaming subscriptions.</p>
                     <div id="broadband-error" class="alert alert--error" hidden data-ui="broadbandCostError">
@@ -664,7 +664,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="groceriesCost" class="input-group__control" placeholder="e.g. 400" aria-describedby="groceriesCost-desc groceries-error" data-cy="groceriesCost-input" data-ui="groceriesCost">
+                        <input type="number" id="groceriesCost" class="input-group__control" placeholder="e.g. 400" inputmode="decimal" aria-invalid="false" aria-describedby="groceriesCost-desc groceries-error" data-cy="groceriesCost-input" data-ui="groceriesCost">
                     </div>
                     <p id="groceriesCost-desc" class="help-text">Food, household supplies, and shared toiletries.</p>
                     <div id="groceries-error" class="alert alert--error" hidden data-ui="groceriesCostError">
@@ -686,7 +686,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="childcareCost" class="input-group__control" placeholder="e.g. 200" aria-describedby="childcareCost-desc childcare-error" data-cy="childcareCost-input" data-ui="childcareCost">
+                        <input type="number" id="childcareCost" class="input-group__control" placeholder="e.g. 200" inputmode="decimal" aria-invalid="false" aria-describedby="childcareCost-desc childcare-error" data-cy="childcareCost-input" data-ui="childcareCost">
                     </div>
                     <p id="childcareCost-desc" class="help-text">Nursery, childminders, or other regular care costs.</p>
                     <div id="childcare-error" class="alert alert--error" hidden data-ui="childcareCostError">
@@ -708,7 +708,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="insuranceCost" class="input-group__control" placeholder="e.g. 50" aria-describedby="insuranceCost-desc insurance-error" data-cy="insuranceCost-input" data-ui="insuranceCost">
+                        <input type="number" id="insuranceCost" class="input-group__control" placeholder="e.g. 50" inputmode="decimal" aria-invalid="false" aria-describedby="insuranceCost-desc insurance-error" data-cy="insuranceCost-input" data-ui="insuranceCost">
                     </div>
                     <p id="insuranceCost-desc" class="help-text">Combined life, health, or pet insurance payments.</p>
                     <div id="insurance-error" class="alert alert--error" hidden data-ui="insuranceCostError">
@@ -730,7 +730,7 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group__addon">£</span>
-                        <input type="number" id="otherSharedCosts" class="input-group__control" placeholder="e.g. 100" aria-describedby="otherSharedCosts-desc other-error" data-cy="otherSharedCosts-input" data-ui="otherSharedCosts">
+                        <input type="number" id="otherSharedCosts" class="input-group__control" placeholder="e.g. 100" inputmode="decimal" aria-invalid="false" aria-describedby="otherSharedCosts-desc other-error" data-cy="otherSharedCosts-input" data-ui="otherSharedCosts">
                     </div>
                     <p id="otherSharedCosts-desc" class="help-text">Gym, streaming services, or other joint subscriptions.</p>
                     <div id="other-error" class="alert alert--error" hidden data-ui="otherSharedCostsError">
@@ -992,11 +992,11 @@
 
     <!-- Footer -->
     <footer>
-        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.1.87 • 2026-03-04 15:02:04
+        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.1.88 • 2026-03-04 15:06:06
     </footer>
 
     <!-- Scripts -->
-    <script type="module" src="./dist/main.js?v=1772636524"></script>
+    <script type="module" src="./dist/main.js?v=1772636766"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

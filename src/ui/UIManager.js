@@ -85,9 +85,8 @@ export default class UIManager {
 
         const stepData = progressMap[id] || { p: 0, text: '' };
         if (this.#elements.progressBar) {
-            this.#elements.progressBar.style.width = `${stepData.p}%`;
-            this.#elements.progressBar.setAttribute('aria-valuenow', stepData.p);
-            this.#elements.progressBar.setAttribute('aria-valuetext', stepData.text);
+            this.#elements.progressBar.value = stepData.p;
+            this.#elements.progressBar.setAttribute('aria-label', `Application Progress: ${stepData.text}`);
         }
         if (this.#elements.progressLabel) {
             this.#elements.progressLabel.innerText = stepData.text;
