@@ -31,6 +31,24 @@ runTest('calculateTakeHome should handle England Basic Rate for £30k', () => {
     console.assert(Math.round(res.monthlyNet) === 2093, `Expected 2093, got ${Math.round(res.monthlyNet)}`);
 });
 
+runTest('calculateTakeHome should deduct pension pre-tax', () => {
+    // £30k with 10% pension (£3k) -> £27k taxable
+    // Tax on £27k: (£27,000 - £12,570) * 0.2 = £2,886
+    // NI on £30k (NI is on gross): (£30,000 - £12,570) * 0.08 = £1,394.4
+    // Net: (£30,000 - £2,886 - £1,394.4 - £3,000) / 12 = £1,893.3
+    const res = window.FinanceEngine.calculateTakeHome(30000, 'EN', 10);
+    console.assert(Math.round(res.monthlyNet) === 1893, `Expected 1893, got ${Math.round(res.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should deduct Student Loan Plan 1', () => {
+    // £30k, Plan 1 threshold: £26,065. 9% of (£30,000 - £26,065) = £354.15
+    // Monthly net should be approx £29.5 less than standard
+    const resStandard = window.FinanceEngine.calculateTakeHome(30000, 'EN');
+    const resLoan = window.FinanceEngine.calculateTakeHome(30000, 'EN', 0, 'plan1');
+    const diff = resStandard.monthlyNet - resLoan.monthlyNet;
+    console.assert(Math.round(diff) === Math.round(354.15 / 12), `Expected ~£30 loan deduction, got ${Math.round(diff)}`);
+});
+
 runTest('calculateStampDuty should apply FTB relief for England', () => {
     const res = window.FinanceEngine.calculateStampDuty(400000, 'EN', 'first', true);
     console.assert(res === 5000, `Expected 5000, got ${res}`);

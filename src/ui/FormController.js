@@ -81,8 +81,9 @@ export default class FormController {
                 this.#formatPostcode(target);
                 this.#handlePostcodeChange(target.value);
             }
-            if (field.id === 'salaryP1' || field.id === 'salaryP2') {
-                this.updateTaxEstimate(field.id === 'salaryP1' ? 'P1' : 'P2');
+            if (['salaryP1', 'salaryP2', 'pensionP1', 'pensionP2', 'studentLoanP1', 'studentLoanP2'].includes(field.id)) {
+                const partner = field.id.includes('P1') ? 'P1' : 'P2';
+                this.updateTaxEstimate(partner);
                 this.#store.update(FinanceOrchestrator.calculateRatio(this.#store.data));
             }
 
@@ -230,14 +231,20 @@ export default class FormController {
             if (this.#elements.salaryP1Desc) this.#elements.salaryP1Desc.innerText = 'Enter your total yearly income before any deductions.';
             if (this.#elements.salaryP2Desc) this.#elements.salaryP2Desc.innerText = "Enter your partner's total yearly income before any deductions.";
             this.#elements.wkIncomeSubtitle.innerText = '1. Combined Annual Income & Ratio';
+            
+            this.#elements.pensionSlContainerP1?.removeAttribute('hidden');
+            this.#elements.pensionSlContainerP2?.removeAttribute('hidden');
         } else {
             this.#elements.salaryP1Label.innerText = 'Your Monthly Take-home Pay *';
             this.#elements.salaryP2Label.innerText = "Your Partner's Monthly Take-home Pay *";
             this.#elements.salaryP1.placeholder = 'e.g. 2500';
             this.#elements.salaryP2.placeholder = 'e.g. 3200';
             if (this.#elements.salaryP1Desc) this.#elements.salaryP1Desc.innerText = 'Enter your average monthly income after all taxes and deductions.';
-            if (this.#elements.salaryP2Desc) this.#elements.salaryP2Desc.innerText = "Enter your partner's average monthly income after all taxes and deductions.";
+            if (this.#elements.salaryP2Desc) this.#elements.salaryP2Desc.innerText = "Enter your partner's average monthly income after all deductions.";
             this.#elements.wkIncomeSubtitle.innerText = '1. Combined Monthly Net Income & Ratio';
+
+            this.#elements.pensionSlContainerP1?.setAttribute('hidden', '');
+            this.#elements.pensionSlContainerP2?.setAttribute('hidden', '');
         }
     }
 
@@ -255,7 +262,8 @@ export default class FormController {
             return;
         }
 
-        const { bandName, monthlyNet } = FinanceEngine.calculateTakeHome(val, this.#store.data.regionCode);
+        const state = this.#store.data;
+        const { bandName, monthlyNet } = FinanceEngine.calculateTakeHome(val, state.regionCode, state[`pension${p}`], state[`studentLoan${p}`]);
         hint.innerText = `${bandName} • Est. £${Math.round(monthlyNet).toLocaleString()}/mo take-home`;
         hint.removeAttribute('hidden');
     }

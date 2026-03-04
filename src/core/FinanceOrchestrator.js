@@ -21,8 +21,8 @@ export default class FinanceOrchestrator {
         let p2Basis = state.salaryP2;
 
         if (state.salaryType === 'gross') {
-            p1Basis = FinanceEngine.calculateTakeHome(state.salaryP1, state.regionCode).monthlyNet;
-            p2Basis = FinanceEngine.calculateTakeHome(state.salaryP2, state.regionCode).monthlyNet;
+            p1Basis = FinanceEngine.calculateTakeHome(state.salaryP1, state.regionCode, state.pensionP1, state.studentLoanP1).monthlyNet;
+            p2Basis = FinanceEngine.calculateTakeHome(state.salaryP2, state.regionCode, state.pensionP2, state.studentLoanP2).monthlyNet;
         }
 
         const total = p1Basis + p2Basis;

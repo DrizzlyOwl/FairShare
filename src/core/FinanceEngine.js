@@ -4,7 +4,7 @@
  * Zero DOM dependencies.
  */
 
-import { INCOME_TAX_CONFIG, TAX_BRACKETS, NI_CONFIG } from './Constants.js';
+import { INCOME_TAX_CONFIG, TAX_BRACKETS, NI_CONFIG, STUDENT_LOAN_CONFIG } from './Constants.js';
 
 export default class FinanceEngine {
     /**
@@ -30,19 +30,26 @@ export default class FinanceEngine {
 
     /**
      * Estimates monthly take-home pay based on 2025/26 UK rules.
-     * @param {number} salary - Annual gross salary.
+     * @param {number} grossSalary - Annual gross salary.
      * @param {string} region - 'EN' (England/NI/Wales) or 'SC' (Scotland).
+     * @param {number} pensionPerc - Optional pension contribution percentage (0-100).
+     * @param {string} studentLoanPlan - Optional student loan plan ('none', 'plan1', 'plan2', 'plan4', 'plan5', 'postgrad').
      * @returns {Object} { bandName, monthlyNet }
      */
-    static calculateTakeHome(salary, region = 'EN') {
-        if (salary <= 0) return { bandName: 'Personal Allowance', monthlyNet: 0 };
+    static calculateTakeHome(grossSalary, region = 'EN', pensionPerc = 0, studentLoanPlan = 'none') {
+        if (grossSalary <= 0) return { bandName: 'Personal Allowance', monthlyNet: 0 };
 
         const config = INCOME_TAX_CONFIG[region] || INCOME_TAX_CONFIG.EN;
         
+        // 1. Pension Deduction (assuming % of total gross, pre-tax)
+        const pensionDeduction = grossSalary * (pensionPerc / 100);
+        const taxableSalary = Math.max(0, grossSalary - pensionDeduction);
+
+        // 2. Income Tax Calculation
         // Calculate actual personal allowance (tapered for income > £100k)
         let actualAllowance = config.personalAllowance;
-        if (salary > config.taperThreshold) {
-            actualAllowance = Math.max(0, config.personalAllowance - ((salary - config.taperThreshold) / 2));
+        if (taxableSalary > config.taperThreshold) {
+            actualAllowance = Math.max(0, config.personalAllowance - ((taxableSalary - config.taperThreshold) / 2));
         }
 
         // Construct dynamic bands for this specific calculation
@@ -57,30 +64,37 @@ export default class FinanceEngine {
 
         for (const band of dynamicBands) {
             const limit = band.upto ?? Infinity;
-            if (limit <= prevLimit) continue; // Handle zero-width bands (e.g. £0 allowance)
+            if (limit <= prevLimit) continue; 
 
-            if (salary > prevLimit) {
-                const taxableInThisBand = Math.min(salary, limit) - prevLimit;
+            if (taxableSalary > prevLimit) {
+                const taxableInThisBand = Math.min(taxableSalary, limit) - prevLimit;
                 incomeTax += taxableInThisBand * band.rate;
-                if (salary <= limit) {
+                if (taxableSalary <= limit) {
                     activeBandName = band.name;
                 }
             }
             prevLimit = limit;
         }
 
-        // National Insurance (UK wide for 2025/26)
+        // 3. National Insurance (UK wide for 2025/26)
         let ni = 0;
-        if (salary > NI_CONFIG.upperThreshold) {
+        if (grossSalary > NI_CONFIG.upperThreshold) {
             ni = ((NI_CONFIG.upperThreshold - NI_CONFIG.lowerThreshold) * NI_CONFIG.standardRate) + 
-                 ((salary - NI_CONFIG.upperThreshold) * NI_CONFIG.higherRate);
-        } else if (salary > NI_CONFIG.lowerThreshold) {
-            ni = (salary - NI_CONFIG.lowerThreshold) * NI_CONFIG.standardRate;
+                 ((grossSalary - NI_CONFIG.upperThreshold) * NI_CONFIG.higherRate);
+        } else if (grossSalary > NI_CONFIG.lowerThreshold) {
+            ni = (grossSalary - NI_CONFIG.lowerThreshold) * NI_CONFIG.standardRate;
+        }
+
+        // 4. Student Loan Deduction
+        let studentLoan = 0;
+        const slConfig = STUDENT_LOAN_CONFIG[studentLoanPlan] || STUDENT_LOAN_CONFIG.none;
+        if (grossSalary > slConfig.threshold) {
+            studentLoan = (grossSalary - slConfig.threshold) * slConfig.rate;
         }
 
         return {
             bandName: activeBandName,
-            monthlyNet: (salary - incomeTax - ni) / 12
+            monthlyNet: (grossSalary - incomeTax - ni - pensionDeduction - studentLoan) / 12
         };
     }
 

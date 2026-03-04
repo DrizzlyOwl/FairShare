@@ -50,6 +50,18 @@ export const NI_CONFIG = deepFreeze({
 });
 
 /**
+ * Student Loan Configuration for 2025/26 tax year.
+ */
+export const STUDENT_LOAN_CONFIG = deepFreeze({
+    'none': { threshold: Infinity, rate: 0 },
+    'plan1': { threshold: 26065, rate: 0.09 },
+    'plan2': { threshold: 27295, rate: 0.09 },
+    'plan4': { threshold: 31395, rate: 0.09 },
+    'plan5': { threshold: 25000, rate: 0.09 },
+    'postgrad': { threshold: 21000, rate: 0.06 }
+});
+
+/**
  * Property Tax (Stamp Duty) Brackets by region.
  * Includes EN (SDLT), SC (LBTT), and WA (LTT).
  */
@@ -130,6 +142,10 @@ export const BAND_PRICES = deepFreeze({ 'A': 110, 'B': 128, 'C': 146, 'D': 165, 
 export const FORM_FIELDS = deepFreeze([
     { id: 'salaryP1', type: 'number' },
     { id: 'salaryP2', type: 'number' },
+    { id: 'pensionP1', type: 'number' },
+    { id: 'pensionP2', type: 'number' },
+    { id: 'studentLoanP1', type: 'text' },
+    { id: 'studentLoanP2', type: 'text' },
     { id: 'postcode', type: 'text' },
     { id: 'propertyPrice', type: 'number' },
     { id: 'bedrooms', type: 'number', key: 'beds' },

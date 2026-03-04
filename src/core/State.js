@@ -7,6 +7,10 @@ export const INITIAL_STATE = {
     salaryP1: 0,
     salaryP2: 0,
     salaryType: 'gross', // 'gross' or 'net'
+    pensionP1: 0,
+    pensionP2: 0,
+    studentLoanP1: 'none',
+    studentLoanP2: 'none',
     ratioP1: 0.5,
     ratioP2: 0.5,
     propertyPrice: 0,
