@@ -16,7 +16,7 @@
     "clean": "rm -rf dist",
     "build:js": "esbuild src/main.js --bundle --minify --outfile=dist/main.js",
     "build:css": "postcss style.css -o dist/style.css",
-    "build:icons": "mkdir -p dist/icons dist/images && svgo -f icons -o dist/icons && svgo -f images -o dist/images && svgo favicon.svg logo-icon.svg logo-icon-dark.svg -o dist/ && svgo -f icons -o icons && svgo -f images -o images && svgo favicon.svg logo-icon.svg logo-icon-dark.svg -o .",
+    "build:icons": "shx mkdir -p dist/icons dist/images && svgo -f icons -o dist/icons && svgo -f images -o dist/images && svgo favicon.svg logo-icon.svg logo-icon-dark.svg -o dist/ && svgo -f icons -o icons && svgo -f images -o images && svgo favicon.svg logo-icon.svg logo-icon-dark.svg -o .",
     "build": "npm run clean && npm run build:js && npm run build:css && npm run build:icons"
   },
   "keywords": [
@@ -43,6 +43,7 @@
     "nyc": "^18.0.0",
     "postcss": "^8.5.8",
     "postcss-cli": "^11.0.1",
+    "shx": "^0.4.0",
     "svgo": "^4.0.0"
   }
 }
