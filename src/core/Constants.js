@@ -9,7 +9,7 @@ import { deepFreeze } from '../utils/Helpers.js';
  * Global Asset Path configuration.
  * Points to the production-ready directory for optimized assets.
  */
-export const ASSET_PATH = '/dist/';
+export const ASSET_PATH = './dist/';
 
 /**
  * Income Tax Configuration for 2025/26 tax year.
