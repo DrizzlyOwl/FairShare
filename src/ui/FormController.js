@@ -58,7 +58,7 @@ export default class FormController extends Logger {
                     this.updatePropertyPriceDisplay(val, false);
                     Object.assign(stateUpdate, this.#app.orchestrator.calculateEquityDetails(this.#store.data));
                 }
-                if (['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'].includes(field.id)) {
+                if (['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm', 'mortgageFees'].includes(field.id)) {
                     Object.assign(stateUpdate, this.#app.orchestrator.calculateEquityDetails(this.#store.data));
                 }
                 if (['bedrooms', 'bathrooms', 'taxBand'].includes(field.id)) {

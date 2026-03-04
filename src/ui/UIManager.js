@@ -366,6 +366,9 @@ export default class UIManager extends Logger {
         if (wk.wkMortgageRequired) wk.wkMortgageRequired.innerText = formatCurrency(state.mortgageRequired);
         if (wk.wkInterestRate) wk.wkInterestRate.innerText = state.mortgageInterestRate + '%';
         if (wk.wkMortgageTerm) wk.wkMortgageTerm.innerText = state.mortgageTerm;
+        if (wk.wkHomeType) wk.wkHomeType.innerText = state.homeType === 'first' ? 'Sole Property' : 'Buy-to-let / Second';
+        if (wk.wkBuyerStatus) wk.wkBuyerStatus.innerText = state.isFTB ? 'First Time Buyer' : 'Standard';
+        if (wk.wkMortgageFees) wk.wkMortgageFees.innerText = formatCurrency(state.mortgageFees || 0);
         if (wk.wkMonthlyPayment) wk.wkMonthlyPayment.innerText = formatCurrency(state.monthlyMortgagePayment, 2);
         if (wk.wkTotalRepayment) wk.wkTotalRepayment.innerText = formatCurrency(state.totalRepayment, 2);
     }

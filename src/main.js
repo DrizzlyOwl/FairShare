@@ -245,12 +245,13 @@ class FairShareApp extends Logger {
      */
     renderUpfrontWorkings(sdlt, legalFees) {
         const state = this.#store.data;
-        const totalUpfront = state.totalEquity + sdlt + legalFees + state.mortgageFees;
+        const totalUpfront = state.totalEquity + sdlt + legalFees + (state.mortgageFees || 0);
         
         if (this.#elements.sdltEstimate) this.#elements.sdltEstimate.value = sdlt.toLocaleString();
         if (this.#elements.legalFeesEstimate) this.#elements.legalFeesEstimate.value = legalFees.toLocaleString();
         if (this.#elements.sdltDisplay) this.#elements.sdltDisplay.innerText = formatCurrency(sdlt);
         if (this.#elements.legalFeesDisplay) this.#elements.legalFeesDisplay.innerText = formatCurrency(legalFees);
+        if (this.#elements.mortgageFeesDisplay) this.#elements.mortgageFeesDisplay.innerText = formatCurrency(state.mortgageFees || 0);
         if (this.#elements.totalEquityDisplay) this.#elements.totalEquityDisplay.innerText = formatCurrency(state.totalEquity);
         if (this.#elements.totalUpfrontDisplay) this.#elements.totalUpfrontDisplay.innerText = formatCurrency(totalUpfront);
     }
