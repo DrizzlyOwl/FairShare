@@ -1129,22 +1129,28 @@ button, .btn {
     -webkit-appearance: none;
     border: none;
     background-color: transparent;
+    padding: 0;
+    margin: 0;
+    vertical-align: top;
 }
 
 /* Chrome/Safari/Edge */
 .progress__bar::-webkit-progress-bar {
     background-color: transparent;
+    border-radius: 1rem;
 }
 
 .progress__bar::-webkit-progress-value {
     background: linear-gradient(90deg, var(--color-p1), var(--color-p2));
     transition: width var(--transition-long);
+    border-radius: 1rem;
 }
 
 /* Firefox */
 .progress__bar::-moz-progress-bar {
     background: linear-gradient(90deg, var(--color-p1), var(--color-p2));
     transition: width var(--transition-long);
+    border-radius: 1rem;
 }
 
 @media (min-width: 768px) {
