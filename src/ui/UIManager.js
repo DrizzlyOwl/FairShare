@@ -3,6 +3,8 @@
  * Manages the application's view state, screen transitions, and DOM updates.
  */
 
+/* global IntersectionObserver */
+
 import { formatCurrency, formatNumber } from '../utils/Helpers.js';
 import { SCREEN_MAP } from '../core/Constants.js';
 

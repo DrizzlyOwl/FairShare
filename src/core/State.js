@@ -73,16 +73,19 @@ const MIGRATIONS = {
 export default class State extends Logger {
     #data;
     #onUpdate;
+    #urlService;
     #persistTimeout;
     #CACHE_KEY = 'fairshare_cache';
 
     /**
      * @param {Object} initialState - The base data structure.
      * @param {Function} onUpdateCallback - Triggered on state change.
+     * @param {UrlService} urlService - Optional utility for URL synchronization.
      */
-    constructor(initialState = INITIAL_STATE, onUpdateCallback = null) {
+    constructor(initialState = INITIAL_STATE, onUpdateCallback = null, urlService = null) {
         super('State');
         this.#onUpdate = onUpdateCallback;
+        this.#urlService = urlService;
         // Use a non-proxied object for the initial internal data
         const data = { ...initialState };
         
@@ -151,6 +154,7 @@ export default class State extends Logger {
         // Immediate persistence for tests to avoid race conditions with cy.reload()
         if (typeof window !== 'undefined' && window.__CYPRESS_PERSISTENCE__) {
             localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));
+            if (this.#urlService) this.#urlService.updateUrl(this.#data);
             return;
         }
 
@@ -160,6 +164,7 @@ export default class State extends Logger {
         
         this.#persistTimeout = setTimeout(() => {
             localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));
+            if (this.#urlService) this.#urlService.updateUrl(this.#data);
             this.#persistTimeout = null;
         }, 500);
     }

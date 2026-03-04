@@ -6,6 +6,7 @@
 import State, { INITIAL_STATE } from './core/State.js';
 import FinanceOrchestrator from './core/FinanceOrchestrator.js';
 import ApiService from './services/ApiService.js';
+import UrlService from './services/UrlService.js';
 import UIManager from './ui/UIManager.js';
 import ThemeManager from './ui/ThemeManager.js';
 import NavigationController from './ui/NavigationController.js';
@@ -27,6 +28,7 @@ class FairShareApp extends Logger {
     #form = null;
     #pwaInstaller = null;
     #orchestrator = null;
+    #urlService = null;
     #csv = null;
     #elements = {};
 
@@ -45,8 +47,9 @@ class FairShareApp extends Logger {
         
         // 1. Core Logic & Persistence
         this.#orchestrator = new FinanceOrchestrator();
+        this.#urlService = new UrlService();
         this.#csv = new CSV();
-        this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data));
+        this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data), this.#urlService);
 
         // 2. UI Orchestration
         this.#ui = new UIManager(this.#elements, BAND_PRICES, (id) => this.#nav.updatePagination(id));
@@ -57,8 +60,14 @@ class FairShareApp extends Logger {
         this.#form = new FormController(this, this.#ui, this.#store, this.#elements);
         this.#pwaInstaller = new PWAInstaller(this.#elements.installButton);
         
-        // 4. Setup Initial State
-        this.#store.hydrate();
+        // 4. Setup Initial State (Prioritize URL for sharing support)
+        const urlState = this.#urlService.getStateFromUrl();
+        if (urlState) {
+            this.info('Hydrating state from URL hash.');
+            this.#store.update(urlState);
+        } else {
+            this.#store.hydrate();
+        }
 
         // 5. Initialize Theme
         this.#themeManager.init();
@@ -72,7 +81,10 @@ class FairShareApp extends Logger {
         document.querySelectorAll('main section.screen').forEach(el => el.setAttribute('hidden', ''));
 
         // Initial screen transition
-        const initialScreen = window.location.hash.replace('#', '') || SCREEN_MAP.LANDING;
+        const initialScreen = window.location.hash && !window.location.hash.includes('state=') 
+            ? window.location.hash.replace('#', '') 
+            : SCREEN_MAP.LANDING;
+            
         this.#ui.switchScreen(this.#nav.findScreenByHeadingId(initialScreen) || SCREEN_MAP.LANDING, true);
     }
 
@@ -376,6 +388,43 @@ class FairShareApp extends Logger {
      */
     toggleTheme() {
         this.#themeManager.toggle();
+    }
+
+    /**
+     * Copies the current shareable budget URL to the clipboard.
+     */
+    async shareUrl() {
+        try {
+            const url = window.location.href;
+            await navigator.clipboard.writeText(url);
+            this.showToast('Budget URL copied to clipboard!', 'success');
+        } catch (error) {
+            this.error('Failed to copy URL:', error);
+            this.showToast('Failed to copy URL. Please try again.', 'error');
+        }
+    }
+
+    /**
+     * Displays a temporary notification message to the user.
+     * @param {string} message - The text to display.
+     * @param {string} [type='info'] - 'success', 'error', or 'info'.
+     */
+    showToast(message, type = 'info') {
+        // Create toast element if it doesn't exist
+        let toast = document.getElementById('app-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'app-toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+
+        toast.innerText = message;
+        toast.className = `toast toast--visible toast--${type}`;
+
+        setTimeout(() => {
+            toast.classList.remove('toast--visible');
+        }, 3000);
     }
 
     /**
