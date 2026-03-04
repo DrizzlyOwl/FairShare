@@ -320,31 +320,6 @@ body::before {
     transform: scale(1.05);
 }
 
-.header-brand__reset-btn {
-    padding-block: 0.3rem;
-    padding-inline: 0.6rem;
-    font-size: var(--font-size-base);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    background-color: var(--color-header-btn-bg);
-    color: var(--color-header-btn-color);
-    border: 1px solid var(--color-header-btn-border);
-    border-radius: 2rem;
-    text-decoration: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    white-space: nowrap;
-    margin: 0;
-
-    @media (min-width: 768px) {
-        font-size: var(--font-size-base);
-    }
-}
-
-.header-brand__reset-btn:hover {
-    background-color: var(--color-bg-hover);
-    border-color: var(--color-primary);
-}
-
 .nav {
     display: flex;
     flex-direction: column-reverse;
@@ -531,6 +506,7 @@ li, .type-li {
 .icon--offline { -webkit-mask-image: url('./icons/icon-offline.svg'); mask-image: url('./icons/icon-offline.svg'); }
 .icon--pie-chart { -webkit-mask-image: url('./icons/icon-pie-chart.svg'); mask-image: url('./icons/icon-pie-chart.svg'); }
 .icon--receipt { -webkit-mask-image: url('./icons/icon-receipt.svg'); mask-image: url('./icons/icon-receipt.svg'); }
+.icon--restart { -webkit-mask-image: url('./icons/icon-restart.svg'); mask-image: url('./icons/icon-restart.svg'); }
 .icon--user { -webkit-mask-image: url('./icons/icon-user.svg'); mask-image: url('./icons/icon-user.svg'); }
 .icon--chevron-down { -webkit-mask-image: url('./icons/icon-chevron-down.svg'); mask-image: url('./icons/icon-chevron-down.svg'); }
 .icon--users { -webkit-mask-image: url('./icons/icon-users.svg'); mask-image: url('./icons/icon-users.svg'); }
