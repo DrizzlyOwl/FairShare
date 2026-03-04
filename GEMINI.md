@@ -33,7 +33,8 @@ Maintain a high-performance, **framework-less** web utility for proportionate bi
 ## 🔄 Workflow Mandates
 1. **Research:** Map BEM impacts before modifying `style.css`.
 2. **Task Tracking:** Define actions in `TODO.md`; truncate upon completion.
-3. **Build Tracking:** Execute `npm run bump` before EVERY push. This updates:
-    - Build version and GMT footer timestamp.
-    - Static asset cache busters (e.g., `?v=12345`).
+3. **Build Tracking:** Execute `npm run build` AND `npm run bump` before EVERY push. This ensures:
+    - JS/CSS minification and icon optimization are up to date.
+    - Build version and GMT footer timestamp are refreshed.
+    - Static asset cache busters (e.g., `?v=12345`) are synchronized.
 4. **Versioning:** Every build bump MUST be published with a matching GitHub Tag (e.g., `v1.1.80`).
