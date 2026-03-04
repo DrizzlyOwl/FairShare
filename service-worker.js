@@ -12,13 +12,13 @@ const CACHE_NAME = 'fairshare-v4';
  */
 const STATIC_ASSETS = [
     './',
-    './index.html?v=1772637408',
-    './logo-icon.svg?v=1772637408',
-    './logo-icon-dark.svg?v=1772637408',
-    './favicon.svg?v=1772637408',
+    './index.html?v=1772637582',
+    './logo-icon.svg?v=1772637582',
+    './logo-icon-dark.svg?v=1772637582',
+    './favicon.svg?v=1772637582',
     './manifest.json',
-    './dist/style.css?v=1772637408',
-    './dist/main.js?v=1772637408',
+    './dist/style.css?v=1772637582',
+    './dist/main.js?v=1772637582',
     './dist/icons/icon-lightning.svg',
     './dist/icons/icon-heart.svg',
     './dist/icons/icon-info.svg',
@@ -31,6 +31,13 @@ const STATIC_ASSETS = [
     './dist/icons/icon-users.svg',
     './dist/icons/icon-download.svg',
     './dist/icons/icon-offline.svg',
+    './dist/images/bg-landing.svg',
+    './dist/images/bg-income.svg',
+    './dist/images/bg-property.svg',
+    './dist/images/bg-mortgage.svg',
+    './dist/images/bg-utilities.svg',
+    './dist/images/bg-committed.svg',
+    './dist/images/bg-results.svg',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional'
 ];
 
@@ -76,7 +83,7 @@ self.addEventListener('activate', event => {
                             const isCurrentAsset = STATIC_ASSETS.some(asset => {
                                 // Direct match (e.g., './src/core/State.js')
                                 if (asset === relativePath) return true;
-                                // Match with query string (e.g., './style.css?v=1772637408')
+                                // Match with query string (e.g., './style.css?v=1772637582')
                                 if (asset.startsWith(relativePath) && (asset === relativePath + url.search || asset === './' + url.search)) return true;
                                 return false;
                             });

@@ -129,6 +129,17 @@ body {
     min-height: 100vh;
 }
 
+/* --- Screen Backgrounds --- */
+:root {
+    --bg-landing: url('./images/bg-landing.svg');
+    --bg-income: url('./images/bg-income.svg');
+    --bg-property: url('./images/bg-property.svg');
+    --bg-mortgage: url('./images/bg-mortgage.svg');
+    --bg-utilities: url('./images/bg-utilities.svg');
+    --bg-committed: url('./images/bg-committed.svg');
+    --bg-results: url('./images/bg-results.svg');
+}
+
 /* Dynamic Background Image - Themed Accent */
 body::before {
     content: "";

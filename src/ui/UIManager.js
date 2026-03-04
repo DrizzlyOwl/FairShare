@@ -98,19 +98,19 @@ export default class UIManager {
      * @param {string} screenId - The active screen ID.
      */
     updateBackgroundImage(screenId) {
-        const screenToImageMap = {
-            [this.SCREENS.LANDING]: 'bg-landing.svg',
-            [this.SCREENS.INCOME]: 'bg-income.svg',
-            [this.SCREENS.PROPERTY]: 'bg-property.svg',
-            [this.SCREENS.MORTGAGE]: 'bg-mortgage.svg',
-            [this.SCREENS.UTILITIES]: 'bg-utilities.svg',
-            [this.SCREENS.COMMITTED]: 'bg-committed.svg',
-            [this.SCREENS.RESULTS]: 'bg-results.svg'
+        const screenToVarMap = {
+            [this.SCREENS.LANDING]: 'var(--bg-landing)',
+            [this.SCREENS.INCOME]: 'var(--bg-income)',
+            [this.SCREENS.PROPERTY]: 'var(--bg-property)',
+            [this.SCREENS.MORTGAGE]: 'var(--bg-mortgage)',
+            [this.SCREENS.UTILITIES]: 'var(--bg-utilities)',
+            [this.SCREENS.COMMITTED]: 'var(--bg-committed)',
+            [this.SCREENS.RESULTS]: 'var(--bg-results)'
         };
 
-        const newImage = screenToImageMap[screenId];
-        if (newImage) {
-            document.body.style.setProperty('--bg-image', `url('${ASSET_PATH}images/${newImage}')`);
+        const newVar = screenToVarMap[screenId];
+        if (newVar) {
+            document.body.style.setProperty('--bg-image', newVar);
         }
     }
 
