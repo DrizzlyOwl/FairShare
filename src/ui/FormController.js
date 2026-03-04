@@ -362,7 +362,7 @@ export default class FormController extends Logger {
         const screenFields = {
             [this.#ui.SCREENS.INCOME]: ['salaryP1', 'salaryP2'],
             [this.#ui.SCREENS.PROPERTY]: ['postcode', 'propertyPrice', 'taxBand'],
-            [this.#ui.SCREENS.MORTGAGE]: ['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm'],
+            [this.#ui.SCREENS.MORTGAGE]: ['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm', 'mortgageFees'],
             [this.#ui.SCREENS.UTILITIES]: ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'],
             [this.#ui.SCREENS.COMMITTED]: ['groceriesCost', 'childcareCost', 'insuranceCost', 'otherSharedCosts']
         };
