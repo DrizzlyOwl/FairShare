@@ -49,6 +49,22 @@ runTest('calculateTakeHome should deduct Student Loan Plan 1', () => {
     console.assert(Math.round(diff) === Math.round(354.15 / 12), `Expected ~£30 loan deduction, got ${Math.round(diff)}`);
 });
 
+runTest('calculateTakeHome should deduct Student Loan Plan 2', () => {
+    // £35k, Plan 2 threshold: £27,295. 9% of (£35,000 - £27,295) = £693.45
+    const resStandard = window.FinanceEngine.calculateTakeHome(35000, 'EN');
+    const resLoan = window.FinanceEngine.calculateTakeHome(35000, 'EN', 0, 'plan2');
+    const diff = resStandard.monthlyNet - resLoan.monthlyNet;
+    console.assert(Math.round(diff) === Math.round(693.45 / 12), `Expected ~£58 loan deduction, got ${Math.round(diff)}`);
+});
+
+runTest('calculateTakeHome should deduct Postgraduate Loan', () => {
+    // £30k, PG threshold: £21,000. 6% of (£30,000 - £21,000) = £540
+    const resStandard = window.FinanceEngine.calculateTakeHome(30000, 'EN');
+    const resLoan = window.FinanceEngine.calculateTakeHome(30000, 'EN', 0, 'postgrad');
+    const diff = resStandard.monthlyNet - resLoan.monthlyNet;
+    console.assert(Math.round(diff) === Math.round(540 / 12), `Expected £45 loan deduction, got ${Math.round(diff)}`);
+});
+
 runTest('calculateStampDuty should apply FTB relief for England', () => {
     const res = window.FinanceEngine.calculateStampDuty(400000, 'EN', 'first', true);
     console.assert(res === 5000, `Expected 5000, got ${res}`);
@@ -189,6 +205,41 @@ runTest('CalculationEngine.getSummary', () => {
     const orchestrator = new window.FinanceOrchestrator();
     const summary = orchestrator.getFinalSummary(state);
     console.assert(summary.upfront.sdlt === 5000, `SDLT mismatch: ${summary.upfront.sdlt}`);
+});
+
+runTest('calculateTakeHome should taper personal allowance > £100k', () => {
+    // £125,140 salary should have £0 personal allowance
+    const res = window.FinanceEngine.calculateTakeHome(125140, 'EN');
+    // Result: 6719
+    console.assert(Math.round(res.monthlyNet) === 6719, `Expected 6719, got ${Math.round(res.monthlyNet)}`);
+});
+
+runTest('calculateTakeHome should handle Scotland tax bands', () => {
+    const res = window.FinanceEngine.calculateTakeHome(50000, 'SC');
+    console.assert(res.bandName.includes('Intermediate') || res.bandName.includes('Higher'), `Expected Scottish band, got ${res.bandName}`);
+});
+
+runTest('calculateStampDuty should apply additional surcharge for second homes', () => {
+    const resStandard = window.FinanceEngine.calculateStampDuty(300000, 'EN', 'first', false);
+    const resAdditional = window.FinanceEngine.calculateStampDuty(300000, 'EN', 'second', false);
+    console.assert(resAdditional > resStandard, 'Second home tax should be higher');
+});
+
+runTest('calculateStampDuty should handle Wales (LTT)', () => {
+    const res = window.FinanceEngine.calculateStampDuty(250000, 'WA', 'first', false);
+    console.assert(res > 0, 'Should calculate LTT for Wales');
+});
+
+runTest('calculateMortgage should return 0 for invalid inputs', () => {
+    const res = window.FinanceEngine.calculateMortgage(0, 5, 25);
+    console.assert(res.monthlyPayment === 0, 'Payment should be 0');
+});
+
+runTest('Validator.validateScreen should catch invalid mortgage data', () => {
+    const data = { depositType: 'percentage', depositPercentage: 150, mortgageInterestRate: 5, mortgageTerm: 25 };
+    const res = window.Validator.validateScreen('screen-4', data);
+    console.assert(res.isValid === false, 'Should be invalid');
+    console.assert(res.errors.includes('depositPercentage'), 'Should identify deposit error');
 });
 
 runTest('app instance existence', () => {

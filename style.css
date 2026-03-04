@@ -691,6 +691,26 @@ input[type=number] {
     transition: background-color var(--transition-base);
 }
 
+.input-group__control:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+/* --- Enhanced Native Select --- */
+select.input-group__control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%232C3E63' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-inline-end: 2.5rem;
+    cursor: pointer;
+}
+
+[data-theme='dark'] select.input-group__control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%238bb9fe' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+}
+
 .input-group__control:read-only {
     background-color: var(--color-bg-body);
     color: var(--color-text-light);
@@ -799,7 +819,7 @@ input[type=number] {
     flex-wrap: wrap; /* Allow wrapping on small screens */
     gap: 0.5rem; /* Consistent spacing */
     margin-block-end: 1rem;
-    justify-content: center; /* Center items and distribute space */
+    justify-content: flex-start; /* Left align items */
 }
 
 .segmented-control__label {

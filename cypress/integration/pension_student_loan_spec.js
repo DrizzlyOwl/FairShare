@@ -51,9 +51,8 @@ describe('FairShare - Pension & Student Loan Logic', () => {
         cy.get('[data-cy="salaryP1-input"]').clear().type('50000');
         cy.get('[data-cy="pensionP1-input"]').clear().type('10');
         
-        // Custom Select interaction
-        cy.get('[data-cy="studentLoanP1-select"]').click();
-        cy.get('.select-custom__option').contains('Plan 1').click();
+        // Select Student Loan Plan 1 (Radio)
+        cy.get('[data-cy="studentLoanP1-plan1"]').check({ force: true });
 
         cy.get('[data-cy="salaryP2-input"]').clear().type('50000');
         

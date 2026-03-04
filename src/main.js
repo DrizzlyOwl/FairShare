@@ -68,9 +68,6 @@ class FairShareApp extends Logger {
         this.syncUIWithState();
         this.updateEfficiencyTip();
         
-        // Enhance any selects with custom UI
-        this.#ui.initCustomSelects();
-        
         // Hide all screens initially to ensure clean state
         document.querySelectorAll('main section.screen').forEach(el => el.setAttribute('hidden', ''));
 
@@ -189,7 +186,7 @@ class FairShareApp extends Logger {
         });
 
         // Sync radio groups
-        const radios = ['salaryType', 'depositType', 'homeType', 'depositSplitType', 'buyerStatus'];
+        const radios = ['salaryType', 'depositType', 'homeType', 'depositSplitType', 'buyerStatus', 'studentLoanP1', 'studentLoanP2'];
         radios.forEach(name => {
             const val = name === 'buyerStatus' ? (state.isFTB ? 'ftb' : 'standard') : 
                         name === 'depositSplitType' ? (state.depositSplitProportional ? 'yes' : 'no') :
@@ -218,9 +215,6 @@ class FairShareApp extends Logger {
         
         // Trigger manual render for non-observed calculated fields
         this.syncCalculatedFields({ ...update, ...estimates });
-
-        // Ensure custom selects are in sync with state
-        this.#ui.refreshCustomSelects();
     }
 
     /**

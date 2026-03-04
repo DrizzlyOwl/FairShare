@@ -148,6 +148,13 @@ export default class FormController extends Logger {
                     this.#store.update({ depositSplitProportional: val === 'yes' });
                     this.syncEquityDetails();
                     break;
+                case 'studentLoanP1':
+                case 'studentLoanP2':
+                    const slPartner = name.includes('P1') ? 'P1' : 'P2';
+                    this.#store.update({ [name]: val });
+                    this.updateTaxEstimate(slPartner);
+                    this.#store.update(this.#app.orchestrator.calculateRatio(this.#store.data));
+                    break;
                 case 'homeType':
                     this.#store.update({ homeType: val });
                     this.updateFTBVisibility();

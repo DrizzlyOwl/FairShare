@@ -10,12 +10,12 @@
     <meta name="apple-mobile-web-app-title" content="FairShare">
     <link rel="apple-touch-icon" href="logo-icon.svg">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772645394">
+    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772646340">
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="./dist/logo-icon.svg?v=1772645394" as="image">
+    <link rel="preload" href="./dist/logo-icon.svg?v=1772646340" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
 
@@ -53,16 +53,16 @@
         [hidden]{display:none !important}
     </style>
 
-    <link rel="preload" href="./dist/style.css?v=1772645394" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772645394"></noscript>
+    <link rel="preload" href="./dist/style.css?v=1772646340" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772646340"></noscript>
 </head>
 <body>
 
     <!-- Lazy Loader -->
     <div class="lazy-loader">
         <div class="loader-branded">
-            <img src="./dist/logo-icon.svg?v=1772645394" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
-            <img src="./dist/logo-icon-dark.svg?v=1772645394" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
+            <img src="./dist/logo-icon.svg?v=1772646340" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
+            <img src="./dist/logo-icon-dark.svg?v=1772646340" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
             <div class="spinner"></div>
         </div>
     </div>
@@ -80,7 +80,7 @@
             <!-- Header Brand -->
             <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
-                    <img src="./dist/logo-icon.svg?v=1772645394" alt="" width="60" height="60" class="header-brand__icon">
+                    <img src="./dist/logo-icon.svg?v=1772646340" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
                         <h1 class="header-brand__title">
                             <span class="header-brand__title-part header-brand__title-part--primary">Fair</span><span class="header-brand__title-part header-brand__title-part--accent">Share</span>
@@ -203,16 +203,20 @@
                         </div>
                     </div>
                     <div class="form-group col">
-                        <label class="form-label" for="studentLoanP1">Student Loan</label>
-                        <div class="input-group">
-                            <select id="studentLoanP1" class="input-group__control" data-cy="studentLoanP1-select" data-ui="studentLoanP1">
-                                <option value="none">None</option>
-                                <option value="plan1">Plan 1</option>
-                                <option value="plan2">Plan 2</option>
-                                <option value="plan4">Plan 4 (Scotland)</option>
-                                <option value="plan5">Plan 5</option>
-                                <option value="postgrad">Postgraduate</option>
-                            </select>
+                        <label class="form-label">Student Loan</label>
+                        <div class="segmented-control" data-ui="studentLoanP1Container">
+                            <input type="radio" name="studentLoanP1" id="slP1None" value="none" checked class="segmented-control__input" data-cy="studentLoanP1-none">
+                            <label for="slP1None" class="segmented-control__label">None</label>
+                            <input type="radio" name="studentLoanP1" id="slP1P1" value="plan1" class="segmented-control__input" data-cy="studentLoanP1-plan1">
+                            <label for="slP1P1" class="segmented-control__label">P1</label>
+                            <input type="radio" name="studentLoanP1" id="slP1P2" value="plan2" class="segmented-control__input" data-cy="studentLoanP1-plan2">
+                            <label for="slP1P2" class="segmented-control__label">P2</label>
+                            <input type="radio" name="studentLoanP1" id="slP1P4" value="plan4" class="segmented-control__input" data-cy="studentLoanP1-plan4">
+                            <label for="slP1P4" class="segmented-control__label">P4</label>
+                            <input type="radio" name="studentLoanP1" id="slP1P5" value="plan5" class="segmented-control__input" data-cy="studentLoanP1-plan5">
+                            <label for="slP1P5" class="segmented-control__label">P5</label>
+                            <input type="radio" name="studentLoanP1" id="slP1PG" value="postgrad" class="segmented-control__input" data-cy="studentLoanP1-postgrad">
+                            <label for="slP1PG" class="segmented-control__label">PG</label>
                         </div>
                     </div>
                 </div>
@@ -242,16 +246,20 @@
                         </div>
                     </div>
                     <div class="form-group col">
-                        <label class="form-label" for="studentLoanP2">Student Loan</label>
-                        <div class="input-group">
-                            <select id="studentLoanP2" class="input-group__control" data-cy="studentLoanP2-select" data-ui="studentLoanP2">
-                                <option value="none">None</option>
-                                <option value="plan1">Plan 1</option>
-                                <option value="plan2">Plan 2</option>
-                                <option value="plan4">Plan 4 (Scotland)</option>
-                                <option value="plan5">Plan 5</option>
-                                <option value="postgrad">Postgraduate</option>
-                            </select>
+                        <label class="form-label">Student Loan</label>
+                        <div class="segmented-control" data-ui="studentLoanP2Container">
+                            <input type="radio" name="studentLoanP2" id="slP2None" value="none" checked class="segmented-control__input" data-cy="studentLoanP2-none">
+                            <label for="slP2None" class="segmented-control__label">None</label>
+                            <input type="radio" name="studentLoanP2" id="slP2P1" value="plan1" class="segmented-control__input" data-cy="studentLoanP2-plan1">
+                            <label for="slP2P1" class="segmented-control__label">P1</label>
+                            <input type="radio" name="studentLoanP2" id="slP2P2" value="plan2" class="segmented-control__input" data-cy="studentLoanP2-plan2">
+                            <label for="slP2P2" class="segmented-control__label">P2</label>
+                            <input type="radio" name="studentLoanP2" id="slP2P4" value="plan4" class="segmented-control__input" data-cy="studentLoanP2-plan4">
+                            <label for="slP2P4" class="segmented-control__label">P4</label>
+                            <input type="radio" name="studentLoanP2" id="slP2P5" value="plan5" class="segmented-control__input" data-cy="studentLoanP2-plan5">
+                            <label for="slP2P5" class="segmented-control__label">P5</label>
+                            <input type="radio" name="studentLoanP2" id="slP2PG" value="postgrad" class="segmented-control__input" data-cy="studentLoanP2-postgrad">
+                            <label for="slP2PG" class="segmented-control__label">PG</label>
                         </div>
                     </div>
                 </div>
@@ -1067,11 +1075,11 @@
 
     <!-- Footer -->
     <footer>
-        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.2.6 • 2026-03-04 17:29:54
+        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.2.8 • 2026-03-04 17:45:40
     </footer>
 
     <!-- Scripts -->
-    <script type="module" src="./dist/main.js?v=1772645394"></script>
+    <script type="module" src="./dist/main.js?v=1772646340"></script>
 
 </body>
 </html>
