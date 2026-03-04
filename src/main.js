@@ -49,6 +49,9 @@ class FairShareApp {
         this.bindGlobalEvents();
         this.syncUIWithState();
         
+        // Enhance any selects with custom UI
+        this.#ui.initCustomSelects();
+        
         // Hide all screens initially to ensure clean state
         document.querySelectorAll('main section.screen').forEach(el => el.setAttribute('hidden', ''));
 
@@ -172,6 +175,9 @@ class FairShareApp {
         
         // Trigger manual render for non-observed calculated fields
         this.syncCalculatedFields({ ...update, ...estimates });
+
+        // Ensure custom selects are in sync with state
+        this.#ui.refreshCustomSelects();
     }
 
     /**

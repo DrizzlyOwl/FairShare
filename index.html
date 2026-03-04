@@ -10,12 +10,12 @@
     <meta name="apple-mobile-web-app-title" content="FairShare">
     <link rel="apple-touch-icon" href="logo-icon.svg">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772638307">
+    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772638504">
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="./dist/logo-icon.svg?v=1772638307" as="image">
+    <link rel="preload" href="./dist/logo-icon.svg?v=1772638504" as="image">
     <link rel="preload" href="./dist/icons/icon-offline.svg" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
@@ -54,16 +54,16 @@
         [hidden]{display:none !important}
     </style>
 
-    <link rel="preload" href="./dist/style.css?v=1772638307" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772638307"></noscript>
+    <link rel="preload" href="./dist/style.css?v=1772638504" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772638504"></noscript>
 </head>
 <body>
 
     <!-- Lazy Loader -->
     <div class="lazy-loader">
         <div class="loader-branded">
-            <img src="./dist/logo-icon.svg?v=1772638307" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
-            <img src="./dist/logo-icon-dark.svg?v=1772638307" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
+            <img src="./dist/logo-icon.svg?v=1772638504" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
+            <img src="./dist/logo-icon-dark.svg?v=1772638504" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
             <div class="spinner"></div>
         </div>
     </div>
@@ -81,7 +81,7 @@
             <!-- Header Brand -->
             <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
-                    <img src="./dist/logo-icon.svg?v=1772638307" alt="" width="60" height="60" class="header-brand__icon">
+                    <img src="./dist/logo-icon.svg?v=1772638504" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
                         <h1 class="header-brand__title">
                             <span class="header-brand__title-part header-brand__title-part--primary">Fair</span><span class="header-brand__title-part header-brand__title-part--accent">Share</span>
@@ -202,14 +202,16 @@
                     </div>
                     <div class="form-group col">
                         <label class="form-label" for="studentLoanP1">Student Loan</label>
-                        <select id="studentLoanP1" class="input-group__control" data-ui="studentLoanP1">
-                            <option value="none">None</option>
-                            <option value="plan1">Plan 1</option>
-                            <option value="plan2">Plan 2</option>
-                            <option value="plan4">Plan 4 (Scotland)</option>
-                            <option value="plan5">Plan 5</option>
-                            <option value="postgrad">Postgraduate</option>
-                        </select>
+                        <div class="input-group">
+                            <select id="studentLoanP1" class="input-group__control" data-ui="studentLoanP1">
+                                <option value="none">None</option>
+                                <option value="plan1">Plan 1</option>
+                                <option value="plan2">Plan 2</option>
+                                <option value="plan4">Plan 4 (Scotland)</option>
+                                <option value="plan5">Plan 5</option>
+                                <option value="postgrad">Postgraduate</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -239,14 +241,16 @@
                     </div>
                     <div class="form-group col">
                         <label class="form-label" for="studentLoanP2">Student Loan</label>
-                        <select id="studentLoanP2" class="input-group__control" data-ui="studentLoanP2">
-                            <option value="none">None</option>
-                            <option value="plan1">Plan 1</option>
-                            <option value="plan2">Plan 2</option>
-                            <option value="plan4">Plan 4 (Scotland)</option>
-                            <option value="plan5">Plan 5</option>
-                            <option value="postgrad">Postgraduate</option>
-                        </select>
+                        <div class="input-group">
+                            <select id="studentLoanP2" class="input-group__control" data-ui="studentLoanP2">
+                                <option value="none">None</option>
+                                <option value="plan1">Plan 1</option>
+                                <option value="plan2">Plan 2</option>
+                                <option value="plan4">Plan 4 (Scotland)</option>
+                                <option value="plan5">Plan 5</option>
+                                <option value="postgrad">Postgraduate</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -1042,11 +1046,11 @@
 
     <!-- Footer -->
     <footer>
-        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.1.97 • 2026-03-04 15:31:47
+        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.1.98 • 2026-03-04 15:35:04
     </footer>
 
     <!-- Scripts -->
-    <script type="module" src="./dist/main.js?v=1772638307"></script>
+    <script type="module" src="./dist/main.js?v=1772638504"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

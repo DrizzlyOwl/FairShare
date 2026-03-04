@@ -5,11 +5,13 @@
 
 import { formatCurrency } from '../utils/Helpers.js';
 import { SCREEN_MAP, ASSET_PATH } from '../core/Constants.js';
+import CustomSelect from './CustomSelect.js';
 
 export default class UIManager {
     #elements;
     #bandPrices;
     #onScreenChange;
+    #customSelects = new Map();
 
     SCREENS = SCREEN_MAP;
 
@@ -313,6 +315,24 @@ export default class UIManager {
         if (wk.wkMortgageTerm) wk.wkMortgageTerm.innerText = state.mortgageTerm;
         if (wk.wkMonthlyPayment) wk.wkMonthlyPayment.innerText = formatCurrency(state.monthlyMortgagePayment, 2);
         if (wk.wkTotalRepayment) wk.wkTotalRepayment.innerText = formatCurrency(state.totalRepayment, 2);
+    }
+
+    /**
+     * Initializes custom select components for all select elements in the DOM.
+     */
+    initCustomSelects() {
+        document.querySelectorAll('select').forEach(select => {
+            if (!this.#customSelects.has(select)) {
+                this.#customSelects.set(select, new CustomSelect(select));
+            }
+        });
+    }
+
+    /**
+     * Refreshes all custom select components to match their native counterparts.
+     */
+    refreshCustomSelects() {
+        this.#customSelects.forEach(cs => cs.refresh());
     }
 
     /**

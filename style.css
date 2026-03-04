@@ -532,6 +532,7 @@ li, .type-li {
 .icon--pie-chart { -webkit-mask-image: url('./icons/icon-pie-chart.svg'); mask-image: url('./icons/icon-pie-chart.svg'); }
 .icon--receipt { -webkit-mask-image: url('./icons/icon-receipt.svg'); mask-image: url('./icons/icon-receipt.svg'); }
 .icon--user { -webkit-mask-image: url('./icons/icon-user.svg'); mask-image: url('./icons/icon-user.svg'); }
+.icon--chevron-down { -webkit-mask-image: url('./icons/icon-chevron-down.svg'); mask-image: url('./icons/icon-chevron-down.svg'); }
 .icon--users { -webkit-mask-image: url('./icons/icon-users.svg'); mask-image: url('./icons/icon-users.svg'); }
 
 
@@ -706,6 +707,96 @@ input[type=number] {
     color: var(--color-text-light);
     cursor: not-allowed;
     font-weight: 700;
+}
+
+/* Custom Select Component */
+.select-custom {
+    position: relative;
+    width: 100%;
+}
+
+.select-custom__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.7rem 0.875rem;
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    color: var(--color-text);
+    background-color: var(--color-input-bg);
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    outline: none;
+}
+
+.select-custom__icon {
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--color-text-light);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    transition: transform var(--transition-base);
+    pointer-events: none;
+}
+
+.select-custom--open .select-custom__icon {
+    transform: rotate(180deg);
+}
+
+.select-custom__dropdown {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    width: 100%;
+    background-color: var(--color-bg-app);
+    border: 2px solid var(--color-primary);
+    border-radius: 0.5rem;
+    margin-block-start: 0.25rem;
+    z-index: 100;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    max-height: 15rem;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-base);
+}
+
+.select-custom--open .select-custom__dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.select-custom__options {
+    list-style: none;
+    padding: 0.25rem;
+    margin: 0;
+}
+
+.select-custom__option {
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    transition: background-color var(--transition-base);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+}
+
+.select-custom__option:hover,
+.select-custom__option--highlighted {
+    background-color: var(--color-bg-alt);
+}
+
+.select-custom__option--selected {
+    background-color: var(--color-primary);
+    color: light-dark(white, #0f172a);
+}
+
+.select-custom__option--selected:hover {
+    background-color: var(--color-primary);
 }
 
 /* Ensure the addon retains its styling when followed by a readonly input */
