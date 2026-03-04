@@ -539,7 +539,7 @@ li, .type-li {
 /* --- Screen Transitions --- */
 
 .screen {
-    contain: paint;
+    contain: layout;
 }
 
 .screen:not([hidden]) {
@@ -667,8 +667,19 @@ input[type=number] {
     background-color: var(--color-input-bg);
     border: 2px solid var(--color-border);
     border-radius: 0.5rem;
-    overflow: hidden;
+    overflow: visible; /* Allow custom dropdowns to show */
     transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+/* Ensure children respect parent radius since overflow is visible */
+.input-group > :first-child {
+    border-top-left-radius: 0.4rem;
+    border-bottom-left-radius: 0.4rem;
+}
+
+.input-group > :last-child {
+    border-top-right-radius: 0.4rem;
+    border-bottom-right-radius: 0.4rem;
 }
 
 .input-group:focus-within {
