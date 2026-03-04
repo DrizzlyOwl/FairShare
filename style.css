@@ -178,6 +178,7 @@ body::before {
     border: 1px solid var(--color-border);
     position: relative;
     z-index: 2;
+    contain: layout;
 
     @media (min-width: 768px) {
         padding: 2.5rem;
@@ -233,6 +234,7 @@ body::before {
 .header-brand__icon {
     width: clamp(3rem, 2.5rem + 2vw, 3.75rem);
     height: clamp(3rem, 2.5rem + 2vw, 3.75rem);
+    aspect-ratio: 1 / 1;
     flex-shrink: 0;
 }
 
@@ -523,6 +525,10 @@ li, .type-li {
 
 
 /* --- Screen Transitions --- */
+
+.screen {
+    contain: paint;
+}
 
 .screen:not([hidden]) {
     animation: screenIn var(--transition-bounce) forwards;

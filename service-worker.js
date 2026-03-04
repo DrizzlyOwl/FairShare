@@ -12,13 +12,13 @@ const CACHE_NAME = 'fairshare-v4';
  */
 const STATIC_ASSETS = [
     './',
-    './index.html?v=1772636766',
-    './logo-icon.svg?v=1772636766',
-    './logo-icon-dark.svg?v=1772636766',
-    './favicon.svg?v=1772636766',
+    './index.html?v=1772636952',
+    './logo-icon.svg?v=1772636952',
+    './logo-icon-dark.svg?v=1772636952',
+    './favicon.svg?v=1772636952',
     './manifest.json',
-    './dist/style.css?v=1772636766',
-    './dist/main.js?v=1772636766',
+    './dist/style.css?v=1772636952',
+    './dist/main.js?v=1772636952',
     './dist/icons/icon-lightning.svg',
     './dist/icons/icon-heart.svg',
     './dist/icons/icon-info.svg',
@@ -76,7 +76,7 @@ self.addEventListener('activate', event => {
                             const isCurrentAsset = STATIC_ASSETS.some(asset => {
                                 // Direct match (e.g., './src/core/State.js')
                                 if (asset === relativePath) return true;
-                                // Match with query string (e.g., './style.css?v=1772636766')
+                                // Match with query string (e.g., './style.css?v=1772636952')
                                 if (asset.startsWith(relativePath) && (asset === relativePath + url.search || asset === './' + url.search)) return true;
                                 return false;
                             });

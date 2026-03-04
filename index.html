@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A bill-splitting calculator that helps couples and housemates divide expenses fairly based on their income.">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772636766">
+    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772636952">
     <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="./dist/logo-icon.svg?v=1772636766" as="image">
+    <link rel="preload" href="./dist/logo-icon.svg?v=1772636952" as="image">
     <link rel="preload" href="./dist/icons/icon-offline.svg" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
@@ -33,7 +33,7 @@
         body{line-height:1.6;-webkit-font-smoothing:antialiased;font-family:'Inter',system-ui,-apple-system,sans-serif;background-color:var(--color-bg-body);color:var(--color-text);padding:1rem;min-height:100vh}
         .lazy-loader{position:fixed;inset:0;background-color:var(--color-bg-body);display:flex;justify-content:center;align-items:center;z-index:10000}
         .loader-branded{position:relative;display:flex;align-items:center;justify-content:center;width:120px;height:120px}
-        .loader-branded__logo{position:absolute;width:50px;height:50px;z-index:2}
+        .loader-branded__logo{position:absolute;width:50px;height:50px;aspect-ratio:1/1;z-index:2}
         .loader-branded__logo--dark{display:none}
         [data-theme='dark'] .loader-branded__logo--light{display:none}
         [data-theme='dark'] .loader-branded__logo--dark{display:block}
@@ -43,22 +43,22 @@
         }
         .spinner{width:100px;height:100px;border:5px solid rgba(44, 62, 99, 0.1);border-block-start-color:var(--color-primary);border-radius:50%;animation:spin 1s linear infinite;z-index:1}
         @keyframes spin{to{transform:rotate(360deg)}}
-        .app-container{max-width:37.5rem;margin-inline:auto;background-color:var(--color-bg-app);padding:1.5rem;border-radius:1rem;border:1px solid var(--color-border);position:relative;z-index:2}
+        .app-container{max-width:37.5rem;margin-inline:auto;background-color:var(--color-bg-app);padding:1.5rem;border-radius:1rem;border:1px solid var(--color-border);position:relative;z-index:2;contain:layout}
         .header-brand{display:flex;flex-direction:column;align-items:center;text-align:center;padding-block-start:1rem;gap:1.5rem;margin-block-end:2.5rem}
         @media (min-width:480px){.header-brand{flex-direction:row;justify-content:space-between;text-align:left;gap:1rem}}
         [hidden]{display:none !important}
     </style>
 
-    <link rel="preload" href="./dist/style.css?v=1772636766" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772636766"></noscript>
+    <link rel="preload" href="./dist/style.css?v=1772636952" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772636952"></noscript>
 </head>
 <body>
 
     <!-- Lazy Loader -->
     <div class="lazy-loader">
         <div class="loader-branded">
-            <img src="./dist/logo-icon.svg?v=1772636766" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
-            <img src="./dist/logo-icon-dark.svg?v=1772636766" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
+            <img src="./dist/logo-icon.svg?v=1772636952" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
+            <img src="./dist/logo-icon-dark.svg?v=1772636952" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
             <div class="spinner"></div>
         </div>
     </div>
@@ -76,7 +76,7 @@
             <!-- Header Brand -->
             <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
-                    <img src="./dist/logo-icon.svg?v=1772636766" alt="" width="60" height="60" class="header-brand__icon">
+                    <img src="./dist/logo-icon.svg?v=1772636952" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
                         <h1 class="header-brand__title">
                             <span class="header-brand__title-part header-brand__title-part--primary">Fair</span><span class="header-brand__title-part header-brand__title-part--accent">Share</span>
@@ -992,11 +992,11 @@
 
     <!-- Footer -->
     <footer>
-        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.1.88 • 2026-03-04 15:06:06
+        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.1.89 • 2026-03-04 15:09:12
     </footer>
 
     <!-- Scripts -->
-    <script type="module" src="./dist/main.js?v=1772636766"></script>
+    <script type="module" src="./dist/main.js?v=1772636952"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
