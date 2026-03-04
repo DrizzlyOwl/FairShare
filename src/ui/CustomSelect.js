@@ -1,3 +1,4 @@
+/* global Event */
 /**
  * CustomSelect.js
  * A robust, accessible custom dropdown component that replaces standard HTML selects.

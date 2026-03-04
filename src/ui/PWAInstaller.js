@@ -53,7 +53,7 @@ export default class PWAInstaller {
             this.#hideInstallPromotion();
         });
 
-        window.addEventListener('appinstalled', (event) => {
+        window.addEventListener('appinstalled', () => {
             // 8. Log the installation
             console.log('[PWA] App was installed');
             // 9. Hide the install button

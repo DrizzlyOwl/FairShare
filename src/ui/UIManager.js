@@ -4,7 +4,7 @@
  */
 
 import { formatCurrency } from '../utils/Helpers.js';
-import { SCREEN_MAP, ASSET_PATH } from '../core/Constants.js';
+import { SCREEN_MAP } from '../core/Constants.js';
 import CustomSelect from './CustomSelect.js';
 
 export default class UIManager {
