@@ -24,7 +24,7 @@ describe('FairShare - Regional Journey (Wales LTT)', () => {
     cy.fillUtilitiesStep();
     cy.fillLifestyleStep();
 
-    cy.get('#screen-7').should('be.visible');
+    cy.get('[data-cy="screen-7"]').should('be.visible');
     
     // 1. Verify regional tax label
     cy.get('[data-ui="upfrontTaxLabel"]').should('contain.text', 'Stamp Duty (LTT)');
@@ -33,6 +33,6 @@ describe('FairShare - Regional Journey (Wales LTT)', () => {
     cy.get('[data-ui="bdUpfrontTaxTotal"]').should('contain.text', '£9,950');
 
     // 3. Check ratio split (should be 50/50 upfront if income is equal)
-    cy.get('[data-cy="ratio-bar-p1"]').should('contain.text', '50%');
+    cy.get('[data-ui="ratioTextDesc"]').should('contain.text', '50% You');
   });
 });

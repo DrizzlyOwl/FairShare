@@ -20,7 +20,7 @@ describe('FairShare - Pension & Student Loan Logic', () => {
     const skipToStep2 = () => {
         cy.visit('index.html');
         cy.get('[data-cy="next-button"]').click();
-        cy.get('#screen-2').should('be.visible');
+        cy.get('[data-cy="screen-2"]').should('be.visible');
     };
 
     it('toggles visibility of pension and student loan fields based on income type', () => {
@@ -44,37 +44,53 @@ describe('FairShare - Pension & Student Loan Logic', () => {
     it('calculates ratios correctly when pension and student loans are applied', () => {
         skipToStep2();
 
+        // Both start at £50,000 (50/50 split)
         // Partner 1: £50,000, 10% Pension, Plan 1
         // Partner 2: £50,000, 0% Pension, None
-        // Partner 1 should have a lower share because net is lower
+        // Partner 1 MUST have a lower share (<50%) because their net pay will be lower
         
-        cy.get('[data-cy="salaryP1-input"]').clear().type('50000');
-        cy.get('[data-cy="pensionP1-input"]').clear().type('10');
+        cy.get('[data-cy="salaryP1-input"]').clear({ force: true }).type('50000', { force: true }).blur();
+        cy.wait(500);
+        cy.get('[data-cy="pensionP1-input"]').clear({ force: true }).type('10', { force: true }).blur();
+        cy.wait(500);
         
         // Select Student Loan Plan 1 (Radio)
         cy.get('[data-cy="studentLoanP1-plan1"]').check({ force: true });
-
-        cy.get('[data-cy="salaryP2-input"]').clear().type('50000');
-        
-        // Wait for calculation debounce/re-render
         cy.wait(500);
 
-        // Move through screens to results
-        cy.get('[data-cy="next-button"]').click(); // Property
-        cy.get('[data-cy="postcode-input"]').type('M1 1AD');
-        cy.get('[data-cy="propertyPrice-input"]').clear().type('200000');
-        cy.get('label[for="bA"]').click();
-        cy.get('[data-cy="next-button"]').click(); // Mortgage
-        cy.get('[data-cy="next-button"]').click(); // Utilities
-        cy.get('[data-cy="next-button"]').click(); // Committed
+        cy.get('[data-cy="salaryP2-input"]').clear({ force: true }).type('50000', { force: true }).blur();
         
-        cy.get('#screen-7').should('be.visible');
+        // Wait for calculation to finish
+        cy.wait(2000);
 
-        // Check ratio workings
-        // Partner 1 should have < 50% share
-        cy.get('[data-cy="wk-p1-perc"]').invoke('text').then((text) => {
+        // Move through screens to results
+        cy.get('[data-cy="next-button"]').click({ force: true }); // Step 2 -> 3
+        cy.get('[data-cy="screen-3"]', { timeout: 10000 }).should('be.visible');
+        
+        cy.fillPropertyStep('M1 1AD', '200000', 'A');
+        
+        cy.get('[data-cy="screen-4"]', { timeout: 10000 }).should('not.have.attr', 'hidden');
+        cy.get('[data-cy="next-button"]').click({ force: true }); // Mortgage (Step 4 -> 5)
+        
+        cy.get('[data-cy="screen-5"]', { timeout: 10000 }).should('not.have.attr', 'hidden');
+        cy.fillUtilitiesStep();
+        
+        cy.get('[data-cy="screen-6"]', { timeout: 10000 }).should('not.have.attr', 'hidden');
+        cy.fillLifestyleStep();
+
+        cy.wait(5000); // Wait for final result stabilization
+        cy.get('[data-cy="screen-7"]', { timeout: 10000 }).should('not.have.attr', 'hidden');
+
+        // Check ratio workings with a long timeout
+        // Use should(callback) to retry and log inside
+        cy.get('[data-cy="wk-p1-perc"]', { timeout: 15000 }).should(($el) => {
+            const text = $el.text().trim();
+            expect(text).to.not.equal('0%');
+            expect(text).to.not.equal('');
+
             const perc = parseFloat(text.replace('%', ''));
             expect(perc).to.be.lessThan(50);
+            expect(perc).to.be.greaterThan(0);
         });
 
         cy.get('[data-cy="wk-p2-perc"]').invoke('text').then((text) => {

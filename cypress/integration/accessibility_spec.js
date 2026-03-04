@@ -43,16 +43,16 @@ describe('Accessibility CI Test', () => {
     it(`should be WCAG 2.1 AA compliant on all screens in ${theme} mode`, () => {
       // Set theme
       if (theme === 'dark') {
-        cy.get('#theme-toggle').click();
-        cy.get('html').should('have.attr', 'data-theme', 'dark');
+        cy.get('[data-ui="themeToggle"]').click();
+        cy.root().should('have.attr', 'data-theme', 'dark');
       } else {
         // Ensure light mode (default or toggle back)
-        cy.get('html').then(($html) => {
-          if ($html.attr('data-theme') === 'dark') {
-            cy.get('#theme-toggle').click();
+        cy.root().then(($root) => {
+          if ($root.attr('data-theme') === 'dark') {
+            cy.get('[data-ui="themeToggle"]').click();
           }
         });
-        cy.get('html').should('not.have.attr', 'data-theme', 'dark');
+        cy.root().should('not.have.attr', 'data-theme', 'dark');
       }
 
       const checkA11yOptions = { 
@@ -61,7 +61,7 @@ describe('Accessibility CI Test', () => {
 
       // 1. Landing Screen
       cy.log('Checking Landing Screen');
-      cy.get('#screen-1').should('be.visible');
+      cy.get('[data-cy="screen-1"]').should('be.visible');
       cy.checkA11y(null, checkA11yOptions, terminalLog);
 
       // 2. Income Screen
@@ -74,7 +74,7 @@ describe('Accessibility CI Test', () => {
       cy.get('[data-cy="salaryP1-input"]').type('35000').blur();
       cy.get('[data-cy="salaryP2-input"]').type('45000').blur();
       cy.get('[data-cy="next-button"]').click();
-      cy.get('#screen-3').should('be.visible');
+      cy.get('[data-cy="screen-3"]').should('be.visible');
       cy.checkA11y(null, checkA11yOptions, terminalLog);
 
       // 4. Mortgage Screen
@@ -88,13 +88,13 @@ describe('Accessibility CI Test', () => {
       cy.get('[data-cy="bedrooms-input"]').clear().type('3');
       cy.get('[data-cy="bathrooms-input"]').clear().type('2');
       cy.get('[data-cy="next-button"]').click();
-      cy.get('#screen-4').should('be.visible');
+      cy.get('[data-cy="screen-4"]').should('be.visible');
       cy.checkA11y(null, checkA11yOptions, terminalLog);
 
       // 5. Utilities Screen
       cy.log('Checking Utilities Screen');
       cy.get('[data-cy="next-button"]').click();
-      cy.get('#screen-5').should('be.visible');
+      cy.get('[data-cy="screen-5"]').should('be.visible');
 
       cy.get('[data-cy="councilTaxCost-input"]').clear().type('150');
       cy.get('[data-cy="energyCost-input"]').clear().type('100');
@@ -105,7 +105,7 @@ describe('Accessibility CI Test', () => {
       // 6. Committed Screen
       cy.log('Checking Committed Screen');
       cy.get('[data-cy="next-button"]').click();
-      cy.get('#screen-6').should('be.visible');
+      cy.get('[data-cy="screen-6"]').should('be.visible');
 
       cy.get('[data-cy="groceriesCost-input"]').clear().type('400');
       cy.get('[data-cy="childcareCost-input"]').clear().type('0');
@@ -116,8 +116,9 @@ describe('Accessibility CI Test', () => {
       // 7. Results Screen
       cy.log('Checking Results Screen');
       cy.get('[data-cy="next-button"]').click();
-      cy.get('#screen-7').should('be.visible');
+      cy.get('[data-cy="screen-7"]').should('be.visible');
       cy.checkA11y(null, checkA11yOptions, terminalLog);
+
     });
   });
 });

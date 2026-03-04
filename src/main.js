@@ -27,9 +27,9 @@ class FairShareApp extends Logger {
     #nav = null;
     #form = null;
     #pwaInstaller = null;
-    #orchestrator = null;
-    #urlService = null;
-    #csv = null;
+    orchestrator = null;
+    urlService = null;
+    csv = null;
     #elements = {};
 
     constructor() {
@@ -46,10 +46,10 @@ class FairShareApp extends Logger {
         this.hideLoader();
         
         // 1. Core Logic & Persistence
-        this.#orchestrator = new FinanceOrchestrator();
-        this.#urlService = new UrlService();
-        this.#csv = new CSV();
-        this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data), this.#urlService);
+        this.orchestrator = new FinanceOrchestrator();
+        this.urlService = new UrlService();
+        this.csv = new CSV();
+        this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data), this.urlService);
 
         // 2. UI Orchestration
         this.#ui = new UIManager(this.#elements, BAND_PRICES, (id) => this.#nav.updatePagination(id));
@@ -61,7 +61,7 @@ class FairShareApp extends Logger {
         this.#pwaInstaller = new PWAInstaller(this.#elements.installButton);
         
         // 4. Setup Initial State (Prioritize URL for sharing support)
-        const urlState = this.#urlService.getStateFromUrl();
+        const urlState = this.urlService.getStateFromUrl();
         if (urlState) {
             this.info('Hydrating state from URL hash.');
             this.#store.update(urlState);
@@ -218,12 +218,12 @@ class FairShareApp extends Logger {
         this.#form.updatePropertyPriceDisplay(state.propertyPrice, false);
         
         // Let UIManager handle initial calculations sync
-        const update = this.#orchestrator.calculateEquityDetails(this.#store.data);
-        const estimates = this.#orchestrator.populateEstimates(this.#store.data);
+        const update = this.orchestrator.calculateEquityDetails(this.#store.data);
+        const estimates = this.orchestrator.populateEstimates(this.#store.data);
         
         this.#store.update(update);
         this.#store.update(estimates);
-        this.#store.update(this.#orchestrator.calculateRatio(this.#store.data));
+        this.#store.update(this.orchestrator.calculateRatio(this.#store.data));
         
         // Trigger manual render for non-observed calculated fields
         this.syncCalculatedFields({ ...update, ...estimates });
@@ -280,7 +280,7 @@ class FairShareApp extends Logger {
             this.#elements.propertyPrice.value = price;
             this.#form.updatePropertyPriceDisplay(price, !!result.isEstimated);
             
-            const update = this.#orchestrator.calculateEquityDetails(this.#store.data);
+            const update = this.orchestrator.calculateEquityDetails(this.#store.data);
             this.#store.update(update);
             this.syncCalculatedFields(update);
         } catch (error) {
@@ -302,7 +302,7 @@ class FairShareApp extends Logger {
      * Calculates the final bill splitting breakdown and transitions to results.
      */
     renderResults() {
-        const summary = this.#orchestrator.getFinalSummary(this.#store.data);
+        const summary = this.orchestrator.getFinalSummary(this.#store.data);
         this.#ui.renderResultsSummary(summary, this.#store.data);
         this.#ui.renderCalculationWorkings(this.#store.data);
     }
@@ -316,14 +316,14 @@ class FairShareApp extends Logger {
 
             let stateUpdate = {};
             if (screenId === SCREEN_MAP.INCOME) {
-                stateUpdate = this.#orchestrator.calculateRatio(this.#store.data);
+                stateUpdate = this.orchestrator.calculateRatio(this.#store.data);
             }
             if (screenId === SCREEN_MAP.PROPERTY) {
-                Object.assign(stateUpdate, this.#orchestrator.populateEstimates(this.#store.data));
-                Object.assign(stateUpdate, this.#orchestrator.calculateEquityDetails(this.#store.data));
+                Object.assign(stateUpdate, this.orchestrator.populateEstimates(this.#store.data));
+                Object.assign(stateUpdate, this.orchestrator.calculateEquityDetails(this.#store.data));
             }
             if (screenId === SCREEN_MAP.MORTGAGE) {
-                Object.assign(stateUpdate, this.#orchestrator.calculateEquityDetails(this.#store.data));
+                Object.assign(stateUpdate, this.orchestrator.calculateEquityDetails(this.#store.data));
             }
             if (screenId === SCREEN_MAP.COMMITTED) {
                 this.renderResults();
@@ -432,7 +432,7 @@ class FairShareApp extends Logger {
      */
     downloadCSV() {
         try {
-            this.#csv.download(this.#store.data, this.#elements.resultsTable);
+            this.csv.download(this.#store.data, this.#elements.resultsTable);
         } catch (error) {
             this.error(`Error downloading CSV:`, error);
         }
@@ -444,14 +444,6 @@ class FairShareApp extends Logger {
      */
     get elements() {
         return this.#elements;
-    }
-
-    /**
-     * Accessor for FinanceOrchestrator.
-     * @returns {FinanceOrchestrator}
-     */
-    get orchestrator() {
-        return this.#orchestrator;
     }
 
     /**

@@ -58,7 +58,7 @@ describe('FairShare - PWA & Offline Support', () => {
     cy.get('[data-cy="next-button"]').click({ force: true });
     
     // Verify we reached Step 3
-    cy.get('#screen-3').should('be.visible');
+    cy.get('[data-cy="screen-3"]').should('be.visible');
     
     // Verify data is still there
     cy.get('[data-cy="back-button"]').click();

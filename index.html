@@ -10,12 +10,12 @@
     <meta name="apple-mobile-web-app-title" content="FairShare">
     <link rel="apple-touch-icon" href="logo-icon.svg">
     <title>FairShare - Fair Bill Splitting Calculator</title>
-    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772647507">
-    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="./dist/favicon.svg?v=1772658161">
+    <link rel="manifest" href="manifest.json" data-cy="manifest-link">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="preload" href="./dist/logo-icon.svg?v=1772647507" as="image">
+    <link rel="preload" href="./dist/logo-icon.svg?v=1772658161" as="image">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=optional"></noscript>
 
@@ -53,16 +53,16 @@
         [hidden]{display:none !important}
     </style>
 
-    <link rel="preload" href="./dist/style.css?v=1772647507" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772647507"></noscript>
+    <link rel="preload" href="./dist/style.css?v=1772658161" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./dist/style.css?v=1772658161"></noscript>
 </head>
 <body>
 
     <!-- Lazy Loader -->
-    <div class="lazy-loader">
+    <div class="lazy-loader" data-cy="lazy-loader">
         <div class="loader-branded">
-            <img src="./dist/logo-icon.svg?v=1772647507" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
-            <img src="./dist/logo-icon-dark.svg?v=1772647507" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
+            <img src="./dist/logo-icon.svg?v=1772658161" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--light">
+            <img src="./dist/logo-icon-dark.svg?v=1772658161" alt="" width="50" height="50" class="loader-branded__logo loader-branded__logo--dark">
             <div class="spinner"></div>
         </div>
     </div>
@@ -80,7 +80,7 @@
             <!-- Header Brand -->
             <header class="header-brand" id="header-brand" data-ui="headerBrand">
                 <div class="header-brand__content">
-                    <img src="./dist/logo-icon.svg?v=1772647507" alt="" width="60" height="60" class="header-brand__icon">
+                    <img src="./dist/logo-icon.svg?v=1772658161" alt="" width="60" height="60" class="header-brand__icon">
                     <div class="header-brand__text-container">
                         <h1 class="header-brand__title">
                             <span class="header-brand__title-part header-brand__title-part--primary">Fair</span><span class="header-brand__title-part header-brand__title-part--accent">Share</span>
@@ -111,7 +111,7 @@
             <div class="progress" id="progress-container">
                 <div class="progress__content">
                     <div class="progress__info">
-                        <span class="progress__text" aria-live="polite" data-ui="progressLabel">Step 1 of 7: Welcome</span>
+                        <span class="progress__text" aria-live="polite" data-ui="progressLabel" data-cy="progress-label">Step 1 of 7: Welcome</span>
                     </div>
                     <div class="progress__track">
                         <progress class="progress__bar" id="progress-bar" value="0" max="100" aria-label="Application Progress" data-cy="progress-bar" data-ui="progressBar">0%</progress>
@@ -120,7 +120,7 @@
             </div>
 
             <!-- Screen 1: Welcome -->
-            <section class="screen" id="screen-1" aria-labelledby="heading-landing" tabindex="-1">
+            <section class="screen" id="screen-1" aria-labelledby="heading-landing" tabindex="-1" data-cy="screen-1">
                 <h2 id="heading-landing" class="screen__heading">
                     <span class="heading-icon icon--heart" aria-hidden="true"></span>
                     Welcome to FairShare
@@ -153,7 +153,7 @@
             </section>
 
             <!-- Screen 2: Income -->
-            <section class="screen" id="screen-2" aria-labelledby="heading-income" tabindex="-1" hidden>
+            <section class="screen" id="screen-2" aria-labelledby="heading-income" tabindex="-1" hidden data-cy="screen-2">
                 <h2 id="heading-income" class="screen__heading">
                     <span class="heading-icon icon--money" aria-hidden="true"></span>
                     Your Income
@@ -197,7 +197,7 @@
                     </div>
                 </div>
 
-                <div class="form-row" id="pension-sl-container-p1" data-ui="pensionSlContainerP1">
+                <div class="form-row" id="pension-sl-container-p1" data-ui="pensionSlContainerP1" data-cy="pensionSlContainerP1">
                     <div class="form-group col">
                         <label class="form-label" for="pensionP1">Pension (%)</label>
                         <div class="input-group">
@@ -240,7 +240,7 @@
                     </div>
                 </div>
 
-                <div class="form-row" id="pension-sl-container-p2" data-ui="pensionSlContainerP2">
+                <div class="form-row" id="pension-sl-container-p2" data-ui="pensionSlContainerP2" data-cy="pensionSlContainerP2">
                     <div class="form-group col">
                         <label class="form-label" for="pensionP2">Pension (%)</label>
                         <div class="input-group">
@@ -267,14 +267,14 @@
                     </div>
                 </div>
 
-                <div id="warning-screen-2" class="alert alert--warning" role="alert" aria-live="polite" hidden>
+                <div id="warning-screen-2" class="alert alert--warning" role="alert" aria-live="polite" hidden data-cy="warning-screen-2">
                     <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
 
             <!-- Screen 3: Property -->
-            <section class="screen" id="screen-3" aria-labelledby="heading-property" tabindex="-1" hidden>
+            <section class="screen" id="screen-3" aria-labelledby="heading-property" tabindex="-1" hidden data-cy="screen-3">
                 <h2 id="heading-property" class="screen__heading">
                     <span class="heading-icon icon--building" aria-hidden="true"></span>
                     Property Details
@@ -312,7 +312,7 @@
                         <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                         <div class="alert__text">Please enter a value or use your postcode to estimate.</div>
                     </div>
-                    <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden data-ui="propertyPriceEstimateDisplay">
+                    <div id="propertyPrice-estimate-display" aria-live="polite" class="help-text" hidden data-ui="propertyPriceEstimateDisplay" data-cy="propertyPrice-estimate-display">
                         Using estimated market price: <span id="estimatedPriceValue" class="fw-bold" data-ui="estimatedPriceValue"></span>
                     </div>
                 </div>
@@ -385,14 +385,14 @@
                     </div>
                 </div>
 
-                <div id="warning-screen-3" class="alert alert--warning" role="alert" aria-live="polite" hidden>
+                <div id="warning-screen-3" class="alert alert--warning" role="alert" aria-live="polite" hidden data-cy="warning-screen-3">
                     <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
 
             <!-- Screen 4: Mortgage & Equity -->
-            <section class="screen" id="screen-4" aria-labelledby="heading-mortgage" tabindex="-1" hidden>
+            <section class="screen" id="screen-4" aria-labelledby="heading-mortgage" tabindex="-1" hidden data-cy="screen-4">
                 <h2 id="heading-mortgage" class="screen__heading">
                     <span class="heading-icon icon--money" aria-hidden="true"></span>
                     Mortgage & Equity
@@ -444,9 +444,9 @@
                 <fieldset class="form-group">
                     <legend class="form-label">How should the initial cash be split?</legend>
                     <div class="toggle">
-                        <input type="radio" name="depositSplitType" id="splitPropYes" value="yes" checked class="toggle__input">
+                        <input type="radio" name="depositSplitType" id="splitPropYes" value="yes" checked class="toggle__input" data-cy="depositSplitType-yes">
                         <label for="splitPropYes" class="toggle__label">By Income Ratio</label>
-                        <input type="radio" name="depositSplitType" id="splitPropNo" value="no" class="toggle__input">
+                        <input type="radio" name="depositSplitType" id="splitPropNo" value="no" class="toggle__input" data-cy="depositSplitType-no">
                         <label for="splitPropNo" class="toggle__label">Equal (50/50)</label>
                         <span class="toggle__slider" aria-hidden="true"></span>
                     </div>
@@ -484,9 +484,9 @@
                 <fieldset class="form-group">
                     <legend class="form-label">Purchase Type</legend>
                     <div class="toggle">
-                        <input type="radio" name="homeType" id="homeFirst" value="first" checked class="toggle__input">
+                        <input type="radio" name="homeType" id="homeFirst" value="first" checked class="toggle__input" data-cy="homeType-first">
                         <label for="homeFirst" class="toggle__label">Sole Property</label>
-                        <input type="radio" name="homeType" id="homeSecond" value="second" class="toggle__input">
+                        <input type="radio" name="homeType" id="homeSecond" value="second" class="toggle__input" data-cy="homeType-second">
                         <label for="homeSecond" class="toggle__label">Buy-to-let / Second</label>
                         <span class="toggle__slider" aria-hidden="true"></span>
                     </div>
@@ -496,9 +496,9 @@
                 <fieldset class="form-group" id="ftb-container">
                     <legend class="form-label">Buyer Status</legend>
                     <div class="toggle">
-                        <input type="radio" name="buyerStatus" id="buyerStandard" value="standard" checked class="toggle__input">
+                        <input type="radio" name="buyerStatus" id="buyerStandard" value="standard" checked class="toggle__input" data-cy="buyerStatus-standard">
                         <label for="buyerStandard" class="toggle__label">Standard</label>
-                        <input type="radio" name="buyerStatus" id="buyerFTB" value="ftb" class="toggle__input">
+                        <input type="radio" name="buyerStatus" id="buyerFTB" value="ftb" class="toggle__input" data-cy="buyerStatus-ftb">
                         <label for="buyerFTB" class="toggle__label">First Time Buyer</label>
                         <span class="toggle__slider" aria-hidden="true"></span>
                     </div>
@@ -568,14 +568,14 @@
                     <div id="displayPropertyPrice-help" class="help-text">The value specified in the Property Details section.</div>
                 </div>
 
-                <div id="warning-screen-4" class="alert alert--warning" role="alert" aria-live="polite" hidden>
+                <div id="warning-screen-4" class="alert alert--warning" role="alert" aria-live="polite" hidden data-cy="warning-screen-4">
                     <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
 
             <!-- Screen 5: Utilities -->
-            <section class="screen" id="screen-5" aria-labelledby="heading-utilities" tabindex="-1" hidden>
+            <section class="screen" id="screen-5" aria-labelledby="heading-utilities" tabindex="-1" hidden data-cy="screen-5">
                 <h2 id="heading-utilities" class="screen__heading">
                     <span class="heading-icon icon--lightning" aria-hidden="true"></span>
                     Monthly Utilities
@@ -590,9 +590,9 @@
                     <div class="master-toggle-inner">
                         <legend class="master-toggle-label">Set all utilities to:</legend>
                         <div class="toggle" style="margin-bottom: 0; max-width: 18rem;">
-                            <input type="radio" name="masterUtilities" id="muRatio" value="yes" checked class="toggle__input">
+                            <input type="radio" name="masterUtilities" id="muRatio" value="yes" checked class="toggle__input" data-cy="masterUtilities-yes">
                             <label for="muRatio" class="toggle__label">Ratio</label>
-                            <input type="radio" name="masterUtilities" id="muEqual" value="no" class="toggle__input">
+                            <input type="radio" name="masterUtilities" id="muEqual" value="no" class="toggle__input" data-cy="masterUtilities-no">
                             <label for="muEqual" class="toggle__label">50/50</label>
                             <span class="toggle__slider"></span>
                         </div>
@@ -603,9 +603,9 @@
                     <div class="field-header">
                         <label class="form-label" for="councilTaxCost">Monthly Council Tax (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
-                            <input type="radio" name="councilTaxSplitType" id="ctPropYes" value="yes" checked class="toggle__input">
+                            <input type="radio" name="councilTaxSplitType" id="ctPropYes" value="yes" checked class="toggle__input" data-cy="councilTaxSplitType-yes">
                             <label for="ctPropYes" class="toggle__label toggle__label--mini">Ratio</label>
-                            <input type="radio" name="councilTaxSplitType" id="ctPropNo" value="no" class="toggle__input">
+                            <input type="radio" name="councilTaxSplitType" id="ctPropNo" value="no" class="toggle__input" data-cy="councilTaxSplitType-no">
                             <label for="ctPropNo" class="toggle__label toggle__label--mini">50/50</label>
                             <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
@@ -625,9 +625,9 @@
                     <div class="field-header">
                         <label class="form-label" for="energyCost">Monthly Energy (Gas/Elec) (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
-                            <input type="radio" name="energySplitType" id="enPropYes" value="yes" checked class="toggle__input">
+                            <input type="radio" name="energySplitType" id="enPropYes" value="yes" checked class="toggle__input" data-cy="energySplitType-yes">
                             <label for="enPropYes" class="toggle__label toggle__label--mini">Ratio</label>
-                            <input type="radio" name="energySplitType" id="enPropNo" value="no" class="toggle__input">
+                            <input type="radio" name="energySplitType" id="enPropNo" value="no" class="toggle__input" data-cy="energySplitType-no">
                             <label for="enPropNo" class="toggle__label toggle__label--mini">50/50</label>
                             <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
@@ -647,9 +647,9 @@
                     <div class="field-header">
                         <label class="form-label" for="waterBill">Monthly Water Bill (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
-                            <input type="radio" name="waterSplitType" id="wtPropYes" value="yes" checked class="toggle__input">
+                            <input type="radio" name="waterSplitType" id="wtPropYes" value="yes" checked class="toggle__input" data-cy="waterSplitType-yes">
                             <label for="wtPropYes" class="toggle__label toggle__label--mini">Ratio</label>
-                            <input type="radio" name="waterSplitType" id="wtPropNo" value="no" class="toggle__input">
+                            <input type="radio" name="waterSplitType" id="wtPropNo" value="no" class="toggle__input" data-cy="waterSplitType-no">
                             <label for="wtPropNo" class="toggle__label toggle__label--mini">50/50</label>
                             <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
@@ -669,9 +669,9 @@
                     <div class="field-header">
                         <label class="form-label" for="broadbandCost">Monthly Broadband & TV (£) <span class="required-asterisk" aria-hidden="true">*</span><span class="sr-only">(required)</span></label>
                         <div class="toggle toggle--mini">
-                            <input type="radio" name="broadbandSplitType" id="bbPropYes" value="yes" checked class="toggle__input">
+                            <input type="radio" name="broadbandSplitType" id="bbPropYes" value="yes" checked class="toggle__input" data-cy="broadbandSplitType-yes">
                             <label for="bbPropYes" class="toggle__label toggle__label--mini">Ratio</label>
-                            <input type="radio" name="broadbandSplitType" id="bbPropNo" value="no" class="toggle__input">
+                            <input type="radio" name="broadbandSplitType" id="bbPropNo" value="no" class="toggle__input" data-cy="broadbandSplitType-no">
                             <label for="bbPropNo" class="toggle__label toggle__label--mini">50/50</label>
                             <span class="toggle__slider toggle__slider--mini"></span>
                         </div>
@@ -687,14 +687,14 @@
                     </div>
                 </div>
 
-                <div id="warning-screen-5" class="alert alert--warning" role="alert" aria-live="polite" hidden>
+                <div id="warning-screen-5" class="alert alert--warning" role="alert" aria-live="polite" hidden data-cy="warning-screen-5">
                     <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
 
             <!-- Screen 6: Lifestyle & Committed -->
-            <section class="screen" id="screen-6" aria-labelledby="heading-committed" tabindex="-1" hidden>
+            <section class="screen" id="screen-6" aria-labelledby="heading-committed" tabindex="-1" hidden data-cy="screen-6">
                 <h2 id="heading-committed" class="screen__heading">
                     <span class="heading-icon icon--receipt" aria-hidden="true"></span>
                     Lifestyle & Committed
@@ -709,9 +709,9 @@
                     <div class="master-toggle-inner">
                         <legend class="master-toggle-label">Set all lifestyle to:</legend>
                         <div class="toggle" style="margin-bottom: 0; max-width: 18rem;">
-                            <input type="radio" name="masterCommitted" id="mcRatio" value="yes" checked class="toggle__input">
+                            <input type="radio" name="masterCommitted" id="mcRatio" value="yes" checked class="toggle__input" data-cy="masterCommitted-yes">
                             <label for="mcRatio" class="toggle__label">Ratio</label>
-                            <input type="radio" name="masterCommitted" id="mcEqual" value="no" class="toggle__input">
+                            <input type="radio" name="masterCommitted" id="mcEqual" value="no" class="toggle__input" data-cy="masterCommitted-no">
                             <label for="mcEqual" class="toggle__label">50/50</label>
                             <span class="toggle__slider"></span>
                         </div>
@@ -806,14 +806,14 @@
                     </div>
                 </div>
 
-                <div id="warning-screen-6" class="alert alert--warning" role="alert" aria-live="polite" hidden>
+                <div id="warning-screen-6" class="alert alert--warning" role="alert" aria-live="polite" hidden data-cy="warning-screen-6">
                     <span class="alert__icon alert__icon--error icon--error" aria-hidden="true"></span>
                     <div class="alert__text"></div>
                 </div>
             </section>
 
             <!-- Screen 7: Results -->
-            <section class="screen" id="screen-7" aria-labelledby="heading-results" tabindex="-1" hidden>
+            <section class="screen" id="screen-7" aria-labelledby="heading-results" tabindex="-1" hidden data-cy="screen-7">
                 <h2 id="heading-results" class="screen__heading">
                     <span class="heading-icon icon--pie-chart" aria-hidden="true"></span>
                     Detailed Analysis
@@ -1078,11 +1078,11 @@
 
     <!-- Footer -->
     <footer>
-        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.2.9 • 2026-03-04 18:05:07
+        Vibe coded by Ash Davies (DrizzlyOwl) and Gemini | <a href="https://github.com/DrizzlyOwl/FairShare" target="_blank" class="footer__link">GitHub Repo</a> | Build: 1.2.11 • 2026-03-04 21:02:41
     </footer>
 
     <!-- Scripts -->
-    <script type="module" src="./dist/main.js?v=1772647507"></script>
+    <script type="module" src="./dist/main.js?v=1772658161"></script>
 
 </body>
 </html>

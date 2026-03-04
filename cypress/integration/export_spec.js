@@ -13,9 +13,9 @@ describe('FairShare - CSV Export', () => {
     cy.disableAnimations();
     cy.waitForAppReady();
 
-    // Stub the CSV download method to prevent actual download and inspect arguments
+    // Stub the prototype method BEFORE reaching the results screen
     cy.window().then((win) => {
-      cy.stub(win.CSV, 'download').as('csvDownload');
+        cy.stub(win.CSV.prototype, 'download').as('csvDownload');
     });
 
     cy.skipToStep2();
@@ -30,10 +30,10 @@ describe('FairShare - CSV Export', () => {
     cy.fillUtilitiesStep();
     cy.fillLifestyleStep();
 
-    cy.get('#screen-7').should('be.visible');
+    cy.get('[data-cy="screen-7"]').should('be.visible');
 
     // Click download button
-    cy.get('#downloadCSVBtn').click();
+    cy.get('[data-ui="downloadCSVButton"]').click();
 
     // Verify stub was called
     cy.get('@csvDownload').should('be.calledOnce');
@@ -49,7 +49,8 @@ describe('FairShare - CSV Export', () => {
       
       // Verify table argument is a DOM element
       expect(tableArg.tagName).to.equal('TABLE');
-      expect(tableArg.id).to.equal('results-table');
+      expect(tableArg.dataset.ui).to.equal('resultsTable');
     });
+
   });
 });

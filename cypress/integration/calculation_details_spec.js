@@ -34,7 +34,7 @@ describe('FairShare - Calculation Details Validation', () => {
         // Screen 3: Property
         cy.get('[data-cy="postcode-input"]').type('M1 1AD').blur();
         cy.get('[data-cy="propertyPrice-input"]').clear().type('300000').blur();
-        cy.get('label[for="bC"]').click();
+        cy.get('[data-cy="taxBand-C"]').check({ force: true });
         cy.get('[data-cy="next-button"]').click();
 
         // Screen 4: Mortgage & Equity
@@ -50,7 +50,7 @@ describe('FairShare - Calculation Details Validation', () => {
         cy.get('[data-cy="next-button"]').click();
 
         // Screen 7: Results
-        cy.get('#screen-7').should('be.visible');
+        cy.get('[data-cy="screen-7"]').should('be.visible');
 
         // Validate Income Ratio Workings
         cy.get('[data-cy="wk-salary-p1"]').should('contain.text', '£60,000');
@@ -79,18 +79,18 @@ describe('FairShare - Calculation Details Validation', () => {
         // Screen 3: Property
         cy.get('[data-cy="postcode-input"]').type('M1 1AD').blur();
         cy.get('[data-cy="propertyPrice-input"]').clear().type('300000').blur();
-        cy.get('label[for="bC"]').click();
+        cy.get('[data-cy="taxBand-C"]').check({ force: true });
         cy.get('[data-cy="next-button"]').click();
 
-        // Screen 4: Mortgage & Equity
-        cy.get('label[for="splitPropNo"]').click(); // 50/50 split
+        // Screen 4: Mortgage & Equity (50/50 split)
+        cy.get('[data-cy="depositSplitType-no"]').check({ force: true });
         cy.get('[data-cy="next-button"]').click();
 
         // Navigate to Results
         cy.get('[data-cy="next-button"]').click(); // Utilities
         cy.get('[data-cy="next-button"]').click(); // Committed
 
-        cy.get('#screen-7', { timeout: 10000 }).should('be.visible');
+        cy.get('[data-cy="screen-7"]', { timeout: 10000 }).should('be.visible');
         cy.get('[data-cy="wk-deposit-split-type"]').should('contain.text', '50/50');
     });
 });

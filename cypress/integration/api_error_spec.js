@@ -16,25 +16,25 @@ describe('FairShare - API Error Resilience', () => {
     cy.skipToStep2();
     cy.fillIncomeStep('50000', '50000');
 
-    cy.get('#screen-3').should('be.visible');
+    cy.get('[data-cy="screen-3"]').should('be.visible');
     cy.get('[data-cy="postcode-input"]').type('SW1A 1AA').blur();
     
     // Click Estimate button
     cy.get('[data-cy="estimatePrice-button"]').click();
     
     // Verify error message is shown on screen 3
-    cy.get('#warning-screen-3').should('be.visible')
+    cy.get('[data-cy="warning-screen-3"]').should('be.visible')
       .and('contain.text', 'Failed to estimate property price. Please enter manually.');
 
     // Ensure we can still enter a price manually and proceed
     cy.get('[data-cy="propertyPrice-input"]').clear().type('350000').blur();
     
     // MUST select a tax band for validation to pass
-    cy.get('label[for="bC"]').click();
+    cy.get('[data-cy="taxBand-C"]').check({ force: true });
 
     // Next button should work
     cy.get('[data-cy="next-button"]').click();
-    cy.get('#screen-4').should('be.visible');
+    cy.get('[data-cy="screen-4"]').should('be.visible');
   });
 
   it('handles the fallback logic when API returns no results', () => {
@@ -51,7 +51,7 @@ describe('FairShare - API Error Resilience', () => {
     cy.skipToStep2();
     cy.fillIncomeStep('50000', '50000');
 
-    cy.get('#screen-3').should('be.visible');
+    cy.get('[data-cy="screen-3"]').should('be.visible');
     cy.get('[data-cy="postcode-input"]').type('M1 1AD').blur();
     
     // Click Estimate button
@@ -60,7 +60,7 @@ describe('FairShare - API Error Resilience', () => {
     cy.wait('@priceEstimateEmpty');
 
     // Should show the fallback price info (M prefix = £180,000 base)
-    cy.get('[data-ui="propertyPriceEstimateDisplay"]').should('be.visible')
+    cy.get('[data-cy="propertyPrice-estimate-display"]').should('be.visible')
       .and('contain.text', 'Using estimated market price');
     
     cy.get('[data-cy="propertyPrice-input"]').should('have.value', '180000');
