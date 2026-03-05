@@ -123,11 +123,29 @@ runTest('State should support reactive computed properties', () => {
     console.assert(state.data.total === 12, `Updated computed mismatch: ${state.data.total}`);
 });
 
+runTest('monthlySummary computed should return structured monthly costs', () => {
+    const orchestrator = new window.FinanceOrchestrator();
+    const definitions = {
+        monthlySummary: (data) => orchestrator.getFinalSummary(data).monthly
+    };
+    const state = new window.State({
+        propertyPrice: 300000, regionCode: 'EN', homeType: 'first', isFTB: false,
+        totalEquity: 30000, ratioP1: 0.5, ratioP2: 0.5, monthlyMortgagePayment: 1000,
+        splitTypes: {}, councilTaxCost: 200, energyCost: 100, waterBill: 50, broadbandCost: 50, 
+        groceriesCost: 400, childcareCost: 0, insuranceCost: 0, otherSharedCosts: 0
+    }, null, null, definitions);
+
+    const summary = state.data.monthlySummary;
+    console.assert(summary.total === 1800, `Total monthly mismatch: ${summary.total}`);
+    console.assert(summary.p1 === 900, `P1 share mismatch: ${summary.p1}`);
+    console.assert(summary.p2 === 900, `P2 share mismatch: ${summary.p2}`);
+});
+
 runTest('State should prevent setting computed properties', () => {
     const definitions = { total: (data) => data.a + data.b };
     const state = new window.State({ a: 1, b: 2 }, null, null, definitions);
     
-    const result = state.data.total = 100; // This should trigger an error in console but return the value in JS Proxy (the handler returns false)
+    state.data.total = 100; // This should trigger an error in console but return the value in JS Proxy (the handler returns false)
     console.assert(state.data.total === 3, 'Computed property should remain read-only');
 });
 

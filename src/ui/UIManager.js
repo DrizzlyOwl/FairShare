@@ -374,6 +374,56 @@ export default class UIManager extends Logger {
     }
 
     /**
+     * Renders real-time micro-summary for live feedback during splitting.
+     */
+    renderMicroSummary() {
+        if (!this.#elements.microSummary) return;
+
+        // Only show on Utilities and Committed Spending screens
+        const activeScreen = document.querySelector('section.screen:not([hidden])')?.id;
+        const isRelevantScreen = [this.SCREENS.UTILITIES, this.SCREENS.COMMITTED].includes(activeScreen);
+
+        if (!isRelevantScreen) {
+            this.#elements.microSummary.setAttribute('hidden', '');
+            return;
+        }
+
+        // Calculate totals using CalculationEngine logic (reused via orchestrator)
+        // Note: FairShareApp would ideally pass the summary here, but we can call getFinalSummary
+        // if we have access or just trust FairShareApp to call this with pre-calculated data.
+        // For now, let's assume 'state' has been enriched or we'll trigger it here.
+        // Better: FairShareApp calls this with the calculated summary.
+    }
+
+    /**
+     * Updates the micro-summary component with live data.
+     * @param {Object} summary - Monthly summary costs.
+     */
+    updateMicroSummary(summary) {
+        if (!this.#elements.microSummary) return;
+        
+        const { total, p1, p2 } = summary;
+        if (this.#elements.msTotal) this.#elements.msTotal.innerText = formatCurrency(total, 2);
+        if (this.#elements.msP1) this.#elements.msP1.innerText = formatCurrency(p1, 2);
+        if (this.#elements.msP2) this.#elements.msP2.innerText = formatCurrency(p2, 2);
+
+        const p1Perc = total > 0 ? (p1 / total) * 100 : 50;
+        const p2Perc = total > 0 ? (p2 / total) * 100 : 50;
+
+        if (this.#elements.msBarP1) this.#elements.msBarP1.style.width = `${p1Perc}%`;
+        if (this.#elements.msBarP2) this.#elements.msBarP2.style.width = `${p2Perc}%`;
+
+        const activeScreen = document.querySelector('section.screen:not([hidden])')?.id;
+        const isRelevantScreen = [this.SCREENS.UTILITIES, this.SCREENS.COMMITTED].includes(activeScreen);
+        
+        if (isRelevantScreen) {
+            this.#elements.microSummary.removeAttribute('hidden');
+        } else {
+            this.#elements.microSummary.setAttribute('hidden', '');
+        }
+    }
+
+    /**
      * Full UI refresh based on application state.
      * @param {Object} state - The current application state.
      */

@@ -570,6 +570,27 @@
                 </div>
             </section>
 
+            <!-- Micro Summary Card (Live Feedback) -->
+            <div id="micro-summary" class="micro-summary" data-ui="microSummary" hidden>
+                <div class="micro-summary__bar">
+                    <div class="micro-summary__segment micro-summary__segment--p1" id="ms-bar-p1" data-ui="msBarP1"></div>
+                    <div class="micro-summary__segment micro-summary__segment--p2" id="ms-bar-p2" data-ui="msBarP2"></div>
+                </div>
+                <div class="micro-summary__content">
+                    <div class="micro-summary__total">Monthly Budget: <span id="ms-total" data-ui="msTotal">£0</span></div>
+                    <div class="micro-summary__shares">
+                        <div class="micro-summary__share">
+                            <span class="micro-summary__dot micro-summary__dot--p1"></span>
+                            You: <span class="micro-summary__value" id="ms-p1" data-ui="msP1">£0</span>
+                        </div>
+                        <div class="micro-summary__share">
+                            <span class="micro-summary__dot micro-summary__dot--p2"></span>
+                            Partner: <span class="micro-summary__value" id="ms-p2" data-ui="msP2">£0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Screen 5: Utilities -->
             <section class="screen" id="screen-5" aria-labelledby="heading-utilities" tabindex="-1" hidden data-cy="screen-5">
                 <h2 id="heading-utilities" class="screen__heading">

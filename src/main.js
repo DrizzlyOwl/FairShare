@@ -72,10 +72,18 @@ class FairShareApp extends Logger {
             councilTaxCost: (data) => this.orchestrator.populateEstimates(data).councilTaxCost,
             energyCost: (data) => this.orchestrator.populateEstimates(data).energyCost,
             waterBill: (data) => this.orchestrator.populateEstimates(data).waterBill,
-            broadbandCost: (data) => this.orchestrator.populateEstimates(data).broadbandCost
+            broadbandCost: (data) => this.orchestrator.populateEstimates(data).broadbandCost,
+
+            // Monthly Summary (Unified accessor for UI)
+            monthlySummary: (data) => this.orchestrator.getFinalSummary(data).monthly
         };
 
-        this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data), this.urlService, computedDefinitions);
+        this.#store = new State(INITIAL_STATE, (data) => {
+            this.#ui.render(data);
+            if (data.monthlySummary) {
+                this.#ui.updateMicroSummary(data.monthlySummary);
+            }
+        }, this.urlService, computedDefinitions);
 
         // 2. UI Orchestration
         this.#ui = new UIManager(this.#elements, BAND_PRICES, (id) => this.#nav.updatePagination(id));
