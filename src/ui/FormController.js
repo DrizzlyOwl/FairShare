@@ -104,6 +104,15 @@ export default class FormController extends Logger {
             const name = target.name;
             const val = target.value;
 
+            // Handle individual split rule changes (excluding depositSplitType which is top-level)
+            if (name.endsWith('SplitType') && name !== 'depositSplitType') {
+                const group = name.replace('SplitType', '');
+                const splitTypes = { ...this.#store.data.splitTypes };
+                splitTypes[group] = val;
+                this.#store.update({ splitTypes });
+                return;
+            }
+
             switch(name) {
                 case 'salaryType':
                     this.#store.update({ salaryType: val });
@@ -416,11 +425,14 @@ export default class FormController extends Logger {
         radioNames.forEach(name => {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) {
-                if (name.endsWith('SplitType')) {
+                if (name.endsWith('SplitType') && name !== 'depositSplitType') {
                     if (!stateUpdate.splitTypes) stateUpdate.splitTypes = { ...this.#store.data.splitTypes };
                     const key = name.replace('SplitType', '');
                     stateUpdate.splitTypes[key] = checked.value;
                 } 
+                else if (name === 'depositSplitType') {
+                    stateUpdate.depositSplitProportional = checked.value === 'yes';
+                }
                 else if (name === 'buyerStatus') {
                     stateUpdate.isFTB = checked.value === 'ftb';
                 }

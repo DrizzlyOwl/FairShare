@@ -80,6 +80,9 @@ class FairShareApp extends Logger {
 
         this.#store = new State(INITIAL_STATE, (data) => {
             this.#ui.render(data);
+            if (data._sdlt !== undefined && data._legalFees !== undefined) {
+                this.renderUpfrontWorkings(data._sdlt, data._legalFees);
+            }
         }, this.urlService, computedDefinitions);
 
         // 2. UI Orchestration

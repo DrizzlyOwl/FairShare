@@ -72,6 +72,7 @@ const MIGRATIONS = {
 
 export default class State extends Logger {
     #data;
+    #internalData;
     #onUpdate;
     #urlService;
     #computed;
@@ -91,7 +92,7 @@ export default class State extends Logger {
         this.#computed = computedDefinitions;
 
         // Use a non-proxied object for the initial internal data
-        const data = { ...initialState };
+        this.#internalData = { ...initialState };
         
         const self = this;
         // Map to cache proxies for nested objects to prevent memory leaks and redundant object creation
@@ -104,8 +105,8 @@ export default class State extends Logger {
                 set: (target, prop, value) => {
                     if (target[prop] === value) return true;
                     
-                    // Prevent direct setting of computed properties
-                    if (self.#computed[prop]) {
+                    // Prevent direct setting of computed properties from outside
+                    if (self.#computed[prop] && !self.#isRecalculating) {
                         self.error(`Attempted to set read-only computed property: ${prop}`);
                         return false;
                     }
@@ -113,8 +114,8 @@ export default class State extends Logger {
                     self.debug(`Property "${prop}" changed:`, target[prop], "->", value);
                     target[prop] = value;
 
-                    // Re-calculate dependents
-                    self.#recalculateComputeds(target);
+                    // Re-calculate dependents on the raw data
+                    self.#recalculateComputeds(self.#internalData);
 
                     self.persist();
                     // Avoid triggering onUpdate for every field if we're in a bulk update
@@ -137,30 +138,36 @@ export default class State extends Logger {
             return proxy;
         };
 
-        this.#data = createProxy(data);
+        this.#data = createProxy(this.#internalData);
         
         // Initial run to populate computeds
-        this.#recalculateComputeds(data);
+        this.#recalculateComputeds(this.#internalData);
     }
 
     #isBatchUpdating = false;
+    #isRecalculating = false;
 
     /**
      * Executes all registered computed functions.
      * @param {Object} target - The raw data object.
      */
     #recalculateComputeds(target) {
-        Object.entries(this.#computed).forEach(([key, fn]) => {
-            try {
-                const newValue = fn(target);
-                if (target[key] !== newValue) {
-                    this.debug(`Computed property updated: ${key}`);
-                    target[key] = newValue;
+        this.#isRecalculating = true;
+        try {
+            Object.entries(this.#computed).forEach(([key, fn]) => {
+                try {
+                    const newValue = fn(target);
+                    if (target[key] !== newValue) {
+                        this.debug(`Computed property updated: ${key}`);
+                        target[key] = newValue;
+                    }
+                } catch (e) {
+                    this.error(`Failed to calculate computed property "${key}":`, e);
                 }
-            } catch (e) {
-                this.error(`Failed to calculate computed property "${key}":`, e);
-            }
-        });
+            });
+        } finally {
+            this.#isRecalculating = false;
+        }
     }
 
     /**
@@ -171,14 +178,8 @@ export default class State extends Logger {
         this.#isBatchUpdating = true;
         this.debug(`Batch Update:`, newData);
         try {
-            // Filter out any attempted computed updates to prevent logic pollution
-            const baseUpdates = {};
-            Object.keys(newData).forEach(key => {
-                if (!this.#computed[key]) baseUpdates[key] = newData[key];
-            });
-
-            Object.assign(this.#data, baseUpdates);
-            this.#recalculateComputeds(this.#data);
+            Object.assign(this.#internalData, newData);
+            this.#recalculateComputeds(this.#internalData);
         } finally {
             this.#isBatchUpdating = false;
         }

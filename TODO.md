@@ -10,6 +10,6 @@
     - [x] Add "Share" button to header that copies the shareable URL to clipboard.
     - [x] Add visual feedback (Toast/Alert) when URL is copied.
 [x] Transition to self-hosted Inter variable font in the dist/ directory to eliminate external requests and optimize font rendering performance.
-[ ] Add a real-time micro-summary UI component that displays running contribution totals as users modify individual bill split rules.
+[x] Add a real-time micro-summary UI component that displays running contribution totals as users modify individual bill split rules.
 [x] Implement state schema versioning and a migration utility in State.js to ensure backward compatibility with cached localStorage data.
 [x] Implement a JavaScript Logger module that all of the other modules can extend for writing debug messages into the JS Console.
