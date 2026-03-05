@@ -39,7 +39,7 @@
     "eslint": "^10.0.0",
     "http-server": "^14.1.1",
     "istanbul-lib-instrument": "^6.0.3",
-    "jsdom": "^22.1.0",
+    "jsdom": "^28.1.0",
     "nyc": "^18.0.0",
     "postcss": "^8.5.8",
     "postcss-cli": "^11.0.1",

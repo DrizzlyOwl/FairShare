@@ -1,3 +1,4 @@
+[x] Update package dependencies and fix vulnerabilities (jsdom 28.1.0).
 # FairShare TODOs
 
 [ ] Implement Computed Properties in State.js to automatically derive income ratios and take-home estimates whenever base salary values change.
