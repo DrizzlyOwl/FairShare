@@ -395,5 +395,18 @@ export default class UIManager extends Logger {
         if (state.depositAmount !== undefined && this.#elements.depositAmount) {
             this.#elements.depositAmount.value = state.depositAmount;
         }
+
+        // Sync estimates
+        const estimateFields = ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'];
+        estimateFields.forEach(id => {
+            if (state[id] !== undefined && this.#elements[id]) {
+                this.#elements[id].value = state[id];
+            }
+        });
+
+        if (state._sdlt !== undefined && state._legalFees !== undefined) {
+            if (this.#elements.sdltEstimate) this.#elements.sdltEstimate.value = state._sdlt.toLocaleString();
+            if (this.#elements.legalFeesEstimate) this.#elements.legalFeesEstimate.value = state._legalFees.toLocaleString();
+        }
     }
 }

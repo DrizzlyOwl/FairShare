@@ -49,7 +49,33 @@ class FairShareApp extends Logger {
         this.orchestrator = new FinanceOrchestrator();
         this.urlService = new UrlService();
         this.csv = new CSV();
-        this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data), this.urlService);
+
+        const computedDefinitions = {
+            // Income Ratio
+            ratioP1: (data) => this.orchestrator.calculateRatio(data).ratioP1,
+            ratioP2: (data) => this.orchestrator.calculateRatio(data).ratioP2,
+            
+            // Equity & Mortgage Details
+            totalEquity: (data) => this.orchestrator.calculateEquityDetails(data).totalEquity,
+            depositPercentage: (data) => this.orchestrator.calculateEquityDetails(data).depositPercentage,
+            depositAmount: (data) => this.orchestrator.calculateEquityDetails(data).depositAmount,
+            mortgageRequired: (data) => this.orchestrator.calculateEquityDetails(data).mortgageRequired,
+            equityP1: (data) => this.orchestrator.calculateEquityDetails(data).equityP1,
+            equityP2: (data) => this.orchestrator.calculateEquityDetails(data).equityP2,
+            monthlyMortgagePayment: (data) => this.orchestrator.calculateEquityDetails(data).monthlyMortgagePayment,
+            totalRepayment: (data) => this.orchestrator.calculateEquityDetails(data).totalRepayment,
+            _sdlt: (data) => this.orchestrator.calculateEquityDetails(data)._sdlt,
+            _legalFees: (data) => this.orchestrator.calculateEquityDetails(data)._legalFees,
+            _totalUpfront: (data) => this.orchestrator.calculateEquityDetails(data)._totalUpfront,
+
+            // Utility Estimates
+            councilTaxCost: (data) => this.orchestrator.populateEstimates(data).councilTaxCost,
+            energyCost: (data) => this.orchestrator.populateEstimates(data).energyCost,
+            waterBill: (data) => this.orchestrator.populateEstimates(data).waterBill,
+            broadbandCost: (data) => this.orchestrator.populateEstimates(data).broadbandCost
+        };
+
+        this.#store = new State(INITIAL_STATE, (data) => this.#ui.render(data), this.urlService, computedDefinitions);
 
         // 2. UI Orchestration
         this.#ui = new UIManager(this.#elements, BAND_PRICES, (id) => this.#nav.updatePagination(id));
@@ -217,33 +243,8 @@ class FairShareApp extends Logger {
         this.#form.updateSalaryTypeLabels(state.salaryType);
         this.#form.updatePropertyPriceDisplay(state.propertyPrice, false);
         
-        // Let UIManager handle initial calculations sync
-        const update = this.orchestrator.calculateEquityDetails(this.#store.data);
-        const estimates = this.orchestrator.populateEstimates(this.#store.data);
-        
-        this.#store.update(update);
-        this.#store.update(estimates);
-        this.#store.update(this.orchestrator.calculateRatio(this.#store.data));
-        
-        // Trigger manual render for non-observed calculated fields
-        this.syncCalculatedFields({ ...update, ...estimates });
-    }
-
-    /**
-     * Syncs transient/calculated values back to UI elements.
-     */
-    syncCalculatedFields(update) {
-        // Most fields are now handled by UIManager.render which is triggered by store.update
-        // We only handle specific manual orchestrations here if needed
-        if (update._sdlt !== undefined) this.renderUpfrontWorkings(update._sdlt, update._legalFees);
-
-        // Utility and regional estimate sync
-        const utilityFields = ['councilTaxCost', 'energyCost', 'waterBill', 'broadbandCost'];
-        utilityFields.forEach(id => {
-            if (update[id] !== undefined && this.#elements[id]) {
-                this.#elements[id].value = update[id];
-            }
-        });
+        // Trigger manual render for non-observed calculated fields (upfront costs)
+        this.renderUpfrontWorkings(state._sdlt, state._legalFees);
     }
 
     /**
@@ -279,10 +280,6 @@ class FairShareApp extends Logger {
             this.#store.update({ propertyPrice: price });
             this.#elements.propertyPrice.value = price;
             this.#form.updatePropertyPriceDisplay(price, !!result.isEstimated);
-            
-            const update = this.orchestrator.calculateEquityDetails(this.#store.data);
-            this.#store.update(update);
-            this.syncCalculatedFields(update);
         } catch (error) {
             this.handleError(error, 3, "Failed to estimate property price. Please enter manually.");
         }
@@ -314,24 +311,8 @@ class FairShareApp extends Logger {
         try {
             this.#form.forceStateSync();
 
-            let stateUpdate = {};
-            if (screenId === SCREEN_MAP.INCOME) {
-                stateUpdate = this.orchestrator.calculateRatio(this.#store.data);
-            }
-            if (screenId === SCREEN_MAP.PROPERTY) {
-                Object.assign(stateUpdate, this.orchestrator.populateEstimates(this.#store.data));
-                Object.assign(stateUpdate, this.orchestrator.calculateEquityDetails(this.#store.data));
-            }
-            if (screenId === SCREEN_MAP.MORTGAGE) {
-                Object.assign(stateUpdate, this.orchestrator.calculateEquityDetails(this.#store.data));
-            }
             if (screenId === SCREEN_MAP.COMMITTED) {
                 this.renderResults();
-            }
-
-            if (Object.keys(stateUpdate).length > 0) {
-                this.#store.update(stateUpdate);
-                this.syncCalculatedFields(stateUpdate);
             }
 
             const isScreenValid = this.#form.validateScreen(screenId);

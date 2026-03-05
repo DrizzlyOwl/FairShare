@@ -74,6 +74,7 @@ export default class State extends Logger {
     #data;
     #onUpdate;
     #urlService;
+    #computed;
     #persistTimeout;
     #CACHE_KEY = 'fairshare_cache';
 
@@ -81,11 +82,14 @@ export default class State extends Logger {
      * @param {Object} initialState - The base data structure.
      * @param {Function} onUpdateCallback - Triggered on state change.
      * @param {UrlService} urlService - Optional utility for URL synchronization.
+     * @param {Object} computedDefinitions - Optional reactive derivation functions.
      */
-    constructor(initialState = INITIAL_STATE, onUpdateCallback = null, urlService = null) {
+    constructor(initialState = INITIAL_STATE, onUpdateCallback = null, urlService = null, computedDefinitions = {}) {
         super('State');
         this.#onUpdate = onUpdateCallback;
         this.#urlService = urlService;
+        this.#computed = computedDefinitions;
+
         // Use a non-proxied object for the initial internal data
         const data = { ...initialState };
         
@@ -99,8 +103,19 @@ export default class State extends Logger {
             const handler = {
                 set: (target, prop, value) => {
                     if (target[prop] === value) return true;
+                    
+                    // Prevent direct setting of computed properties
+                    if (self.#computed[prop]) {
+                        self.error(`Attempted to set read-only computed property: ${prop}`);
+                        return false;
+                    }
+
                     self.debug(`Property "${prop}" changed:`, target[prop], "->", value);
                     target[prop] = value;
+
+                    // Re-calculate dependents
+                    self.#recalculateComputeds(target);
+
                     self.persist();
                     // Avoid triggering onUpdate for every field if we're in a bulk update
                     if (self.#onUpdate && !self.#isBatchUpdating) {
@@ -123,9 +138,30 @@ export default class State extends Logger {
         };
 
         this.#data = createProxy(data);
+        
+        // Initial run to populate computeds
+        this.#recalculateComputeds(data);
     }
 
     #isBatchUpdating = false;
+
+    /**
+     * Executes all registered computed functions.
+     * @param {Object} target - The raw data object.
+     */
+    #recalculateComputeds(target) {
+        Object.entries(this.#computed).forEach(([key, fn]) => {
+            try {
+                const newValue = fn(target);
+                if (target[key] !== newValue) {
+                    this.debug(`Computed property updated: ${key}`);
+                    target[key] = newValue;
+                }
+            } catch (e) {
+                this.error(`Failed to calculate computed property "${key}":`, e);
+            }
+        });
+    }
 
     /**
      * Replaces multiple state properties at once.
@@ -135,7 +171,14 @@ export default class State extends Logger {
         this.#isBatchUpdating = true;
         this.debug(`Batch Update:`, newData);
         try {
-            Object.assign(this.#data, newData);
+            // Filter out any attempted computed updates to prevent logic pollution
+            const baseUpdates = {};
+            Object.keys(newData).forEach(key => {
+                if (!this.#computed[key]) baseUpdates[key] = newData[key];
+            });
+
+            Object.assign(this.#data, baseUpdates);
+            this.#recalculateComputeds(this.#data);
         } finally {
             this.#isBatchUpdating = false;
         }
@@ -151,10 +194,24 @@ export default class State extends Logger {
     persist() {
         if (typeof window !== 'undefined' && window.Cypress && !window.__CYPRESS_PERSISTENCE__) return;
         
+        // Helper to get only persistable data (no computeds)
+        const getPersistableData = () => {
+            const persistable = {};
+            Object.keys(this.#data).forEach(key => {
+                // Skip properties defined in #computed or starting with _ (transient)
+                if (!this.#computed[key] && !key.startsWith('_')) {
+                    persistable[key] = this.#data[key];
+                }
+            });
+            return persistable;
+        };
+
+        const persistableData = getPersistableData();
+
         // Immediate persistence for tests to avoid race conditions with cy.reload()
         if (typeof window !== 'undefined' && window.__CYPRESS_PERSISTENCE__) {
-            localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));
-            if (this.#urlService) this.#urlService.updateUrl(this.#data);
+            localStorage.setItem(this.#CACHE_KEY, JSON.stringify(persistableData));
+            if (this.#urlService) this.#urlService.updateUrl(persistableData);
             return;
         }
 
@@ -163,8 +220,8 @@ export default class State extends Logger {
         }
         
         this.#persistTimeout = setTimeout(() => {
-            localStorage.setItem(this.#CACHE_KEY, JSON.stringify(this.#data));
-            if (this.#urlService) this.#urlService.updateUrl(this.#data);
+            localStorage.setItem(this.#CACHE_KEY, JSON.stringify(persistableData));
+            if (this.#urlService) this.#urlService.updateUrl(persistableData);
             this.#persistTimeout = null;
         }, 500);
     }
