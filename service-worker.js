@@ -19,6 +19,7 @@ const STATIC_ASSETS = [
     './manifest.json',
     './dist/style.css?v=1772723097',
     './dist/main.js?v=1772723097',
+    './fonts/Inter-VariableFont_slnt,wght.woff2',
     './dist/icons/icon-lightning.svg',
     './dist/icons/icon-heart.svg',
     './dist/icons/icon-info.svg',

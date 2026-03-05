@@ -16,7 +16,7 @@
     "clean": "rm -rf dist",
     "build:js": "esbuild src/main.js --bundle --minify --outfile=dist/main.js",
     "build:css": "postcss style.css -o dist/style.css",
-    "build:icons": "shx mkdir -p dist/icons dist/images && svgo -f icons -o dist/icons && svgo -f images -o dist/images && svgo favicon.svg logo-icon.svg logo-icon-dark.svg -o dist/ && svgo -f icons -o icons && svgo -f images -o images && svgo favicon.svg logo-icon.svg logo-icon-dark.svg -o .",
+    "build:icons": "shx mkdir -p dist/icons dist/images dist/fonts && svgo -f icons -o dist/icons && svgo -f images -o dist/images && shx cp fonts/* dist/fonts/ && svgo favicon.svg logo-icon.svg logo-icon-dark.svg -o dist/ && svgo -f icons -o icons && svgo -f images -o images && svgo favicon.svg logo-icon.svg logo-icon-dark.svg -o .",
     "build": "npm run clean && npm run build:js && npm run build:css && npm run build:icons"
   },
   "keywords": [
