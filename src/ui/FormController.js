@@ -53,21 +53,8 @@ export default class FormController extends Logger {
                 
                 this.#store.update({ [field.key || field.id]: val });
                 
-                const stateUpdate = {};
                 if (field.id === 'propertyPrice') {
                     this.updatePropertyPriceDisplay(val, false);
-                    Object.assign(stateUpdate, this.#app.orchestrator.calculateEquityDetails(this.#store.data));
-                }
-                if (['depositPercentage', 'depositAmount', 'mortgageInterestRate', 'mortgageTerm', 'mortgageFees'].includes(field.id)) {
-                    Object.assign(stateUpdate, this.#app.orchestrator.calculateEquityDetails(this.#store.data));
-                }
-                if (['bedrooms', 'bathrooms', 'taxBand'].includes(field.id)) {
-                    Object.assign(stateUpdate, this.#app.orchestrator.populateEstimates(this.#store.data));
-                }
-                
-                if (Object.keys(stateUpdate).length > 0) {
-                    this.#store.update(stateUpdate);
-                    this.#app.syncCalculatedFields(stateUpdate);
                 }
             }, 300));
         });
@@ -86,7 +73,6 @@ export default class FormController extends Logger {
             if (['salaryP1', 'salaryP2', 'pensionP1', 'pensionP2', 'studentLoanP1', 'studentLoanP2'].includes(field.id)) {
                 const partner = field.id.includes('P1') ? 'P1' : 'P2';
                 this.updateTaxEstimate(partner);
-                this.#store.update(this.#app.orchestrator.calculateRatio(this.#store.data));
             }
 
             const updateFn = fieldUpdates.get(field.id);
@@ -124,7 +110,6 @@ export default class FormController extends Logger {
                     this.updateSalaryTypeLabels(val);
                     this.updateTaxEstimate('P1');
                     this.updateTaxEstimate('P2');
-                    this.#store.update(this.#app.orchestrator.calculateRatio(this.#store.data));
                     break;
                 case 'depositType':
                     this.#store.update({ depositType: val });
@@ -135,34 +120,26 @@ export default class FormController extends Logger {
                         this.#elements.depositPercContainer.setAttribute('hidden', '');
                         this.#elements.depositAmtContainer.removeAttribute('hidden');
                     }
-                    this.syncEquityDetails();
                     break;
                 case 'taxBand':
                     this.#store.update({ taxBand: val });
                     this.#ui.updatePricePreview(val);
-                    const taxUpdate = this.#app.orchestrator.populateEstimates(this.#store.data);
-                    this.#store.update(taxUpdate);
-                    this.#app.syncCalculatedFields(taxUpdate);
                     break;
                 case 'depositSplitType':
                     this.#store.update({ depositSplitProportional: val === 'yes' });
-                    this.syncEquityDetails();
                     break;
                 case 'studentLoanP1':
                 case 'studentLoanP2':
                     const slPartner = name.includes('P1') ? 'P1' : 'P2';
                     this.#store.update({ [name]: val });
                     this.updateTaxEstimate(slPartner);
-                    this.#store.update(this.#app.orchestrator.calculateRatio(this.#store.data));
                     break;
                 case 'homeType':
                     this.#store.update({ homeType: val });
                     this.updateFTBVisibility();
-                    this.syncEquityDetails();
                     break;
                 case 'buyerStatus':
                     this.#store.update({ isFTB: val === 'ftb' });
-                    this.syncEquityDetails();
                     break;
                 case 'masterUtilities':
                     this.setAllSplitTypes('utilities', val);
@@ -172,15 +149,6 @@ export default class FormController extends Logger {
                     break;
             }
         });
-    }
-
-    /**
-     * Helper to recalculate and sync equity details.
-     */
-    syncEquityDetails() {
-        const update = this.#app.orchestrator.calculateEquityDetails(this.#store.data);
-        this.#store.update(update);
-        this.#app.syncCalculatedFields(update);
     }
 
     /**
@@ -215,11 +183,6 @@ export default class FormController extends Logger {
 
             announce.querySelector('.alert__text').innerText = text;
             announce.removeAttribute('hidden');
-            
-            // Recalculate SDLT/Legal fees as they are region-dependent
-            const update = this.#app.orchestrator.calculateEquityDetails(this.#store.data);
-            this.#store.update(update);
-            this.#app.syncCalculatedFields(update);
         } else {
             announce.setAttribute('hidden', '');
         }

@@ -111,6 +111,26 @@ runTest('State should initialize with default data', () => {
     console.assert(state.data.baths === 1, 'Default baths should be 1');
 });
 
+runTest('State should support reactive computed properties', () => {
+    const definitions = {
+        total: (data) => data.a + data.b
+    };
+    const state = new window.State({ a: 1, b: 2 }, null, null, definitions);
+    
+    console.assert(state.data.total === 3, `Initial computed mismatch: ${state.data.total}`);
+    
+    state.update({ a: 10 });
+    console.assert(state.data.total === 12, `Updated computed mismatch: ${state.data.total}`);
+});
+
+runTest('State should prevent setting computed properties', () => {
+    const definitions = { total: (data) => data.a + data.b };
+    const state = new window.State({ a: 1, b: 2 }, null, null, definitions);
+    
+    const result = state.data.total = 100; // This should trigger an error in console but return the value in JS Proxy (the handler returns false)
+    console.assert(state.data.total === 3, 'Computed property should remain read-only');
+});
+
 runTest('State should migrate from v0 (unversioned) to v1', () => {
     localStorage.clear();
     const oldState = { salaryP1: 50000, salaryP2: 60000 }; // No version
