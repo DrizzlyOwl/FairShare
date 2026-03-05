@@ -15,6 +15,7 @@ export default class UIManager extends Logger {
     #bandPrices;
     #onScreenChange;
     #observer;
+    #activeScreen;
 
     SCREENS = SCREEN_MAP;
 
@@ -28,6 +29,7 @@ export default class UIManager extends Logger {
         this.#elements = elements;
         this.#bandPrices = bandPrices;
         this.#onScreenChange = onScreenChangeCallback;
+        this.#activeScreen = this.SCREENS.LANDING;
 
         this.#initObserver();
     }
@@ -106,6 +108,7 @@ export default class UIManager extends Logger {
         
         // Show target
         target.removeAttribute('hidden');
+        this.#activeScreen = id;
         this.debug(`Screen ${id} hidden attribute after removal: ${target.hasAttribute('hidden')}`);
         
         if (!isInitialLoad) target.focus();
@@ -374,35 +377,21 @@ export default class UIManager extends Logger {
     }
 
     /**
-     * Renders real-time micro-summary for live feedback during splitting.
+     * Updates the real-time micro-summary for live feedback during splitting.
+     * @param {Object} state - The current application state.
      */
-    renderMicroSummary() {
-        if (!this.#elements.microSummary) return;
+    updateMicroSummary(state) {
+        if (!this.#elements.microSummary || !state.monthlySummary) return;
 
         // Only show on Utilities and Committed Spending screens
-        const activeScreen = document.querySelector('section.screen:not([hidden])')?.id;
-        const isRelevantScreen = [this.SCREENS.UTILITIES, this.SCREENS.COMMITTED].includes(activeScreen);
+        const isRelevantScreen = [this.SCREENS.UTILITIES, this.SCREENS.COMMITTED].includes(this.#activeScreen);
 
         if (!isRelevantScreen) {
             this.#elements.microSummary.setAttribute('hidden', '');
             return;
         }
 
-        // Calculate totals using CalculationEngine logic (reused via orchestrator)
-        // Note: FairShareApp would ideally pass the summary here, but we can call getFinalSummary
-        // if we have access or just trust FairShareApp to call this with pre-calculated data.
-        // For now, let's assume 'state' has been enriched or we'll trigger it here.
-        // Better: FairShareApp calls this with the calculated summary.
-    }
-
-    /**
-     * Updates the micro-summary component with live data.
-     * @param {Object} summary - Monthly summary costs.
-     */
-    updateMicroSummary(summary) {
-        if (!this.#elements.microSummary) return;
-        
-        const { total, p1, p2 } = summary;
+        const { total, p1, p2 } = state.monthlySummary;
         if (this.#elements.msTotal) this.#elements.msTotal.innerText = formatCurrency(total, 2);
         if (this.#elements.msP1) this.#elements.msP1.innerText = formatCurrency(p1, 2);
         if (this.#elements.msP2) this.#elements.msP2.innerText = formatCurrency(p2, 2);
@@ -413,14 +402,7 @@ export default class UIManager extends Logger {
         if (this.#elements.msBarP1) this.#elements.msBarP1.style.width = `${p1Perc}%`;
         if (this.#elements.msBarP2) this.#elements.msBarP2.style.width = `${p2Perc}%`;
 
-        const activeScreen = document.querySelector('section.screen:not([hidden])')?.id;
-        const isRelevantScreen = [this.SCREENS.UTILITIES, this.SCREENS.COMMITTED].includes(activeScreen);
-        
-        if (isRelevantScreen) {
-            this.#elements.microSummary.removeAttribute('hidden');
-        } else {
-            this.#elements.microSummary.setAttribute('hidden', '');
-        }
+        this.#elements.microSummary.removeAttribute('hidden');
     }
 
     /**
@@ -429,6 +411,7 @@ export default class UIManager extends Logger {
      */
     render(state) {
         this.updatePieChart(state.ratioP1, state.ratioP2);
+        this.updateMicroSummary(state);
 
         // Update calculated equity fields if they exist
         if (state.monthlyMortgagePayment !== undefined && this.#elements.monthlyMortgageDisplay) {

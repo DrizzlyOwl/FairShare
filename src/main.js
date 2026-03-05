@@ -80,9 +80,6 @@ class FairShareApp extends Logger {
 
         this.#store = new State(INITIAL_STATE, (data) => {
             this.#ui.render(data);
-            if (data.monthlySummary) {
-                this.#ui.updateMicroSummary(data.monthlySummary);
-            }
         }, this.urlService, computedDefinitions);
 
         // 2. UI Orchestration
